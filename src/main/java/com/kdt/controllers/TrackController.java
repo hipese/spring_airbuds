@@ -16,36 +16,31 @@ public class TrackController {
 	
 	
 	@PostMapping
-    public ResponseEntity<Void> uploadMusic(@RequestParam("file") MultipartFile[] files) {
+    public ResponseEntity<Void> uploadMusic(@RequestParam("file") MultipartFile[] files, 
+    										@RequestParam("duration") String[] durations) {
 		
+//		음원 파일을 저장하는 부분
 		 File uploadPath=new File("c:/tracks");
 			
 			if(!uploadPath.exists()) {
 				uploadPath.mkdir();
 			}
 			
-		 
-		 for (MultipartFile file : files) {
+		//나중에 중복된 파일 있을수도 있으니 그거 설정 알아서 ㄱ
+			for (int i = 0; i < files.length; i++) {
+	            MultipartFile file = files[i];
 	            String filename = file.getOriginalFilename();
 	            File destFile = new File(uploadPath + File.separator + filename);
 
 	            try {
 	                file.transferTo(destFile);
 	                System.out.println("파일 저장 완료: " + destFile.getAbsolutePath());
+	                System.out.println("파일 길이(초): " + durations[i]); // duration 출력
 	            } catch (IOException e) {
 	                System.out.println("파일 저장 중 오류 발생: " + e.getMessage());
 	                return ResponseEntity.internalServerError().build();
 	            }
 	        }
-
-		
-        // files 배열을 반복하여 각 파일의 정보를 출력
-        for (MultipartFile file : files) {
-            System.out.println("파일 이름: " + file.getOriginalFilename());
-            System.out.println("파일 크기: " + file.getSize());
-            System.out.println("파일 경로: " + file.getResource());
-            // 여기에 추가적인 파일 처리 로직을 구현할 수 있습니다.
-        }
 
         return ResponseEntity.ok().build();
     }
