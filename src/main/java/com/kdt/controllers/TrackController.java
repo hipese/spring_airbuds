@@ -2,47 +2,51 @@ package com.kdt.controllers;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
+import org.apache.ibatis.annotations.Delete;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kdt.dto.TrackDTO;
+import com.kdt.services.TrackService;
+
 @RestController
 @RequestMapping("/api/track")
 public class TrackController {
 	
 	
+	@Autowired
+	TrackService tService;
+	
 	@PostMapping
     public ResponseEntity<Void> uploadMusic(@RequestParam("file") MultipartFile[] files, 
-    										@RequestParam("duration") String[] durations) {
-		
-//		음원 파일을 저장하는 부분
-		 File uploadPath=new File("c:/tracks");
-			
-			if(!uploadPath.exists()) {
-				uploadPath.mkdir();
-			}
-			
-		//나중에 중복된 파일 있을수도 있으니 그거 설정 알아서 ㄱ
-			for (int i = 0; i < files.length; i++) {
-	            MultipartFile file = files[i];
-	            String filename = file.getOriginalFilename();
-	            File destFile = new File(uploadPath + File.separator + filename);
-
-	            try {
-	                file.transferTo(destFile);
-	                System.out.println("파일 저장 완료: " + destFile.getAbsolutePath());
-	                System.out.println("파일 길이(초): " + durations[i]); // duration 출력
-	            } catch (IOException e) {
-	                System.out.println("파일 저장 중 오류 발생: " + e.getMessage());
-	                return ResponseEntity.internalServerError().build();
-	            }
-	        }
-
+    										@RequestParam("duration") String[] durations) throws Exception {
+		tService.insert(files,durations);
         return ResponseEntity.ok().build();
     }
+	
+	@GetMapping
+	public ResponseEntity<List<TrackDTO>> selectAll(){
+		List<TrackDTO> dtos=tService.selectAll();
+		return ResponseEntity.ok(dtos);
+	}
+	
+	@DeleteMapping("/{track_id}")
+	public ResponseEntity<Void> deleteByIdTrack(@PathVariable String track_id){
+		
+		System.out.println("이거 뭐로 받음: "+track_id);
+		tService.deleteByIdTrack(track_id);
+		return ResponseEntity.ok().build();
+	}
+	
 
 }
