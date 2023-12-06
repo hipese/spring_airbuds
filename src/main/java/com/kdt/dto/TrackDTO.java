@@ -9,12 +9,15 @@ public class TrackDTO {
 	private Long trackNumber;
 	private Time duration;
 	private String filePath;
+	private String imagePath;
+	private String viewCount;
 	
 	public TrackDTO() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public TrackDTO(Long trackId, Long albumId, String title, Long trackNumber, Time duration, String filePath) {
+	public TrackDTO(Long trackId, Long albumId, String title, Long trackNumber, Time duration, String filePath,
+			String imagePath, String viewCount) {
 		super();
 		this.trackId = trackId;
 		this.albumId = albumId;
@@ -22,6 +25,8 @@ public class TrackDTO {
 		this.trackNumber = trackNumber;
 		this.duration = duration;
 		this.filePath = filePath;
+		this.imagePath = imagePath;
+		this.viewCount = viewCount;
 	}
 	public Long getTrackId() {
 		return trackId;
@@ -59,5 +64,19 @@ public class TrackDTO {
 	public void setFilePath(String filePath) {
 		this.filePath = filePath;
 	}
+	public String getImagePath() {
+		return imagePath;
+	}
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
+	}
+	public String getViewCount() {
+		return viewCount;
+	}
+	public void setViewCount(String viewCount) {
+		this.viewCount = viewCount;
+	}
+	
+	
 	
 }
