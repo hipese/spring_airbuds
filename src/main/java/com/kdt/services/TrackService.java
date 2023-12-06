@@ -69,6 +69,32 @@ public class TrackService {
 		return dtos;
 	}
 	
+	public void deleteByIdTrack(String track_id) {
+		
+		Long realId=Long.parseLong(track_id);
+		
+//		실제 경로에 존재하는 음원 삭제
+		Track entity = tReop.findById(realId).orElse(null);
+		if (entity != null) {
+	        String filePath = "c:/tracks" + File.separator + entity.getFilePath();
+	        File fileToDelete = new File(filePath);
+
+	        if (fileToDelete.exists()) {
+	            boolean isDeleted = fileToDelete.delete();
+	            if (isDeleted) {
+	                System.out.println("파일 삭제 완료: " + filePath);
+	                tReop.deleteById(realId); // 데이터베이스에서 삭제
+	            } else {
+	                System.out.println("파일 삭제 실패: " + filePath);
+	            }
+	        } else {
+	            System.out.println("파일이 존재하지 않습니다: " + filePath);
+	        }
+	    } else {
+	        System.out.println("해당 ID의 트랙을 찾을 수 없습니다: " + realId);
+	    }
+	}
+	
 	// 초를 HH:mm:ss 형식의 문자열로 변환 (time 형태로 변환)
 	private String convertSecondsToTimeString(long seconds) {
 	    long hours = seconds / 3600;
