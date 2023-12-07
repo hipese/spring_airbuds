@@ -29,8 +29,18 @@ public class TrackController {
 	
 	@PostMapping
     public ResponseEntity<Void> uploadMusic(@RequestParam("file") MultipartFile[] files, 
-    										@RequestParam("duration") String[] durations) throws Exception {
-		tService.insert(files,durations);
+    										@RequestParam("duration") String[] durations,
+    										@RequestParam("image_path") String[] image_path,
+    										@RequestParam(value = "imagefile", required = false) MultipartFile[] imagefile,
+    										@RequestParam("writer") String[] writer,
+    										@RequestParam("tag") String[] tag) throws Exception {
+		
+
+//		System.out.println("image_path : "+image_path[0]+" writer : "+writer[0]+" tag : "+tag[0]);
+//		System.out.println("imagefile: "+ imagefile[0]);
+//		
+
+		tService.insert(files,durations,image_path,imagefile,writer,tag);
         return ResponseEntity.ok().build();
     }
 	
