@@ -1,10 +1,9 @@
 package com.kdt.controllers;
 
-import java.io.File;
-import java.io.IOException;
+
 import java.util.List;
 
-import org.apache.ibatis.annotations.Delete;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
 
 import com.kdt.dto.TrackDTO;
 import com.kdt.services.TrackService;
@@ -50,6 +50,8 @@ public class TrackController {
 		return ResponseEntity.ok(dtos);
 	}
 	
+	
+	
 	@DeleteMapping("/{track_id}")
 	public ResponseEntity<Void> deleteByIdTrack(@PathVariable String track_id){
 		
@@ -57,6 +59,7 @@ public class TrackController {
 		tService.deleteByIdTrack(track_id);
 		return ResponseEntity.ok().build();
 	}
+	
 	
 
 }
