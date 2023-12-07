@@ -32,7 +32,7 @@ public class Track {
 	private String filePath;
 	
 	@Column(name="view_count")
-	private String viewCount;
+	private Long viewCount;
 	
 	@Column(name="writer")
 	private String writer;
@@ -44,7 +44,7 @@ public class Track {
 	}
 
 	public Track(Long trackId, Long albumId, String title, Long trackNumber, Time duration, String filePath,
-			String viewCount, String writer) {
+			Long viewCount, String writer) {
 		super();
 		this.trackId = trackId;
 		this.albumId = albumId;
@@ -104,11 +104,11 @@ public class Track {
 		this.filePath = filePath;
 	}
 
-	public String getViewCount() {
+	public Long getViewCount() {
 		return viewCount;
 	}
 
-	public void setViewCount(String viewCount) {
+	public void setViewCount(Long viewCount) {
 		this.viewCount = viewCount;
 	}
 
@@ -119,7 +119,7 @@ public class Track {
 	public void setWriter(String writer) {
 		this.writer = writer;
 	}
-
 	
+
 	
 }

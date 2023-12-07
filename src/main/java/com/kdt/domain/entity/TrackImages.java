@@ -1,11 +1,13 @@
 package com.kdt.domain.entity;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
-public class TrackImage {
+@Entity
+public class TrackImages {
 	
 	@Id
 	@Column(name="image_id")
@@ -19,14 +21,14 @@ public class TrackImage {
 	private String imagePath;
 
 	
-	public TrackImage(Long imageId, Long trackId, String imagePath) {
+	public TrackImages(Long imageId, Long trackId, String imagePath) {
 		super();
 		this.imageId = imageId;
 		this.trackId = trackId;
 		this.imagePath = imagePath;
 	}
 
-	public TrackImage() {
+	public TrackImages() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
