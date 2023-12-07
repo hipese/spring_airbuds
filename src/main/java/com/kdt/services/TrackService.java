@@ -26,18 +26,18 @@ import jakarta.transaction.Transactional;
 public class TrackService {
 
 	@Autowired
-	TrackRepository tReop;
+	private TrackRepository tReop;
 	@Autowired
-	TrackTagRepository tagReop;
+	private TrackTagRepository tagReop;
 	@Autowired
-	TrackImageRepository imageReop;
+	private TrackImageRepository imageReop;
 
 	@Autowired
-	TrackMapper tMapper;
+	private TrackMapper tMapper;
 	@Autowired
-	TrackTagMapper tagMapper;
+	private TrackTagMapper tagMapper;
 	@Autowired
-	TrackImageMapper imageMapper;
+	private TrackImageMapper imageMapper;
 
 	@Transactional
 	public void insert(MultipartFile[] files, 
