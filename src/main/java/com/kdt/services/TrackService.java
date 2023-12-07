@@ -14,6 +14,8 @@ import com.kdt.dto.TrackDTO;
 import com.kdt.mappers.TrackMapper;
 import com.kdt.repositories.TrackRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class TrackService {
 	
@@ -23,14 +25,23 @@ public class TrackService {
 	@Autowired
 	TrackMapper tMapper;
 	
-	public void insert( MultipartFile[] files,String[] durations) throws Exception {
+	@Transactional
+	public void insert( MultipartFile[] files,String[] durations, String[] image_path) throws Exception {
 
 		// 음원 파일 저장
 		 	File uploadPath=new File("c:/tracks");
-			
+		 	File imagePath=new File("c:/tracks/image");
+		 	
 			if(!uploadPath.exists()) {
 				uploadPath.mkdir();
 			}
+			
+			if(!imagePath.exists()) {
+				imagePath.mkdir();
+			}
+			
+			String imagepath;
+			
 				
 			for (int i = 0; i < files.length; i++) {
 	            MultipartFile file = files[i];
