@@ -26,11 +26,11 @@ import jakarta.transaction.Transactional;
 public class TrackService {
 
 	@Autowired
-	private TrackRepository tReop;
+	private TrackRepository tRepo;
 	@Autowired
-	private TrackTagRepository tagReop;
+	private TrackTagRepository tagRepo;
 	@Autowired
-	private TrackImageRepository imageReop;
+	private TrackImageRepository imageRepo;
 
 	@Autowired
 	private TrackMapper tMapper;
@@ -82,13 +82,13 @@ public class TrackService {
 			dto.setViewCount(0L);
 			dto.setWriter(writer[0]);
 			System.out.println("저장하기 전");
-			savedTrack= tReop.save(tMapper.toEntity(dto));
+			savedTrack= tRepo.save(tMapper.toEntity(dto));
 			
 			for(int j = 0; j < tag.length; j++) {
 				TrackTagDTO tagdto=new TrackTagDTO();
 				tagdto.setTrackId(savedTrack.getTrackId());
 				tagdto.setTag(tag[j]);
-				tagReop.save(tagMapper.toEntity(tagdto));
+				tagRepo.save(tagMapper.toEntity(tagdto));
 			}
 			
 			File destFile = new File(uploadPath + File.separator + sys_filename);
@@ -109,13 +109,13 @@ public class TrackService {
 	        TrackImageDTO imagedto=new TrackImageDTO();
 	        imagedto.setTrackId(savedTrack.getTrackId());
 	        imagedto.setImagePath(sys_imageName);
-	        imageReop.save(imageMapper.toEntity(imagedto));
+	        imageRepo.save(imageMapper.toEntity(imagedto));
 	    }
 		
 	}
 
 	public List<TrackDTO> selectAll() {
-		List<Track> entity = tReop.findAll();
+		List<Track> entity = tRepo.findAll();
 		List<TrackDTO> dtos = tMapper.toDtoList(entity);
 		return dtos;
 	}
@@ -125,16 +125,20 @@ public class TrackService {
 		Long realId = Long.parseLong(track_id);
 
 //		실제 경로에 존재하는 음원 삭제
-		Track entity = tReop.findById(realId).orElse(null);
+		Track entity = tRepo.findById(realId).orElse(null);
+		
+		
 		if (entity != null) {
 			String filePath = "c:/tracks" + File.separator + entity.getFilePath();
 			File fileToDelete = new File(filePath);
+			
+//			이미지도 삭제하는 기능 넣어야 함
 
 			if (fileToDelete.exists()) {
 				boolean isDeleted = fileToDelete.delete();
 				if (isDeleted) {
 					System.out.println("파일 삭제 완료: " + filePath);
-					tReop.deleteById(realId); // 데이터베이스에서 삭제
+					tRepo.deleteById(realId); // 데이터베이스에서 삭제
 				} else {
 					System.out.println("파일 삭제 실패: " + filePath);
 				}
