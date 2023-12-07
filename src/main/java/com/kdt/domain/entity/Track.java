@@ -31,13 +31,20 @@ public class Track {
 	@Column(name="filePath")
 	private String filePath;
 	
+	@Column(name="view_count")
+	private Long viewCount;
+	
+	@Column(name="writer")
+	private String writer;
+	
 
 	public Track() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public Track(Long trackId, Long albumId, String title, Long trackNumber, Time duration, String filePath) {
+	public Track(Long trackId, Long albumId, String title, Long trackNumber, Time duration, String filePath,
+			Long viewCount, String writer) {
 		super();
 		this.trackId = trackId;
 		this.albumId = albumId;
@@ -45,6 +52,8 @@ public class Track {
 		this.trackNumber = trackNumber;
 		this.duration = duration;
 		this.filePath = filePath;
+		this.viewCount = viewCount;
+		this.writer = writer;
 	}
 
 	public Long getTrackId() {
@@ -94,8 +103,23 @@ public class Track {
 	public void setFilePath(String filePath) {
 		this.filePath = filePath;
 	}
+
+	public Long getViewCount() {
+		return viewCount;
+	}
+
+	public void setViewCount(Long viewCount) {
+		this.viewCount = viewCount;
+	}
+
+	public String getWriter() {
+		return writer;
+	}
+
+	public void setWriter(String writer) {
+		this.writer = writer;
+	}
 	
-	
-	
+
 	
 }
