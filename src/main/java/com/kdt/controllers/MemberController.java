@@ -27,7 +27,10 @@ public class MemberController {
 	@PostMapping("/verify/{code}")
 	public ResponseEntity<String> verify(@PathVariable String code) {
 		memberService.verifyMember(code);
-		return ResponseEntity.ok("success");
+		if(memberService.verifyMember(code)) {			
+			return ResponseEntity.ok("success");
+		}
+		return ResponseEntity.ok("fail");
 	}
 	
 	// 임시 비밀번호 전송하는
