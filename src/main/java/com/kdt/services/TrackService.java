@@ -40,11 +40,12 @@ public class TrackService {
 	private TrackImageMapper imageMapper;
 
 	@Transactional
-	public void insert(MultipartFile[] files, 
-					   String[] durations, 
-					   String[] image_path,
-					   MultipartFile[] imagefile, 
-					   String[] writer, 
+	public void insert(MultipartFile files, 
+			 		   String name,
+					   String durations, 
+					   String image_path,
+					   MultipartFile imagefile, 
+					   String writer, 
 					   String[] tag)
 			throws Exception {
 		
@@ -62,25 +63,26 @@ public class TrackService {
 			imagePath.mkdir();
 		}
 
-		for (int i = 0; i < files.length; i++) {
-			MultipartFile file = files[i];
+		if (files!=null) {
+			MultipartFile file = files;
+			
 			String filename = file.getOriginalFilename();
 			String sys_filename = UUID.randomUUID() + filename;
 			
 			// 문자열을 double로 변환하고 long으로 반올림
-			double durationDouble = Double.parseDouble(durations[i]);
+			double durationDouble = Double.parseDouble(durations);
 			long durationInSeconds = Math.round(durationDouble);
 			String timeString = convertSecondsToTimeString(durationInSeconds);
 			Time durationTime = Time.valueOf(timeString);
 
 			TrackDTO dto = new TrackDTO();
-			dto.setTitle(filename);
+			dto.setTitle(name);
 			dto.setAlbumId(null);
 			dto.setDuration(durationTime);
 			dto.setFilePath(sys_filename);
 			dto.setTrackNumber(0L);
 			dto.setViewCount(0L);
-			dto.setWriter(writer[0]);
+			dto.setWriter(writer);
 			System.out.println("저장하기 전");
 			savedTrack= tRepo.save(tMapper.toEntity(dto));
 			
@@ -96,15 +98,15 @@ public class TrackService {
 		}
 		
 		 // 이미지 파일 처리
-	    if (imagefile != null && imagefile.length > 0 && imagefile[0] != null) {
-	        MultipartFile imgFile = imagefile[0];
+	    if (imagefile != null) {
+	        MultipartFile imgFile = imagefile;
 	        String imageName = imgFile.getOriginalFilename();
 	        String sys_imageName = UUID.randomUUID().toString() + "_" + imageName;
 	        File destImageFile = new File(imagePath, sys_imageName);
 	        imgFile.transferTo(destImageFile);
 
 	        // 이미지 파일 경로 업데이트
-	        image_path[0] = sys_imageName;
+	        image_path = sys_imageName;
 	        
 	        TrackImageDTO imagedto=new TrackImageDTO();
 	        imagedto.setTrackId(savedTrack.getTrackId());
