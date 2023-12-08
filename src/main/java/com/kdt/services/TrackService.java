@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -120,16 +122,21 @@ public class TrackService {
 		return dtos;
 	}
 	
-
+	public List<TrackDTO> selectOne(List<Long> list) {
+		List<Track> entity = tRepo.findAllById(list);
+		List<TrackDTO>dtos = tMapper.toDtoList(entity);
+		return dtos;
+	}
+	
 	public List<TrackDTO> selectByWriter(String writer){
 		List<Track> entity = tRepo.findAllByWriterStartingWith(writer);
 		List<TrackDTO> dtos=tMapper.toDtoList(entity);
 		return dtos;
 	}
-
+	
 	public List<TrackDTO> recentAll() {
-		List<Track> entity = tRepo.findAllByOrderByTrackIdDesc();
-
+		Pageable pageable = PageRequest.of(0, 10);
+		List<Track> entity = tRepo.findAllByOrderByTrackIdDesc(pageable);
 		List<TrackDTO> dtos = tMapper.toDtoList(entity);
 		return dtos;
 	}
