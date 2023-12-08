@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import com.kdt.domain.entity.Track;
 
-@Repository
 public interface TrackRepository extends JpaRepository<Track, Long> {
 
 	List<Track> findAllByOrderByTrackIdDesc(Pageable pageable);

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import com.kdt.domain.entity.TrackTag;
 
-@Repository
 public interface TrackTagRepository extends JpaRepository<TrackTag, Long> {
-	List<TrackTag> findByTag(String tag);
+
 }

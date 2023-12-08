@@ -1,12 +1,12 @@
 package com.kdt.services;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.kdt.domain.entity.TrackTag;
+import com.kdt.dto.MusicTagDTO;
 import com.kdt.dto.TrackTagDTO;
 import com.kdt.mappers.TrackImageMapper;
 import com.kdt.mappers.TrackMapper;
@@ -32,11 +32,15 @@ public class TrackTagService {
 	@Autowired
 	private TrackImageMapper imageMapper;
 	
-	public List<Long> selectRomance() {
-	    List<TrackTag> romanceTags = tagRepo.findByTag("로맨틱한");
-	    List<Long> romanceTrackIds = romanceTags.stream()
-	                                            .map(TrackTag::getTrackId)
-	                                            .collect(Collectors.toList());
-	    return romanceTrackIds;
-	}
+//	public List<TrackTagDTO> selectTag(MusicTagDTO musicTag) {
+//		List<TrackTagDTO> result = new ArrayList<>();
+//		List<String> tagNames = musicTag.getTagName();
+//		 for (String tagName : tagNames) {
+//
+//	            List<TrackTagDTO> dtos = tagRepo.findByTagName(tagName); // 이 메소드는 TrackTagRepository에 구현되어야 한다.
+//	            result.addAll(dtos);
+//	        }
+//
+//	        return result;
+//	}
 }
