@@ -1,12 +1,16 @@
 package com.kdt.domain.entity;
 
 import java.sql.Time;
+import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Track {
@@ -37,6 +41,10 @@ public class Track {
 	@Column(name="writer")
 	private String writer;
 	
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name="track_id")
+	private Set<TrackImages> trackImages;
+	
 
 	public Track() {
 		super();
@@ -44,7 +52,7 @@ public class Track {
 	}
 
 	public Track(Long trackId, Long albumId, String title, Long trackNumber, Time duration, String filePath,
-			Long viewCount, String writer) {
+			Long viewCount, String writer, Set<TrackImages> trackImages) {
 		super();
 		this.trackId = trackId;
 		this.albumId = albumId;
@@ -54,6 +62,7 @@ public class Track {
 		this.filePath = filePath;
 		this.viewCount = viewCount;
 		this.writer = writer;
+		this.trackImages = trackImages;
 	}
 
 	public Long getTrackId() {
@@ -119,7 +128,15 @@ public class Track {
 	public void setWriter(String writer) {
 		this.writer = writer;
 	}
-	
 
+	public Set<TrackImages> getTrackImages() {
+		return trackImages;
+	}
+
+	public void setTrackImages(Set<TrackImages> trackImages) {
+		this.trackImages = trackImages;
+	}
+
+	
 	
 }

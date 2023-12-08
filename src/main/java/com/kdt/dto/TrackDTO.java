@@ -1,6 +1,7 @@
 package com.kdt.dto;
 
 import java.sql.Time;
+import java.util.Set;
 
 public class TrackDTO {
 	private Long trackId;
@@ -11,14 +12,14 @@ public class TrackDTO {
 	private String filePath;
 	private Long viewCount;
 	private String writer;
-	
+	private Set<TrackImageDTO> trackImages;
 	
 	public TrackDTO() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 	public TrackDTO(Long trackId, Long albumId, String title, Long trackNumber, Time duration, String filePath,
-			Long viewCount, String writer) {
+			Long viewCount, String writer, Set<TrackImageDTO> trackImages) {
 		super();
 		this.trackId = trackId;
 		this.albumId = albumId;
@@ -28,6 +29,7 @@ public class TrackDTO {
 		this.filePath = filePath;
 		this.viewCount = viewCount;
 		this.writer = writer;
+		this.trackImages = trackImages;
 	}
 	public Long getTrackId() {
 		return trackId;
@@ -77,9 +79,12 @@ public class TrackDTO {
 	public void setWriter(String writer) {
 		this.writer = writer;
 	}
-	
-	
-	
+	public Set<TrackImageDTO> getTrackImages() {
+		return trackImages;
+	}
+	public void setTrackImages(Set<TrackImageDTO> trackImages) {
+		this.trackImages = trackImages;
+	}
 	
 	
 }
