@@ -44,6 +44,24 @@ public class TrackController {
         return ResponseEntity.ok().build();
     }
 	
+	
+	@PostMapping("/multiUpload")
+    public ResponseEntity<Void> multiUpload(@RequestParam("file") MultipartFile[] files, 
+    										@RequestParam("name") String[] name, 
+    										@RequestParam("duration") String[] durations,
+    										@RequestParam("image_path") String[] image_path,
+    										@RequestParam(value = "imagefile", required = false) MultipartFile imagefile,
+    										@RequestParam("writer") String[] writer,
+    										@RequestParam("tag") String[] tag) throws Exception {
+		
+
+//		System.out.println("name: "+name[0]);
+
+
+//		tService.insert(files,name,durations,image_path,imagefile,writer,tag);
+        return ResponseEntity.ok().build();
+    }
+	
 	@GetMapping
 	public ResponseEntity<List<TrackDTO>> selectAll(){
 		List<TrackDTO> dtos=tService.selectAll();

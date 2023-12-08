@@ -117,9 +117,20 @@ public class TrackService {
 	    }
 		
 	}
+	
+	public void multiUpload(MultipartFile[] files, 
+	 		   String[] name,
+			   String[] durations, 
+			   String[] image_path,
+			   MultipartFile imagefile, 
+			   String[] writer, 
+			   String[] tag)
+	throws Exception{
+		
+	}
 
 	public List<TrackDTO> selectAll() {
-		List<Track> entity = tRepo.findAll();
+		List<Track> entity = tRepo.findAllByFetchJoin();
 		List<TrackDTO> dtos = tMapper.toDtoList(entity);
 		return dtos;
 	}
