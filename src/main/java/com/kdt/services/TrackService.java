@@ -4,6 +4,7 @@ import java.io.File;
 import java.sql.Time;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -119,6 +120,13 @@ public class TrackService {
 		List<TrackDTO> dtos = tMapper.toDtoList(entity);
 		return dtos;
 	}
+	
+	public List<String> selectByWriterfilepath(String writer){
+		List<Track> tracks  = tRepo.findAllByWriterStartingWith(writer);
+		return tracks.stream()
+                .map(Track::getFilePath)
+                .collect(Collectors.toList());
+	}
 
 	public void deleteByIdTrack(String track_id) {
 
@@ -132,7 +140,7 @@ public class TrackService {
 			String filePath = "c:/tracks" + File.separator + entity.getFilePath();
 			File fileToDelete = new File(filePath);
 			
-//			이미지도 삭제하는 기능 넣어야 함
+//			이미지도 삭제하는 기능 넣어야 함 만약
 
 			if (fileToDelete.exists()) {
 				boolean isDeleted = fileToDelete.delete();

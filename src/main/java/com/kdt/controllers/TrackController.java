@@ -50,12 +50,17 @@ public class TrackController {
 		return ResponseEntity.ok(dtos);
 	}
 	
-	
+	@GetMapping("/bywriter/{writer}")
+	public ResponseEntity<List<String>> selectByWriterfilepath(@PathVariable String writer){
+		
+		System.out.println("머로옴: "+writer );
+		List<String> filepath=tService.selectByWriterfilepath(writer);
+		return ResponseEntity.ok(filepath);
+	}
 	
 	@DeleteMapping("/{track_id}")
 	public ResponseEntity<Void> deleteByIdTrack(@PathVariable String track_id){
 		
-		System.out.println("이거 뭐로 받음: "+track_id);
 		tService.deleteByIdTrack(track_id);
 		return ResponseEntity.ok().build();
 	}
