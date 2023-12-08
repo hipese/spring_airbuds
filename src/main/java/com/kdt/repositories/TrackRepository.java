@@ -14,12 +14,12 @@ import com.kdt.domain.entity.Track;
 public interface TrackRepository extends JpaRepository<Track, Long> {
 
 	// fetch join 문법
-	@Query("select b from Track b join fetch b.trackImages")
+	@Query("select b from Track b left join fetch b.trackImages")
 	List<Track> findAllByFetchJoin();
 
 	List<Track> findAllByOrderByTrackIdDesc(Pageable pageable);
 
-	@Query("SELECT t FROM Track t JOIN FETCH t.trackImages WHERE t.writer LIKE CONCAT(:writer, '%')")
+	@Query("SELECT t FROM Track t left JOIN FETCH t.trackImages WHERE t.writer LIKE CONCAT(:writer, '%')")
 	List<Track> findAllByWriterStartingWith(@Param("writer") String writer);
 
 }
