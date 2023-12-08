@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kdt.dto.QnaAnswerDTO;
 import com.kdt.dto.QnaDTO;
+import com.kdt.services.QnaAnswerService;
 import com.kdt.services.QnaService;
 
 @RestController
@@ -21,6 +23,9 @@ public class QnAController {
 
 	@Autowired
 	private QnaService qService;
+	
+	@Autowired
+	private QnaAnswerService qaService;
 	
 	@PostMapping
 	public ResponseEntity<Void> getPost(@RequestBody QnaDTO dto){
@@ -31,6 +36,18 @@ public class QnAController {
 	@GetMapping
 	public ResponseEntity<List<QnaDTO>> selectAll(){
 		List<QnaDTO> list = qService.selectAll();
+		return ResponseEntity.ok(list);
+	}
+	
+	@PostMapping("/reply")
+	public ResponseEntity<Void> getReplyPost(@RequestBody QnaAnswerDTO dto){
+		qaService.insertAnswer(dto);
+		return ResponseEntity.ok().build();
+	}
+	
+	@GetMapping("/replylist/{seq}")
+	public ResponseEntity<List<QnaAnswerDTO>> getReplyList(@PathVariable Long seq){
+		List<QnaAnswerDTO> list = qaService.selectReplies(seq);
 		return ResponseEntity.ok(list);
 	}
 }
