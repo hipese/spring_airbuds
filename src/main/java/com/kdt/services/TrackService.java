@@ -120,8 +120,16 @@ public class TrackService {
 		return dtos;
 	}
 	
+
+	public List<TrackDTO> selectByWriter(String writer){
+		List<Track> entity = tRepo.findAllByWriterStartingWith(writer);
+		List<TrackDTO> dtos=tMapper.toDtoList(entity);
+		return dtos;
+	}
+
 	public List<TrackDTO> recentAll() {
 		List<Track> entity = tRepo.findAllByOrderByTrackIdDesc();
+
 		List<TrackDTO> dtos = tMapper.toDtoList(entity);
 		return dtos;
 	}
@@ -138,7 +146,7 @@ public class TrackService {
 			String filePath = "c:/tracks" + File.separator + entity.getFilePath();
 			File fileToDelete = new File(filePath);
 			
-//			이미지도 삭제하는 기능 넣어야 함
+//			이미지도 삭제하는 기능 넣어야 함 만약
 
 			if (fileToDelete.exists()) {
 				boolean isDeleted = fileToDelete.delete();
