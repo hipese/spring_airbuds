@@ -51,11 +51,11 @@ public class TrackController {
 	}
 	
 	@GetMapping("/bywriter/{writer}")
-	public ResponseEntity<List<String>> selectByWriterfilepath(@PathVariable String writer){
+	public ResponseEntity<List<TrackDTO>> selectByWriter(@PathVariable String writer){
 		
 		System.out.println("머로옴: "+writer );
-		List<String> filepath=tService.selectByWriterfilepath(writer);
-		return ResponseEntity.ok(filepath);
+		List<TrackDTO> dtos=tService.selectByWriter(writer);
+		return ResponseEntity.ok(dtos);
 	}
 	
 	@DeleteMapping("/{track_id}")

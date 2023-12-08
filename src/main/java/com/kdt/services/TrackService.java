@@ -4,7 +4,6 @@ import java.io.File;
 import java.sql.Time;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -121,11 +120,10 @@ public class TrackService {
 		return dtos;
 	}
 	
-	public List<String> selectByWriterfilepath(String writer){
-		List<Track> tracks  = tRepo.findAllByWriterStartingWith(writer);
-		return tracks.stream()
-                .map(Track::getFilePath)
-                .collect(Collectors.toList());
+	public List<TrackDTO> selectByWriter(String writer){
+		List<Track> entity = tRepo.findAllByWriterStartingWith(writer);
+		List<TrackDTO> dtos = tMapper.toDtoList(entity);
+		return dtos;
 	}
 
 	public void deleteByIdTrack(String track_id) {
