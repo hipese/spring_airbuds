@@ -120,8 +120,16 @@ public class TrackService {
 		return dtos;
 	}
 	
+
 	public List<TrackDTO> selectByWriter(String writer){
 		List<Track> entity = tRepo.findAllByWriterStartingWith(writer);
+		List<TrackDTO> dtos=tMapper.toDtoList(entity);
+		return dtos;
+	}
+
+	public List<TrackDTO> recentAll() {
+		List<Track> entity = tRepo.findAllByOrderByTrackIdDesc();
+
 		List<TrackDTO> dtos = tMapper.toDtoList(entity);
 		return dtos;
 	}

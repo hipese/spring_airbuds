@@ -50,11 +50,17 @@ public class TrackController {
 		return ResponseEntity.ok(dtos);
 	}
 	
+
 	@GetMapping("/bywriter/{writer}")
 	public ResponseEntity<List<TrackDTO>> selectByWriter(@PathVariable String writer){
-		
-		System.out.println("머로옴: "+writer );
 		List<TrackDTO> dtos=tService.selectByWriter(writer);
+		return ResponseEntity.ok(dtos);
+	}
+
+	@GetMapping("/recent")
+	public ResponseEntity<List<TrackDTO>> recentAll() {
+		List<TrackDTO> dtos=tService.recentAll();
+
 		return ResponseEntity.ok(dtos);
 	}
 	
