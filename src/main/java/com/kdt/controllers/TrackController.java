@@ -50,7 +50,11 @@ public class TrackController {
 		return ResponseEntity.ok(dtos);
 	}
 	
-	
+	@GetMapping("/recent")
+	public ResponseEntity<List<TrackDTO>> recentAll() {
+		List<TrackDTO> dtos=tService.recentAll();
+		return ResponseEntity.ok(dtos);
+	}
 	
 	@DeleteMapping("/{track_id}")
 	public ResponseEntity<Void> deleteByIdTrack(@PathVariable String track_id){

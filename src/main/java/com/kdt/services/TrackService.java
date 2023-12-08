@@ -119,6 +119,12 @@ public class TrackService {
 		List<TrackDTO> dtos = tMapper.toDtoList(entity);
 		return dtos;
 	}
+	
+	public List<TrackDTO> recentAll() {
+		List<Track> entity = tRepo.findAllByOrderByTrackIdDesc();
+		List<TrackDTO> dtos = tMapper.toDtoList(entity);
+		return dtos;
+	}
 
 	public void deleteByIdTrack(String track_id) {
 
