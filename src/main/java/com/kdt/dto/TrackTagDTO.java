@@ -16,6 +16,11 @@ public class TrackTagDTO {
 		this.trackId = trackId;
 		this.tag = tag;
 	}
+	
+	public TrackTagDTO(Long trackId) {
+		super();
+		this.trackId = trackId;
+	}
 	public Long getTagId() {
 		return tagId;
 	}
