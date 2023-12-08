@@ -50,16 +50,23 @@ public class TrackController {
 		return ResponseEntity.ok(dtos);
 	}
 	
+
+	@GetMapping("/bywriter/{writer}")
+	public ResponseEntity<List<TrackDTO>> selectByWriter(@PathVariable String writer){
+		List<TrackDTO> dtos=tService.selectByWriter(writer);
+		return ResponseEntity.ok(dtos);
+	}
+
 	@GetMapping("/recent")
 	public ResponseEntity<List<TrackDTO>> recentAll() {
 		List<TrackDTO> dtos=tService.recentAll();
+
 		return ResponseEntity.ok(dtos);
 	}
 	
 	@DeleteMapping("/{track_id}")
 	public ResponseEntity<Void> deleteByIdTrack(@PathVariable String track_id){
 		
-		System.out.println("이거 뭐로 받음: "+track_id);
 		tService.deleteByIdTrack(track_id);
 		return ResponseEntity.ok().build();
 	}
