@@ -90,8 +90,8 @@ public class TrackService {
 			
 			for(int j = 0; j < tag.length; j++) {
 				TrackTagDTO tagdto=new TrackTagDTO();
-				tagdto.setTrackId(savedTrack.getTrackId());
-				tagdto.setTag(tag[j]);
+//				tagdto.setTrackId(savedTrack.getTrackId());
+//				tagdto.setTag(tag[j]);
 				tagRepo.save(tagMapper.toEntity(tagdto));
 			}
 			
