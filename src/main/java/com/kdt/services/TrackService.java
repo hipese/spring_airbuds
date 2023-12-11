@@ -44,12 +44,9 @@ public class TrackService {
 
 	@Autowired
 	private TrackMapper tMapper;
-	@Autowired
-	private TrackTagMapper tagMapper;
+
 	@Autowired
 	private TrackImageMapper imageMapper;
-	@Autowired 
-	private MusicTagMapper musicMapper;
 
 
 	@Transactional
