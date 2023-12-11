@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kdt.dto.AlbumDTO;
 import com.kdt.mappers.AlbumMapper;
 import com.kdt.repositories.AlbumRepository;
 
@@ -30,7 +31,12 @@ public class AlbumService {
 		
 		File imagePath = new File("c:/tracks/image");
 		
+		if (!imagePath.exists()) {
+			imagePath.mkdir();
+		}
 		
+		AlbumDTO adto=new AlbumDTO();
+		adto.setTitle(releaseDate);
 		
 		
 	}
