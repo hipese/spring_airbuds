@@ -11,4 +11,6 @@ import com.kdt.domain.entity.TrackTag;
 public interface TrackTagRepository extends JpaRepository<TrackTag, Long> {
 	@EntityGraph(attributePaths = {"track","musicTags","track.trackImages"})
     List<TrackTag> findByMusicTags_tagId(Long tag);
+
+	
 }

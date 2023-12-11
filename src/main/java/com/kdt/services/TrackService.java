@@ -2,7 +2,9 @@ package com.kdt.services;
 
 import java.io.File;
 import java.sql.Time;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,13 +13,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kdt.domain.entity.MusicTags;
 import com.kdt.domain.entity.Track;
+import com.kdt.domain.entity.TrackTag;
 import com.kdt.dto.TrackDTO;
 import com.kdt.dto.TrackImageDTO;
 import com.kdt.dto.TrackTagDTO;
+import com.kdt.mappers.MusicTagMapper;
 import com.kdt.mappers.TrackImageMapper;
 import com.kdt.mappers.TrackMapper;
 import com.kdt.mappers.TrackTagMapper;
+import com.kdt.repositories.MusicTagRepository;
 import com.kdt.repositories.TrackImageRepository;
 import com.kdt.repositories.TrackRepository;
 import com.kdt.repositories.TrackTagRepository;
@@ -33,6 +39,8 @@ public class TrackService {
 	private TrackTagRepository tagRepo;
 	@Autowired
 	private TrackImageRepository imageRepo;
+	@Autowired 
+	private MusicTagRepository musicReop;
 
 	@Autowired
 	private TrackMapper tMapper;
@@ -40,6 +48,9 @@ public class TrackService {
 	private TrackTagMapper tagMapper;
 	@Autowired
 	private TrackImageMapper imageMapper;
+	@Autowired 
+	private MusicTagMapper musicMapper;
+
 
 	@Transactional
 	public void insert(MultipartFile files, 
@@ -85,15 +96,27 @@ public class TrackService {
 			dto.setTrackNumber(0L);
 			dto.setViewCount(0L);
 			dto.setWriter(writer);
-			System.out.println("저장하기 전");
-			savedTrack= tRepo.save(tMapper.toEntity(dto));
+			
+			Track entity= tMapper.toEntity(dto);
+			Set<TrackTag> trackTags = new HashSet<>();
 			
 			for(int j = 0; j < tag.length; j++) {
-				TrackTagDTO tagdto=new TrackTagDTO();
-//				tagdto.setTrackId(savedTrack.getTrackId());
-//				tagdto.setTag(tag[j]);
-				tagRepo.save(tagMapper.toEntity(tagdto));
+				System.out.println("MuiscTag에서 id 값: "+tag[j]);
+
+//				muisctag에 존재하는 tag와 알맞은 값
+				MusicTags musictag=musicReop.findById(Long.parseLong(tag[j])).get();
+				
+				TrackTag tracktag=new TrackTag();
+				tracktag.setMusicTags(musictag);
+				tracktag.setTrack(entity);
+				
+//				값을 샛팅한 후 저장
+				tagRepo.save(tracktag);
+				trackTags.add(tracktag);
 			}
+			
+			entity.setTrackTags(trackTags);
+			savedTrack= tRepo.save(entity);
 			
 			File destFile = new File(uploadPath + File.separator + sys_filename);
 			file.transferTo(destFile);

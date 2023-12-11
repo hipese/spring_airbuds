@@ -41,7 +41,6 @@ public class TrackController {
 //		System.out.println("name: "+name);
 //		System.out.println(releaseDate);
 
-
 		tService.insert(files,name,durations,image_path,imagefile,writer,tag);
         return ResponseEntity.ok().build();
     }
@@ -55,7 +54,7 @@ public class TrackController {
     										@RequestParam("releaseDate") String releaseDate,
     										@RequestParam(value = "imagefile", required = false) MultipartFile imagefile,
     										@RequestParam("writer") String[] writer,
-    										@RequestParam(value="tag", required = false) String[] tag) throws Exception {
+    										@RequestParam(value="tag", required = false) Long[] tag) throws Exception {
 		
 
 //		System.out.println("name: "+name[0]+"이거 다음행 날짜값 나와야함");
