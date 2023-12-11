@@ -83,7 +83,6 @@ public class TrackController {
 	@GetMapping("/recent")
 	public ResponseEntity<List<TrackDTO>> recentAll() {
 		List<TrackDTO> dtos=tService.recentAll();
-
 		return ResponseEntity.ok(dtos);
 	}
 	
