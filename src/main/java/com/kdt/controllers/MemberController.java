@@ -1,12 +1,17 @@
 package com.kdt.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kdt.dto.MemberDTO;
+import com.kdt.dto.RegisterDTO;
 import com.kdt.services.MemberService;
 
 @RestController
@@ -39,4 +44,21 @@ public class MemberController {
 //		memberService.sendTemporaryPasswordEmail(email);
 //		return ResponseEntity.ok("success");
 //	}
+	
+	@PostMapping("/checkID")
+	public ResponseEntity<Boolean> checkID(@RequestBody MemberDTO dto) {
+		return ResponseEntity.ok(memberService.isDupleID(dto.getId()));
+	}
+	
+	@PostMapping("/register")
+	public ResponseEntity<Void> register(@RequestBody MemberDTO dto) {
+		try {
+			memberService.register(dto);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.ok().build();
+	}
+	
 }
