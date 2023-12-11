@@ -1,83 +1,59 @@
 package com.kdt.domain.entity;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class TrackTag {
 	
 	@Id
-	@Column(name="tag_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long tagId ;
+	private Long id ;
 	
-	@Column(name="track_id")
-	private Long trackId;
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="track_id")
+	private Track track;
 	
-	@Column(name="tag")
-	private String tag;
-	
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(
-	    name="track_track_tag",
-	    joinColumns = @JoinColumn(name="tag_id"), // track의 고유 Primary Key값
-	    inverseJoinColumns = @JoinColumn(name="track_id") // 내 Primary Key
-	)
-	private Set<Track> track = new HashSet<>();
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="tag_id")
+	private MusicTags musicTags;
 
-	public Long getTagId() {
-		return tagId;
+	public Long getId() {
+		return id;
 	}
 
-	public void setTagId(Long tagId) {
-		this.tagId = tagId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
-	public Long getTrackId() {
-		return trackId;
-	}
-
-	public void setTrackId(Long trackId) {
-		this.trackId = trackId;
-	}
-
-	public String getTag() {
-		return tag;
-	}
-
-	public void setTag(String tag) {
-		this.tag = tag;
-	}
-
-	public Set<Track> getTrack() {
+	public Track getTrack() {
 		return track;
 	}
 
-	public void setTrack(Set<Track> track) {
+	public void setTrack(Track track) {
 		this.track = track;
 	}
 
-	public TrackTag(Long tagId, Long trackId, String tag, Set<Track> track) {
-		super();
-		this.tagId = tagId;
-		this.trackId = trackId;
-		this.tag = tag;
+	public MusicTags getMusicTags() {
+		return musicTags;
+	}
+
+	public void setMusicTags(MusicTags musicTags) {
+		this.musicTags = musicTags;
+	}
+
+	public TrackTag(Long id, Track track, MusicTags musicTags) {
+		this.id = id;
 		this.track = track;
+		this.musicTags = musicTags;
 	}
 
 	public TrackTag() {
-		super();
 	}
 	
 	

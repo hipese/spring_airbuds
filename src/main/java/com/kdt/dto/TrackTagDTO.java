@@ -7,54 +7,34 @@ import com.kdt.domain.entity.TrackImages;
 
 public class TrackTagDTO {
 
-	private Long tagId;
-	private Long trackId;
-	private String tag;
-	private Set<Track> track;
-	private Set<TrackImages> trackImages;
-	public Long getTagId() {
-		return tagId;
+	private Long id;
+	private TrackDTO track;
+	private MusicTagDTO musicTags;
+	public Long getId() {
+		return id;
 	}
-	public void setTagId(Long tagId) {
-		this.tagId = tagId;
+	public void setId(Long id) {
+		this.id = id;
 	}
-	public Long getTrackId() {
-		return trackId;
-	}
-	public void setTrackId(Long trackId) {
-		this.trackId = trackId;
-	}
-	public String getTag() {
-		return tag;
-	}
-	public void setTag(String tag) {
-		this.tag = tag;
-	}
-	public Set<Track> getTrack() {
+	public TrackDTO getTrack() {
 		return track;
 	}
-	public void setTrack(Set<Track> track) {
+	public void setTrack(TrackDTO track) {
 		this.track = track;
 	}
-	public Set<TrackImages> getTrackImages() {
-		return trackImages;
+	public MusicTagDTO getMusicTags() {
+		return musicTags;
 	}
-	public void setTrackImages(Set<TrackImages> trackImages) {
-		this.trackImages = trackImages;
+	public void setMusicTags(MusicTagDTO musicTags) {
+		this.musicTags = musicTags;
 	}
-	public TrackTagDTO(Long tagId, Long trackId, String tag, Set<Track> track, Set<TrackImages> trackImages) {
-		super();
-		this.tagId = tagId;
-		this.trackId = trackId;
-		this.tag = tag;
+	public TrackTagDTO(Long id, TrackDTO track, MusicTagDTO musicTags) {
+		this.id = id;
 		this.track = track;
-		this.trackImages = trackImages;
+		this.musicTags = musicTags;
 	}
 	public TrackTagDTO() {
-		super();
 	}
-	
-	
 	
 	
 }

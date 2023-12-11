@@ -47,7 +47,7 @@ public class Track {
 	@JoinColumn(name="track_id")
 	private Set<TrackImages> trackImages;
 
-	@ManyToMany(mappedBy = "track")
+	@OneToMany(mappedBy="track")
 	private Set<TrackTag> trackTags = new HashSet<>();
 
 	public Long getTrackId() {
