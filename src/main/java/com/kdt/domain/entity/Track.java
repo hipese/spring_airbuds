@@ -48,7 +48,6 @@ public class Track {
 
 	public Track() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public Track(Long trackId, Long albumId, String title, Long trackNumber, Time duration, String filePath,
