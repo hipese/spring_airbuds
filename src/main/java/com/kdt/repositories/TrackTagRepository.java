@@ -3,10 +3,10 @@ package com.kdt.repositories;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.Query;
 
 import com.kdt.domain.entity.TrackTag;
 
 public interface TrackTagRepository extends JpaRepository<TrackTag, Long> {
-
+    List<TrackTag> findByTag(String tag);
 }

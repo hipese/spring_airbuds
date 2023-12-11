@@ -3,6 +3,8 @@ package com.kdt.dto;
 import java.sql.Time;
 import java.util.Set;
 
+import com.kdt.domain.entity.TrackTag;
+
 public class TrackDTO {
 	private Long trackId;
 	private Long albumId;
@@ -12,25 +14,8 @@ public class TrackDTO {
 	private String filePath;
 	private Long viewCount;
 	private String writer;
+	private Set<TrackTag> trackTag;
 	private Set<TrackImageDTO> trackImages;
-	
-	public TrackDTO() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-	public TrackDTO(Long trackId, Long albumId, String title, Long trackNumber, Time duration, String filePath,
-			Long viewCount, String writer, Set<TrackImageDTO> trackImages) {
-		super();
-		this.trackId = trackId;
-		this.albumId = albumId;
-		this.title = title;
-		this.trackNumber = trackNumber;
-		this.duration = duration;
-		this.filePath = filePath;
-		this.viewCount = viewCount;
-		this.writer = writer;
-		this.trackImages = trackImages;
-	}
 	public Long getTrackId() {
 		return trackId;
 	}
@@ -79,11 +64,34 @@ public class TrackDTO {
 	public void setWriter(String writer) {
 		this.writer = writer;
 	}
+	public Set<TrackTag> getTrackTag() {
+		return trackTag;
+	}
+	public void setTrackTag(Set<TrackTag> trackTag) {
+		this.trackTag = trackTag;
+	}
 	public Set<TrackImageDTO> getTrackImages() {
 		return trackImages;
 	}
 	public void setTrackImages(Set<TrackImageDTO> trackImages) {
 		this.trackImages = trackImages;
+	}
+	public TrackDTO(Long trackId, Long albumId, String title, Long trackNumber, Time duration, String filePath,
+			Long viewCount, String writer, Set<TrackTag> trackTag, Set<TrackImageDTO> trackImages) {
+		super();
+		this.trackId = trackId;
+		this.albumId = albumId;
+		this.title = title;
+		this.trackNumber = trackNumber;
+		this.duration = duration;
+		this.filePath = filePath;
+		this.viewCount = viewCount;
+		this.writer = writer;
+		this.trackTag = trackTag;
+		this.trackImages = trackImages;
+	}
+	public TrackDTO() {
+		super();
 	}
 	
 	
