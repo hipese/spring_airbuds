@@ -28,7 +28,7 @@ public class AlbumController {
 											@RequestParam(value="tag", required = false) String[] tag,
 											@RequestParam("albumTitle") String albumTitle){
 		
-//		System.out.println(order[0]+"|||"+order[1]);
+
 		System.out.println(albumTitle);
 		
 //		aService.insert(files,name,durations,image_path,releaseDate,imagefile,writer);
