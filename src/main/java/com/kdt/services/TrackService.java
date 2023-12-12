@@ -2,6 +2,7 @@ package com.kdt.services;
 
 import java.io.File;
 import java.sql.Time;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,11 +19,8 @@ import com.kdt.domain.entity.Track;
 import com.kdt.domain.entity.TrackTag;
 import com.kdt.dto.TrackDTO;
 import com.kdt.dto.TrackImageDTO;
-import com.kdt.dto.TrackTagDTO;
-import com.kdt.mappers.MusicTagMapper;
 import com.kdt.mappers.TrackImageMapper;
 import com.kdt.mappers.TrackMapper;
-import com.kdt.mappers.TrackTagMapper;
 import com.kdt.repositories.MusicTagRepository;
 import com.kdt.repositories.TrackImageRepository;
 import com.kdt.repositories.TrackRepository;
@@ -86,7 +84,8 @@ public class TrackService {
 			long durationInSeconds = Math.round(durationDouble);
 			String timeString = convertSecondsToTimeString(durationInSeconds);
 			Time durationTime = Time.valueOf(timeString);
-
+			
+		
 			TrackDTO dto = new TrackDTO();
 			dto.setTitle(name);
 			dto.setAlbumId(null);
@@ -95,6 +94,8 @@ public class TrackService {
 			dto.setTrackNumber(0L);
 			dto.setViewCount(0L);
 			dto.setWriter(writer);
+			dto.setReleaseDate(Instant.parse(releaseDate));
+			dto.setWriteId(loginId);
 			
 			Track entity= tMapper.toEntity(dto);
 			Set<TrackTag> trackTags = new HashSet<>();
@@ -165,6 +166,13 @@ public class TrackService {
 	
 	public List<TrackDTO> selectByWriter(String writer){
 		List<Track> entity = tRepo.findAllByWriterStartingWith(writer);
+		List<TrackDTO> dtos=tMapper.toDtoList(entity);
+		return dtos;
+	}
+	
+	
+	public List<TrackDTO> selectfindById(String write_id){
+		List<Track> entity = tRepo.findAllByWriterIdStartingWith(write_id);
 		List<TrackDTO> dtos=tMapper.toDtoList(entity);
 		return dtos;
 	}

@@ -40,8 +40,8 @@ public class TrackController {
 		
 
 //		System.out.println("name: "+name);
-//		System.out.println(releaseDate);
-		System.out.println("로그인 아이디"+loginId);
+		System.out.println(releaseDate);
+//		System.out.println("로그인 아이디"+loginId);
 		
 		tService.insert(files,name,durations,image_path,imagefile,writer,tag,releaseDate,loginId);
         return ResponseEntity.ok().build();
@@ -78,6 +78,12 @@ public class TrackController {
 	@GetMapping("/bywriter/{writer}")
 	public ResponseEntity<List<TrackDTO>> selectByWriter(@PathVariable String writer){
 		List<TrackDTO> dtos=tService.selectByWriter(writer);
+		return ResponseEntity.ok(dtos);
+	}
+	
+	@GetMapping("/findById/{write_id}")
+	public ResponseEntity<List<TrackDTO>> selectfindById(@PathVariable String write_id){
+		List<TrackDTO> dtos=tService.selectfindById(write_id);
 		return ResponseEntity.ok(dtos);
 	}
 

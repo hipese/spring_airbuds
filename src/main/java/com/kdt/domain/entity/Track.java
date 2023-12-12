@@ -1,6 +1,7 @@
 package com.kdt.domain.entity;
 
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -49,6 +50,12 @@ public class Track {
 
 	@OneToMany(mappedBy="track")
 	private Set<TrackTag> trackTags = new HashSet<>();
+	
+	@Column(name="release_date")
+	private Timestamp releaseDate;
+	
+	@Column(name="write_id")
+	private String writeId;
 
 	public Long getTrackId() {
 		return trackId;
@@ -130,8 +137,25 @@ public class Track {
 		this.trackTags = trackTags;
 	}
 
+	public Timestamp getReleaseDate() {
+		return releaseDate;
+	}
+
+	public void setReleaseDate(Timestamp releaseDate) {
+		this.releaseDate = releaseDate;
+	}
+
+	public String getWriteId() {
+		return writeId;
+	}
+
+	public void setWriteId(String writeId) {
+		this.writeId = writeId;
+	}
+
 	public Track(Long trackId, Long albumId, String title, Long trackNumber, Time duration, String filePath,
-			Long viewCount, String writer, Set<TrackImages> trackImages, Set<TrackTag> trackTags) {
+			Long viewCount, String writer, Set<TrackImages> trackImages, Set<TrackTag> trackTags, Timestamp releaseDate,
+			String writeId) {
 		super();
 		this.trackId = trackId;
 		this.albumId = albumId;
@@ -143,12 +167,13 @@ public class Track {
 		this.writer = writer;
 		this.trackImages = trackImages;
 		this.trackTags = trackTags;
+		this.releaseDate = releaseDate;
+		this.writeId = writeId;
 	}
 
 	public Track() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 	
-	
-
-
 }
