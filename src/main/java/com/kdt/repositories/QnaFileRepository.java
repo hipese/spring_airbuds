@@ -1,3 +1,4 @@
+
 package com.kdt.repositories;
 
 import java.util.List;
@@ -12,3 +13,4 @@ public interface QnaFileRepository extends JpaRepository<QnaFile, Long>{
 	@Query("select q from QnaFile q where q.parentSeq = ?1%")
 	List<QnaFile> selectAllByParentSeq(Long seq);
 }
+

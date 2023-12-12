@@ -35,13 +35,15 @@ public class TrackController {
     										@RequestParam("releaseDate") String releaseDate,
     										@RequestParam(value = "imagefile", required = false) MultipartFile imagefile,
     										@RequestParam("writer") String writer,
-    										@RequestParam(value="tag", required = false) String[] tag) throws Exception {
+    										@RequestParam(value="tag", required = false) Long[] tag,
+    										@RequestParam("login") String loginId) throws Exception {
 		
 
 //		System.out.println("name: "+name);
 //		System.out.println(releaseDate);
-
-		tService.insert(files,name,durations,image_path,imagefile,writer,tag);
+		System.out.println("로그인 아이디"+loginId);
+		
+		tService.insert(files,name,durations,image_path,imagefile,writer,tag,releaseDate,loginId);
         return ResponseEntity.ok().build();
     }
 	
