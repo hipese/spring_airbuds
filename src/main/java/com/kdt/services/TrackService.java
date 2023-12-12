@@ -56,7 +56,9 @@ public class TrackService {
 					   String image_path,
 					   MultipartFile imagefile, 
 					   String writer, 
-					   String[] tag)
+					   Long[] tag,
+					   String releaseDate,
+					   String loginId)
 			throws Exception {
 		
 		Track savedTrack = null;
@@ -101,7 +103,7 @@ public class TrackService {
 				System.out.println("MuiscTag에서 id 값: "+tag[j]);
 
 //				muisctag에 존재하는 tag와 알맞은 값
-				MusicTags musictag=musicReop.findById(Long.parseLong(tag[j])).get();
+				MusicTags musictag=musicReop.findById(tag[j]).get();
 				
 				TrackTag tracktag=new TrackTag();
 				tracktag.setMusicTags(musictag);

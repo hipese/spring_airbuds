@@ -1,3 +1,4 @@
+
 package com.kdt.domain.entity;
 
 import jakarta.persistence.Column;
@@ -69,3 +70,6 @@ public class QnaFile {
 	
 	
 }
+
+
+
