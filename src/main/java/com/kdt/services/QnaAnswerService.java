@@ -36,4 +36,10 @@ public class QnaAnswerService {
 		qnaRepo.delete(qa);
 	}
 	
+	public void updateAnswer(QnaAnswerDTO dto) {
+		QnaAnswer qa = qnaRepo.findById(dto.getAnswerSeq()).get();
+		qnaMapper.updateEntityFromDto(dto, qa);
+		qnaRepo.save(qa);
+	}
+	
 }

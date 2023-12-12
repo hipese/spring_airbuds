@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -81,7 +82,7 @@ public class QnAController {
 	
 	@DeleteMapping("/delete/{seq}")
 	public ResponseEntity<String> deletePost(@PathVariable Long seq) throws Exception{
-		qService.deletePost(seq);		
+		qService.deletePost(seq);	
 		return ResponseEntity.ok().build();
 	}
 	
@@ -90,4 +91,12 @@ public class QnAController {
 		qaService.deleteAnswer(seq);
 		return ResponseEntity.ok().build();
 	}
+	
+	@PutMapping("/{seq}")
+	public ResponseEntity<String> updateAnswer(@PathVariable Long seq, @RequestBody QnaAnswerDTO dto){
+		System.out.println(dto.getAnswerSeq()+" "+dto.getQnaSeq()+" "+dto.getAnswerWriter()+" "+dto.getAnswerContents());
+		qaService.updateAnswer(dto);
+		return ResponseEntity.ok().build();
+	}
+	
 }
