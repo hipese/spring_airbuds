@@ -1,16 +1,20 @@
 package com.kdt.controllers;
 
+import java.time.Instant;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kdt.dto.QnaAnswerDTO;
 import com.kdt.dto.QnaDTO;
@@ -28,10 +32,29 @@ public class QnAController {
 	private QnaAnswerService qaService;
 	
 	@PostMapping
-	public ResponseEntity<Void> getPost(@RequestBody QnaDTO dto){
-		qService.getPost(dto);
+	public ResponseEntity<Void> getPost(@RequestParam("files") MultipartFile[] files,
+										@RequestParam("qnaContents") String contents,
+										@RequestParam("qnaWriter") String writer,
+										@RequestParam("qnaTitle") String title,
+										@RequestParam("qnaWriteDate") Instant write_date ,
+										@RequestParam("qnaAnswerState") Long state,
+										@RequestParam("qnaPublic") Long isPublic,
+										@RequestParam("qnaCategory") String category) throws Exception{
+		QnaDTO dto = new QnaDTO();
+		dto.setQnaSeq(0L);
+		dto.setQnaTitle(title);
+		dto.setQnaContents(contents);
+		dto.setQnaWriter(writer);
+		dto.setQnaWriteDate(write_date);
+		dto.setQnaAnswerState(state);
+		dto.setQnaPublic(isPublic);
+		dto.setQnaCategory(category);
+		
+		System.out.println(files[0].getOriginalFilename());
+		qService.getPost(dto, files);
+		
 		return ResponseEntity.ok().build();
-	}
+	}	
 	
 	@GetMapping
 	public ResponseEntity<List<QnaDTO>> selectAll(){
@@ -49,5 +72,23 @@ public class QnAController {
 	public ResponseEntity<List<QnaAnswerDTO>> getReplyList(@PathVariable Long seq){
 		List<QnaAnswerDTO> list = qaService.selectReplies(seq);
 		return ResponseEntity.ok(list);
+	}
+	
+	@GetMapping("/contents/{seq}")
+	public ResponseEntity<QnaDTO> getContents(@PathVariable Long seq) throws Exception{
+		QnaDTO dto = qService.getContents(seq);
+		return ResponseEntity.ok(dto);
+	}
+	
+	@DeleteMapping("/delete/{seq}")
+	public ResponseEntity<String> deletePost(@PathVariable Long seq) throws Exception{
+		//File Delete
+		qService.deletePost(seq);
+		//Reply Delete
+		
+		//Post Delete
+		
+		
+		return ResponseEntity.ok().build();
 	}
 }

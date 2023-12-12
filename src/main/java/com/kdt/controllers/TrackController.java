@@ -28,19 +28,43 @@ public class TrackController {
 	TrackService tService;
 	
 	@PostMapping
-    public ResponseEntity<Void> uploadMusic(@RequestParam("file") MultipartFile[] files, 
-    										@RequestParam("duration") String[] durations,
-    										@RequestParam("image_path") String[] image_path,
-    										@RequestParam(value = "imagefile", required = false) MultipartFile[] imagefile,
-    										@RequestParam("writer") String[] writer,
-    										@RequestParam("tag") String[] tag) throws Exception {
+    public ResponseEntity<Void> uploadMusic(@RequestParam("file") MultipartFile files, 
+    										@RequestParam("name") String name, 
+    										@RequestParam("duration") String durations,
+    										@RequestParam("image_path") String image_path,
+    										@RequestParam("releaseDate") String releaseDate,
+    										@RequestParam(value = "imagefile", required = false) MultipartFile imagefile,
+    										@RequestParam("writer") String writer,
+    										@RequestParam(value="tag", required = false) Long[] tag,
+    										@RequestParam("login") String loginId) throws Exception {
 		
 
-//		System.out.println("image_path : "+image_path[0]+" writer : "+writer[0]+" tag : "+tag[0]);
-//		System.out.println("imagefile: "+ imagefile[0]);
-//		
+//		System.out.println("name: "+name);
+//		System.out.println(releaseDate);
+		System.out.println("로그인 아이디"+loginId);
+		
+		tService.insert(files,name,durations,image_path,imagefile,writer,tag,releaseDate,loginId);
+        return ResponseEntity.ok().build();
+    }
+	
+	
+	@PostMapping("/multiUpload")
+    public ResponseEntity<Void> multiUpload(@RequestParam("file") MultipartFile[] files, 
+    										@RequestParam("name") String[] name, 
+    										@RequestParam("duration") String[] durations,
+    										@RequestParam("image_path") String[] image_path,
+    										@RequestParam("releaseDate") String releaseDate,
+    										@RequestParam(value = "imagefile", required = false) MultipartFile imagefile,
+    										@RequestParam("writer") String[] writer,
+    										@RequestParam(value="tag", required = false) Long[] tag) throws Exception {
+		
 
-		tService.insert(files,durations,image_path,imagefile,writer,tag);
+//		System.out.println("name: "+name[0]+"이거 다음행 날짜값 나와야함");
+//		System.out.println(releaseDate);
+//		System.out.println(tag);
+
+
+//		tService.insertAlbum(files,name,durations,image_path,releaseDate,imagefile,writer,playlist);
         return ResponseEntity.ok().build();
     }
 	
@@ -60,7 +84,6 @@ public class TrackController {
 	@GetMapping("/recent")
 	public ResponseEntity<List<TrackDTO>> recentAll() {
 		List<TrackDTO> dtos=tService.recentAll();
-
 		return ResponseEntity.ok(dtos);
 	}
 	
