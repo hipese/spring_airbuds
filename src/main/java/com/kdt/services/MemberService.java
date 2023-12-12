@@ -2,6 +2,7 @@ package com.kdt.services;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -10,12 +11,15 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.kdt.domain.entity.Member;
+import com.kdt.dto.MemberDTO;
+import com.kdt.mappers.MemberMapper;
 import com.kdt.repositories.MemberRepository;
 import com.kdt.security.SecurityUser;
 
@@ -24,21 +28,27 @@ import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMessage.RecipientType;
 
 @Service
-public class MemberService implements UserDetailsService {
+public class MemberService implements UserDetailsService{
 
 	@Autowired
 	private MemberRepository mRepo;
+	
+	@Autowired
+	private MemberMapper mMapper;
 	
 	@Autowired
 	private JavaMailSender javaMailSender;
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Member m= mRepo.findById(username).get();
+		System.out.println("In UserDetails : " + username);
+		Member m = mRepo.findById(username).get();
 		SecurityUser su =new SecurityUser(m);
 		su.setName(m.getName());
 		return su;
 	}
+	
+	
 
 	@Transactional
 	public void sendVerificationEmail(String email) {
@@ -192,5 +202,24 @@ public class MemberService implements UserDetailsService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public boolean isDupleID(String id) {
+		Optional<Member> m = mRepo.findById(id);
+		if(m.isEmpty())
+			return false;
+		else 
+			return true;
+	}
+	
+	public void register(MemberDTO dto) throws Exception {
+		dto.setPassword(new BCryptPasswordEncoder().encode(dto.getPassword()));
+		dto.setRole("ROLE_MEMBER");
+		dto.setEnabled(true);
+		
+		System.out.println(dto.getId() + dto.getName() + dto.getContact() + dto.getBirth());
+		
+		Member m = mMapper.toEntity(dto);
+		mRepo.save(m);
 	}
 }

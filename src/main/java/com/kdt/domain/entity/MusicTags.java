@@ -1,10 +1,14 @@
 package com.kdt.domain.entity;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class MusicTags {
@@ -20,18 +24,8 @@ public class MusicTags {
 	@Column(name="base")
 	private String base;
 
-	
-	public MusicTags() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
-	public MusicTags(Long tagId, String tagName, String base) {
-		super();
-		this.tagId = tagId;
-		this.tagName = tagName;
-		this.base = base;
-	}
+	@OneToMany(mappedBy ="musicTags")
+	private Set<TrackTag> trackTags = new HashSet<>();
 
 	public Long getTagId() {
 		return tagId;
@@ -56,8 +50,24 @@ public class MusicTags {
 	public void setBase(String base) {
 		this.base = base;
 	}
-	
-	
+
+	public Set<TrackTag> getTrackTags() {
+		return trackTags;
+	}
+
+	public void setTrackTags(Set<TrackTag> trackTags) {
+		this.trackTags = trackTags;
+	}
+
+	public MusicTags(Long tagId, String tagName, String base, Set<TrackTag> trackTags) {
+		this.tagId = tagId;
+		this.tagName = tagName;
+		this.base = base;
+		this.trackTags = trackTags;
+	}
+
+	public MusicTags() {
+	}
 	
 	
 }

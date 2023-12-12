@@ -1,6 +1,7 @@
 package com.kdt.domain.entity;
 
 import java.sql.Time;
+import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.CascadeType;
@@ -10,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 
 @Entity
@@ -19,51 +21,34 @@ public class Track {
 	@Column(name="track_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long trackId;
-	
+
 	@Column(name="album_id")
 	private Long albumId;
-	
+
 	@Column(name="title")
 	private String title;
-	
+
 	@Column(name="trackNumber")
 	private Long trackNumber;
-	
+
 	@Column(name="duration")
 	private Time duration;
-	
+
 	@Column(name="filePath")
 	private String filePath;
-	
+
 	@Column(name="view_count")
 	private Long viewCount;
-	
+
 	@Column(name="writer")
 	private String writer;
-	
+
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name="track_id")
 	private Set<TrackImages> trackImages;
-	
 
-	public Track() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
-	public Track(Long trackId, Long albumId, String title, Long trackNumber, Time duration, String filePath,
-			Long viewCount, String writer, Set<TrackImages> trackImages) {
-		super();
-		this.trackId = trackId;
-		this.albumId = albumId;
-		this.title = title;
-		this.trackNumber = trackNumber;
-		this.duration = duration;
-		this.filePath = filePath;
-		this.viewCount = viewCount;
-		this.writer = writer;
-		this.trackImages = trackImages;
-	}
+	@OneToMany(mappedBy="track")
+	private Set<TrackTag> trackTags = new HashSet<>();
 
 	public Long getTrackId() {
 		return trackId;
@@ -137,6 +122,33 @@ public class Track {
 		this.trackImages = trackImages;
 	}
 
+	public Set<TrackTag> getTrackTags() {
+		return trackTags;
+	}
+
+	public void setTrackTags(Set<TrackTag> trackTags) {
+		this.trackTags = trackTags;
+	}
+
+	public Track(Long trackId, Long albumId, String title, Long trackNumber, Time duration, String filePath,
+			Long viewCount, String writer, Set<TrackImages> trackImages, Set<TrackTag> trackTags) {
+		super();
+		this.trackId = trackId;
+		this.albumId = albumId;
+		this.title = title;
+		this.trackNumber = trackNumber;
+		this.duration = duration;
+		this.filePath = filePath;
+		this.viewCount = viewCount;
+		this.writer = writer;
+		this.trackImages = trackImages;
+		this.trackTags = trackTags;
+	}
+
+	public Track() {
+	}
 	
 	
+
+
 }
