@@ -56,6 +56,12 @@ public class TrackController {
 		List<TrackDTO> dtos=tService.selectByWriter(writer);
 		return ResponseEntity.ok(dtos);
 	}
+	
+	@GetMapping("/bytrack_id/{track_id}")
+	public ResponseEntity<TrackDTO> selectByIdTrack(@PathVariable Long track_id){
+		TrackDTO dto=tService.selectByIdTrack(track_id);
+		return ResponseEntity.ok(dto);
+	}
 
 	@GetMapping("/recent")
 	public ResponseEntity<List<TrackDTO>> recentAll() {

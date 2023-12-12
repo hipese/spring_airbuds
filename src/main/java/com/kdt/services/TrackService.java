@@ -126,6 +126,12 @@ public class TrackService {
 		List<TrackDTO> dtos=tMapper.toDtoList(entity);
 		return dtos;
 	}
+	
+	public TrackDTO selectByIdTrack(Long track_id){
+		Track entity = tRepo.findById(track_id).get();
+		TrackDTO dtos=tMapper.toDto(entity);
+		return dtos;
+	}
 
 	public List<TrackDTO> recentAll() {
 		List<Track> entity = tRepo.findAllByOrderByTrackIdDesc();
