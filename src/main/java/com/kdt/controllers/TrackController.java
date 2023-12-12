@@ -39,9 +39,7 @@ public class TrackController {
     										@RequestParam("login") String loginId) throws Exception {
 		
 
-//		System.out.println("name: "+name);
-		System.out.println(releaseDate);
-//		System.out.println("로그인 아이디"+loginId);
+
 		
 		tService.insert(files,name,durations,image_path,imagefile,writer,tag,releaseDate,loginId);
         return ResponseEntity.ok().build();

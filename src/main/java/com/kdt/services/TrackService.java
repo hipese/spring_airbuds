@@ -140,6 +140,14 @@ public class TrackService {
 	        imagedto.setImagePath(sys_imageName);
 	        imageRepo.save(imageMapper.toEntity(imagedto));
 	    }
+	    
+	    if(imagefile==null) {
+	    		image_path="NULL";
+		        TrackImageDTO imagedto=new TrackImageDTO();
+		        imagedto.setTrackId(savedTrack.getTrackId());
+		        imagedto.setImagePath(image_path);
+		        imageRepo.save(imageMapper.toEntity(imagedto));
+	    }
 		
 	}
 	
