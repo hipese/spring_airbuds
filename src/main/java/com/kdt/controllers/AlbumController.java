@@ -34,7 +34,7 @@ public class AlbumController {
 		System.out.println(releaseDate);
 		System.out.println("로그인 값:"+loginId);
 		
-//		aService.insert(files,name,durations,image_path,releaseDate,imagefile,writer);
+		aService.insert(files,name,durations,image_path,releaseDate,imagefile,writer);
 		return ResponseEntity.ok().build();
 	}
 }
