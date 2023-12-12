@@ -32,7 +32,7 @@ public class QnAController {
 	private QnaAnswerService qaService;
 	
 	@PostMapping
-	public ResponseEntity<Void> getPost(@RequestParam("files") MultipartFile[] files,
+	public ResponseEntity<Void> getPost(@RequestParam(value = "files", required = false) MultipartFile[] files,
 										@RequestParam("qnaContents") String contents,
 										@RequestParam("qnaWriter") String writer,
 										@RequestParam("qnaTitle") String title,
@@ -50,7 +50,6 @@ public class QnAController {
 		dto.setQnaPublic(isPublic);
 		dto.setQnaCategory(category);
 		
-		System.out.println(files[0].getOriginalFilename());
 		qService.getPost(dto, files);
 		
 		return ResponseEntity.ok().build();
@@ -82,13 +81,13 @@ public class QnAController {
 	
 	@DeleteMapping("/delete/{seq}")
 	public ResponseEntity<String> deletePost(@PathVariable Long seq) throws Exception{
-		//File Delete
-		qService.deletePost(seq);
-		//Reply Delete
-		
-		//Post Delete
-		
-		
+		qService.deletePost(seq);		
+		return ResponseEntity.ok().build();
+	}
+	
+	@DeleteMapping("/reply/delete/{seq}")
+	public ResponseEntity<String> deleteAnswer(@PathVariable Long seq){
+		qaService.deleteAnswer(seq);
 		return ResponseEntity.ok().build();
 	}
 }

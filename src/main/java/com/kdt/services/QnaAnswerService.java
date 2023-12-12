@@ -31,4 +31,9 @@ public class QnaAnswerService {
 		return dtoList;
 	}
 	
+	public void deleteAnswer(Long seq) {
+		QnaAnswer qa = qnaRepo.findById(seq).get();
+		qnaRepo.delete(qa);
+	}
+	
 }
