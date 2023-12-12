@@ -1,6 +1,7 @@
 package com.kdt.dto;
 
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.Set;
 
 import com.kdt.domain.entity.TrackTag;
@@ -16,6 +17,9 @@ public class TrackDTO {
 	private String writer;
 	private Set<TrackTag> trackTag;
 	private Set<TrackImageDTO> trackImages;
+	private Timestamp releaseDate;
+	
+	
 	public Long getTrackId() {
 		return trackId;
 	}
