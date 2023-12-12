@@ -94,7 +94,7 @@ public class TrackController {
 	}
 	
 	@DeleteMapping("/{track_id}")
-	public ResponseEntity<Void> deleteByIdTrack(@PathVariable String track_id){
+	public ResponseEntity<Void> deleteByIdTrack(@PathVariable Long track_id){
 		
 		tService.deleteByIdTrack(track_id);
 		return ResponseEntity.ok().build();

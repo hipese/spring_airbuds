@@ -12,8 +12,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class Track {
@@ -56,6 +56,31 @@ public class Track {
 	
 	@Column(name="write_id")
 	private String writeId;
+
+	
+	
+	public Track() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public Track(Long trackId, Long albumId, String title, Long trackNumber, Time duration, String filePath,
+			Long viewCount, String writer, Set<TrackImages> trackImages, Set<TrackTag> trackTags, Timestamp releaseDate,
+			String writeId) {
+		super();
+		this.trackId = trackId;
+		this.albumId = albumId;
+		this.title = title;
+		this.trackNumber = trackNumber;
+		this.duration = duration;
+		this.filePath = filePath;
+		this.viewCount = viewCount;
+		this.writer = writer;
+		this.trackImages = trackImages;
+		this.trackTags = trackTags;
+		this.releaseDate = releaseDate;
+		this.writeId = writeId;
+	}
 
 	public Long getTrackId() {
 		return trackId;
@@ -152,28 +177,7 @@ public class Track {
 	public void setWriteId(String writeId) {
 		this.writeId = writeId;
 	}
+	
 
-	public Track(Long trackId, Long albumId, String title, Long trackNumber, Time duration, String filePath,
-			Long viewCount, String writer, Set<TrackImages> trackImages, Set<TrackTag> trackTags, Timestamp releaseDate,
-			String writeId) {
-		super();
-		this.trackId = trackId;
-		this.albumId = albumId;
-		this.title = title;
-		this.trackNumber = trackNumber;
-		this.duration = duration;
-		this.filePath = filePath;
-		this.viewCount = viewCount;
-		this.writer = writer;
-		this.trackImages = trackImages;
-		this.trackTags = trackTags;
-		this.releaseDate = releaseDate;
-		this.writeId = writeId;
-	}
-
-	public Track() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
 	
 }

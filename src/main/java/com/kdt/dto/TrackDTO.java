@@ -21,7 +21,6 @@ public class TrackDTO {
 	private String writeId;
 	
 	
-	
 	public TrackDTO() {
 		super();
 		// TODO Auto-generated constructor stub
