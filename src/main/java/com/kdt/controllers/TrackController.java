@@ -46,43 +46,34 @@ public class TrackController {
 											@RequestParam("duration") String[] durations,
 											@RequestParam("image_path") String[] image_path, 
 											@RequestParam("releaseDate") String releaseDate,
-											@RequestParam(value = "imagefile", required = false) MultipartFile imagefile,
+											@RequestParam(value = "titleImage", required = false) MultipartFile titleImage,
+											@RequestParam(value = "imagefile", required = false) MultipartFile[] imagefile,
 											@RequestParam("writer") String writer,
 											@RequestParam MultiValueMap<String, String> trackTags,
 											@RequestParam("login") String loginId)throws Exception {
 
+//		System.out.println("뭐로 가져옴 이미지"+image_path[0]);
+//		System.out.println(imagefile[0].getOriginalFilename()+" : "+imagefile[1].getOriginalFilename());
 		
-		System.out.println(writer);
 		
-//		 // 모든 파라미터 출력
-//	    for (String key : trackTags.keySet()) {
-//	        System.out.println(key + ": " + trackTags.get(key));
-//	    }
-//	    
-//	 // 특정 태그 처리 예제
-//	    List<Long> tagIdsForFirstFile = new ArrayList<>();
-//	    for (String tagKey : trackTags.keySet()) {
-//	        if (tagKey.startsWith("tags[0]")) {
-//	            tagIdsForFirstFile.add(Long.parseLong(trackTags.getFirst(tagKey)));
-//	        }
-//	    }
-	    
-//		 for (int i = 0; i < files.length; i++) {
-//		        // 각 파일에 대한 태그 처리
-//		        List<Long> tagIds = new ArrayList<>();
-//		        for (String tagKey : trackTags.keySet()) {
-//		            if (tagKey.startsWith("tags[" + i + "]")) {
-//		                tagIds.addAll(trackTags.get(tagKey).stream()
-//		                                .map(Long::parseLong)
-//		                                .collect(Collectors.toList()));
-//		            }
-//		        }
-//
-//		        // 각 파일에 대한 데이터 저장
-//		        tService.insert(files[i], name[i], durations[i], image_path[i], 
-//		                        imagefile, writer, tagIds.toArray(new Long[0]), 
-//		                        releaseDate, loginId);
-//		    }
+		
+		 for (int i = 0; i < files.length; i++) {
+		        // 각 파일에 대한 태그 처리
+		        List<Long> tagIds = new ArrayList<>();
+		        for (String tagKey : trackTags.keySet()) {
+		            if (tagKey.startsWith("tags[" + i + "]")) {
+		                tagIds.addAll(trackTags.get(tagKey).stream()
+		                                .map(Long::parseLong)
+		                                .collect(Collectors.toList()));
+		            }
+		        }
+		       
+		        
+		        // 각 파일에 대한 데이터 저장
+		        tService.insert(files[i], name[i], durations[i], image_path[0], 
+		                        imagefile[i], writer, tagIds.toArray(new Long[0]), 
+		                        releaseDate, loginId);
+		    }
 		return ResponseEntity.ok().build();
 	}
 
