@@ -39,9 +39,7 @@ public class TrackController {
     										@RequestParam("login") String loginId) throws Exception {
 		
 
-//		System.out.println("name: "+name);
-//		System.out.println(releaseDate);
-		System.out.println("로그인 아이디"+loginId);
+
 		
 		tService.insert(files,name,durations,image_path,imagefile,writer,tag,releaseDate,loginId);
         return ResponseEntity.ok().build();
@@ -80,6 +78,12 @@ public class TrackController {
 		List<TrackDTO> dtos=tService.selectByWriter(writer);
 		return ResponseEntity.ok(dtos);
 	}
+	
+	@GetMapping("/findById/{write_id}")
+	public ResponseEntity<List<TrackDTO>> selectfindById(@PathVariable String write_id){
+		List<TrackDTO> dtos=tService.selectfindById(write_id);
+		return ResponseEntity.ok(dtos);
+	}
 
 	@GetMapping("/recent")
 	public ResponseEntity<List<TrackDTO>> recentAll() {
@@ -88,7 +92,7 @@ public class TrackController {
 	}
 	
 	@DeleteMapping("/{track_id}")
-	public ResponseEntity<Void> deleteByIdTrack(@PathVariable String track_id){
+	public ResponseEntity<Void> deleteByIdTrack(@PathVariable Long track_id){
 		
 		tService.deleteByIdTrack(track_id);
 		return ResponseEntity.ok().build();
