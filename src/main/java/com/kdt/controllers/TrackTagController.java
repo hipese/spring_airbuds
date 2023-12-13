@@ -25,7 +25,6 @@ public class TrackTagController {
 
 	@GetMapping
 	public ResponseEntity<List<TrackTagDTO>> selectTag(@RequestParam(name = "tag") Long tag) {
-		System.out.println(tag);
 		List<TrackTagDTO> list = ttServ.selectTag(tag);
 		return ResponseEntity.ok(list);
 	}
