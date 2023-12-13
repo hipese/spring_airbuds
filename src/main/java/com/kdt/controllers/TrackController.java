@@ -55,8 +55,7 @@ public class TrackController {
 //		System.out.println("뭐로 가져옴 이미지"+image_path[0]);
 //		System.out.println(imagefile[0].getOriginalFilename()+" : "+imagefile[1].getOriginalFilename());
 		
-		
-		
+		System.out.println("이미지 파일 있냐?"+imagefile);
 		 for (int i = 0; i < files.length; i++) {
 		        // 각 파일에 대한 태그 처리
 		        List<Long> tagIds = new ArrayList<>();
@@ -68,10 +67,15 @@ public class TrackController {
 		            }
 		        }
 		       
+		        // imagefile이 null이 아닐 때만 imagefile[i]를 사용
+		        MultipartFile currentImageFile = null;
+		        if (imagefile != null && imagefile.length > i) {
+		            currentImageFile = imagefile[i];
+		        }
 		        
 		        // 각 파일에 대한 데이터 저장
 		        tService.insert(files[i], name[i], durations[i], image_path[0], 
-		                        imagefile[i], writer, tagIds.toArray(new Long[0]), 
+		        		currentImageFile, writer, tagIds.toArray(new Long[0]), 
 		                        releaseDate, loginId);
 		    }
 		return ResponseEntity.ok().build();
@@ -109,7 +113,7 @@ public class TrackController {
 
 	@DeleteMapping("/{track_id}")
 	public ResponseEntity<Void> deleteByIdTrack(@PathVariable Long track_id) {
-
+		
 		tService.deleteByIdTrack(track_id);
 		return ResponseEntity.ok().build();
 	}
