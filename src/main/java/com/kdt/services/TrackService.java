@@ -2,6 +2,8 @@ package com.kdt.services;
 
 import java.io.File;
 import java.sql.Time;
+import java.time.Instant;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,14 +17,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kdt.domain.entity.MusicTags;
 import com.kdt.domain.entity.Track;
+import com.kdt.domain.entity.TrackImages;
 import com.kdt.domain.entity.TrackTag;
 import com.kdt.dto.TrackDTO;
 import com.kdt.dto.TrackImageDTO;
-import com.kdt.dto.TrackTagDTO;
-import com.kdt.mappers.MusicTagMapper;
 import com.kdt.mappers.TrackImageMapper;
 import com.kdt.mappers.TrackMapper;
-import com.kdt.mappers.TrackTagMapper;
 import com.kdt.repositories.MusicTagRepository;
 import com.kdt.repositories.TrackImageRepository;
 import com.kdt.repositories.TrackRepository;
@@ -86,7 +86,8 @@ public class TrackService {
 			long durationInSeconds = Math.round(durationDouble);
 			String timeString = convertSecondsToTimeString(durationInSeconds);
 			Time durationTime = Time.valueOf(timeString);
-
+			
+		
 			TrackDTO dto = new TrackDTO();
 			dto.setTitle(name);
 			dto.setAlbumId(null);
@@ -95,6 +96,8 @@ public class TrackService {
 			dto.setTrackNumber(0L);
 			dto.setViewCount(0L);
 			dto.setWriter(writer);
+			dto.setReleaseDate(Instant.parse(releaseDate));
+			dto.setWriteId(loginId);
 			
 			Track entity= tMapper.toEntity(dto);
 			Set<TrackTag> trackTags = new HashSet<>();
@@ -137,6 +140,14 @@ public class TrackService {
 	        imagedto.setImagePath(sys_imageName);
 	        imageRepo.save(imageMapper.toEntity(imagedto));
 	    }
+	    
+	    if(imagefile==null) {
+	    		image_path="NULL";
+		        TrackImageDTO imagedto=new TrackImageDTO();
+		        imagedto.setTrackId(savedTrack.getTrackId());
+		        imagedto.setImagePath(image_path);
+		        imageRepo.save(imageMapper.toEntity(imagedto));
+	    }
 		
 	}
 	
@@ -175,40 +186,64 @@ public class TrackService {
 		return dtos;
 	}
 
+	
+	
+	public List<TrackDTO> selectfindById(String write_id){
+		List<Track> entity = tRepo.findAllByWriterIdStartingWith(write_id);
+		List<TrackDTO> dtos=tMapper.toDtoList(entity);
+		return dtos;
+	}
+	
 	public List<TrackDTO> recentAll() {
 		Pageable pageable = PageRequest.of(0, 10);
 		List<Track> entity = tRepo.findAllByOrderByTrackIdDesc(pageable);
 		List<TrackDTO> dtos = tMapper.toDtoList(entity);
 		return dtos;
 	}
-
-	public void deleteByIdTrack(String track_id) {
-
-		Long realId = Long.parseLong(track_id);
+	
+	
+	public void deleteByIdTrack(Long track_id) {
 
 //		실제 경로에 존재하는 음원 삭제
-		Track entity = tRepo.findById(realId).orElse(null);
+		Track entity = tRepo.findById(track_id).orElse(null);
+	
+		TrackImages imageEntity=imageRepo.findByTrackImagesTrackId(track_id);
 		
+		System.out.println("가져온 음원 이미지 id값 "+imageEntity.getImageId());
+		System.out.println("가져온 음원 이미지 경로 "+imageEntity.getImagePath());
 		
 		if (entity != null) {
+			
+			//track_id과 일치하는 테그를 전부 삭제한다.
+			tagRepo.deleteAllByTrackTagTrackId(track_id);
+			
+			
+//			경로에 이미지가 있으면 삭제하고 데이터베이스에 값을 지운다.
+			String imagePath="c:/tracks/image"+ File.separator+imageEntity.getImagePath();
+			File imageToDelete = new File(imagePath);
+			
+			if (imageToDelete.exists()) {
+				imageToDelete.delete();
+				imageRepo.deleteById(track_id);// 데이터베이스에서 이미지 삭제
+				
+			} else {
+				System.out.println("파일이 존재하지 않습니다: " + imagePath);
+			}
+			
+//			음원에 값을 확인하고 
 			String filePath = "c:/tracks" + File.separator + entity.getFilePath();
 			File fileToDelete = new File(filePath);
 			
-//			이미지도 삭제하는 기능 넣어야 함 만약
 
 			if (fileToDelete.exists()) {
-				boolean isDeleted = fileToDelete.delete();
-				if (isDeleted) {
-					System.out.println("파일 삭제 완료: " + filePath);
-					tRepo.deleteById(realId); // 데이터베이스에서 삭제
-				} else {
-					System.out.println("파일 삭제 실패: " + filePath);
-				}
+				fileToDelete.delete();
+				tRepo.deleteById(track_id); // 데이터베이스에서 삭제
+				
 			} else {
 				System.out.println("파일이 존재하지 않습니다: " + filePath);
 			}
 		} else {
-			System.out.println("해당 ID의 트랙을 찾을 수 없습니다: " + realId);
+			System.out.println("해당 ID의 트랙을 찾을 수 없습니다: " + track_id);
 		}
 	}
 
