@@ -1,9 +1,11 @@
 package com.kdt.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,11 +27,13 @@ public class TrackController {
 
 	@PostMapping
 	public ResponseEntity<Void> uploadMusic(@RequestParam("file") MultipartFile files,
-			@RequestParam("name") String name, @RequestParam("duration") String durations,
-			@RequestParam("image_path") String image_path, @RequestParam("releaseDate") String releaseDate,
-			@RequestParam(value = "imagefile", required = false) MultipartFile imagefile,
-			@RequestParam("writer") String writer, @RequestParam(value = "tag", required = false) Long[] tag,
-			@RequestParam("login") String loginId) throws Exception {
+											@RequestParam("name") String name, 
+											@RequestParam("duration") String durations,
+											@RequestParam("image_path") String image_path, @RequestParam("releaseDate") String releaseDate,
+											@RequestParam(value = "imagefile", required = false) MultipartFile imagefile,
+											@RequestParam("writer") String writer, 
+											@RequestParam(value = "tag", required = false) Long[] tag,
+											@RequestParam("login") String loginId) throws Exception {
 
 		tService.insert(files, name, durations, image_path, imagefile, writer, tag, releaseDate, loginId);
 		return ResponseEntity.ok().build();
@@ -37,17 +41,34 @@ public class TrackController {
 
 	@PostMapping("/multiUpload")
 	public ResponseEntity<Void> multiUpload(@RequestParam("file") MultipartFile[] files,
-			@RequestParam("name") String[] name, @RequestParam("duration") String[] durations,
-			@RequestParam("image_path") String[] image_path, @RequestParam("releaseDate") String releaseDate,
-			@RequestParam(value = "imagefile", required = false) MultipartFile imagefile,
-			@RequestParam("writer") String[] writer, @RequestParam(value = "tag", required = false) Long[] tag)
-			throws Exception {
+											@RequestParam("name") String[] name, 
+											@RequestParam("duration") String[] durations,
+											@RequestParam("image_path") String[] image_path, 
+											@RequestParam("releaseDate") String releaseDate,
+											@RequestParam(value = "imagefile", required = false) MultipartFile imagefile,
+											@RequestParam("writer") String writer,
+											@RequestParam MultiValueMap<String, String> trackTags,
+											@RequestParam("login") String loginId)throws Exception {
 
-//		System.out.println("name: "+name[0]+"이거 다음행 날짜값 나와야함");
-//		System.out.println(releaseDate);
-//		System.out.println(tag);
+		System.out.println("names: "+name[0]+":"+name[1]);
+		System.out.println(releaseDate);
+		System.out.println(writer);
+		System.out.println();
+		
+		 // 모든 파라미터 출력
+	    for (String key : trackTags.keySet()) {
+	        System.out.println(key + ": " + trackTags.get(key));
+	    }
+	    
+	 // 특정 태그 처리 예제
+	    List<Long> tagIdsForFirstFile = new ArrayList<>();
+	    for (String tagKey : trackTags.keySet()) {
+	        if (tagKey.startsWith("tags[0]")) {
+	            tagIdsForFirstFile.add(Long.parseLong(trackTags.getFirst(tagKey)));
+	        }
+	    }
 
-//		tService.insertAlbum(files,name,durations,image_path,releaseDate,imagefile,writer,playlist);
+//		tService.insertMultiUpload(files,name,durations,image_path,releaseDate,imagefile,writer,playlist);
 		return ResponseEntity.ok().build();
 	}
 
