@@ -2,6 +2,7 @@ package com.kdt.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -50,25 +51,38 @@ public class TrackController {
 											@RequestParam MultiValueMap<String, String> trackTags,
 											@RequestParam("login") String loginId)throws Exception {
 
-		System.out.println("names: "+name[0]+":"+name[1]);
-		System.out.println(releaseDate);
-		System.out.println(writer);
-		System.out.println();
 		
-		 // 모든 파라미터 출력
-	    for (String key : trackTags.keySet()) {
-	        System.out.println(key + ": " + trackTags.get(key));
-	    }
+		System.out.println(writer);
+		
+//		 // 모든 파라미터 출력
+//	    for (String key : trackTags.keySet()) {
+//	        System.out.println(key + ": " + trackTags.get(key));
+//	    }
+//	    
+//	 // 특정 태그 처리 예제
+//	    List<Long> tagIdsForFirstFile = new ArrayList<>();
+//	    for (String tagKey : trackTags.keySet()) {
+//	        if (tagKey.startsWith("tags[0]")) {
+//	            tagIdsForFirstFile.add(Long.parseLong(trackTags.getFirst(tagKey)));
+//	        }
+//	    }
 	    
-	 // 특정 태그 처리 예제
-	    List<Long> tagIdsForFirstFile = new ArrayList<>();
-	    for (String tagKey : trackTags.keySet()) {
-	        if (tagKey.startsWith("tags[0]")) {
-	            tagIdsForFirstFile.add(Long.parseLong(trackTags.getFirst(tagKey)));
-	        }
-	    }
-
-//		tService.insertMultiUpload(files,name,durations,image_path,releaseDate,imagefile,writer,playlist);
+//		 for (int i = 0; i < files.length; i++) {
+//		        // 각 파일에 대한 태그 처리
+//		        List<Long> tagIds = new ArrayList<>();
+//		        for (String tagKey : trackTags.keySet()) {
+//		            if (tagKey.startsWith("tags[" + i + "]")) {
+//		                tagIds.addAll(trackTags.get(tagKey).stream()
+//		                                .map(Long::parseLong)
+//		                                .collect(Collectors.toList()));
+//		            }
+//		        }
+//
+//		        // 각 파일에 대한 데이터 저장
+//		        tService.insert(files[i], name[i], durations[i], image_path[i], 
+//		                        imagefile, writer, tagIds.toArray(new Long[0]), 
+//		                        releaseDate, loginId);
+//		    }
 		return ResponseEntity.ok().build();
 	}
 
