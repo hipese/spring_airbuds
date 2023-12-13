@@ -2,6 +2,8 @@ package com.kdt.repositories;
 
 import java.util.List;
 
+
+import org.springframework.data.domain.Sort;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,7 +17,7 @@ import jakarta.transaction.Transactional;
 
 public interface TrackTagRepository extends JpaRepository<TrackTag, Long> {
 	@EntityGraph(attributePaths = {"track","musicTags","track.trackImages"})
-    List<TrackTag> findByMusicTags_tagId(Long tag);
+	List<TrackTag> findFirst10ByMusicTags_tagId(Long tagId, Sort sort);
 
 	@Modifying
 	@Transactional
