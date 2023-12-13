@@ -1,5 +1,7 @@
 package com.kdt.domain.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,6 +12,7 @@ import jakarta.persistence.ManyToOne;
 
 @Entity
 public class TrackTag {
+	
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
