@@ -1,6 +1,7 @@
 package com.kdt.domain.entity;
 
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,8 +12,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class Track {
@@ -49,6 +50,37 @@ public class Track {
 
 	@OneToMany(mappedBy="track")
 	private Set<TrackTag> trackTags = new HashSet<>();
+	
+	@Column(name="release_date")
+	private Timestamp releaseDate;
+	
+	@Column(name="write_id")
+	private String writeId;
+
+	
+	
+	public Track() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public Track(Long trackId, Long albumId, String title, Long trackNumber, Time duration, String filePath,
+			Long viewCount, String writer, Set<TrackImages> trackImages, Set<TrackTag> trackTags, Timestamp releaseDate,
+			String writeId) {
+		super();
+		this.trackId = trackId;
+		this.albumId = albumId;
+		this.title = title;
+		this.trackNumber = trackNumber;
+		this.duration = duration;
+		this.filePath = filePath;
+		this.viewCount = viewCount;
+		this.writer = writer;
+		this.trackImages = trackImages;
+		this.trackTags = trackTags;
+		this.releaseDate = releaseDate;
+		this.writeId = writeId;
+	}
 
 	public Long getTrackId() {
 		return trackId;
@@ -130,25 +162,22 @@ public class Track {
 		this.trackTags = trackTags;
 	}
 
-	public Track(Long trackId, Long albumId, String title, Long trackNumber, Time duration, String filePath,
-			Long viewCount, String writer, Set<TrackImages> trackImages, Set<TrackTag> trackTags) {
-		super();
-		this.trackId = trackId;
-		this.albumId = albumId;
-		this.title = title;
-		this.trackNumber = trackNumber;
-		this.duration = duration;
-		this.filePath = filePath;
-		this.viewCount = viewCount;
-		this.writer = writer;
-		this.trackImages = trackImages;
-		this.trackTags = trackTags;
+	public Timestamp getReleaseDate() {
+		return releaseDate;
 	}
 
-	public Track() {
+	public void setReleaseDate(Timestamp releaseDate) {
+		this.releaseDate = releaseDate;
+	}
+
+	public String getWriteId() {
+		return writeId;
+	}
+
+	public void setWriteId(String writeId) {
+		this.writeId = writeId;
 	}
 	
+
 	
-
-
 }

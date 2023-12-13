@@ -22,5 +22,8 @@ public interface TrackRepository extends JpaRepository<Track, Long> {
 
 	@Query("SELECT t FROM Track t left JOIN FETCH t.trackImages WHERE t.writer LIKE CONCAT(:writer, '%')")
 	List<Track> findAllByWriterStartingWith(@Param("writer") String writer);
+	
+	@Query("SELECT t FROM Track t left JOIN FETCH t.trackImages WHERE t.writeId LIKE CONCAT(:write_id, '%')")
+	List<Track> findAllByWriterIdStartingWith(@Param("writeId") String write_id);
 
 }
