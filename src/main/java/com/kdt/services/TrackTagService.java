@@ -3,9 +3,9 @@ package com.kdt.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.kdt.domain.entity.Track;
 import com.kdt.domain.entity.TrackTag;
 import com.kdt.dto.TrackTagDTO;
 import com.kdt.mappers.TrackTagMapper;
@@ -24,7 +24,7 @@ public class TrackTagService {
 
 	@Transactional
 	public List<TrackTagDTO> selectTag(Long tag) {
-		List<TrackTag> list = tagRepo.findByMusicTags_tagId(tag);
+		List<TrackTag> list = tagRepo.findFirst10ByMusicTags_tagId(tag, Sort.by(Sort.Direction.DESC, "id"));
 		List<TrackTagDTO> dtoList = tagMapper.toDtoList(list);
 		return dtoList;
 
