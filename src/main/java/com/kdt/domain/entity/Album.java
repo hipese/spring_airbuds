@@ -42,11 +42,21 @@ public class Album {
 	@JoinColumn(name="album_id")
 	private Set<Track> tracks;
 	
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name="album_id")
+	private Set<AlbumWriter> albumWriter;
 	
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name="album_id")
 	private Set<AlbumTag> albumTag;
 	
+	public Album() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
 	public Album(Long albumId, String title, Long artistId, Timestamp releaseDate, Long genreId, String coverImagePath,
-			String writer, Set<Track> tracks) {
+			String writer, Set<Track> tracks, Set<AlbumWriter> albumWriter, Set<AlbumTag> albumTag) {
 		super();
 		this.albumId = albumId;
 		this.title = title;
@@ -56,11 +66,8 @@ public class Album {
 		this.coverImagePath = coverImagePath;
 		this.writer = writer;
 		this.tracks = tracks;
-	}
-
-	public Album() {
-		super();
-		// TODO Auto-generated constructor stub
+		this.albumWriter = albumWriter;
+		this.albumTag = albumTag;
 	}
 
 	public Long getAlbumId() {
@@ -125,6 +132,22 @@ public class Album {
 
 	public void setTracks(Set<Track> tracks) {
 		this.tracks = tracks;
+	}
+
+	public Set<AlbumWriter> getAlbumWriter() {
+		return albumWriter;
+	}
+
+	public void setAlbumWriter(Set<AlbumWriter> albumWriter) {
+		this.albumWriter = albumWriter;
+	}
+
+	public Set<AlbumTag> getAlbumTag() {
+		return albumTag;
+	}
+
+	public void setAlbumTag(Set<AlbumTag> albumTag) {
+		this.albumTag = albumTag;
 	}
 	
 	

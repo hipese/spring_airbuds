@@ -11,15 +11,17 @@ public class AlbumDTO {
 	private Timestamp releaseDate;
 	private String coverImagePath;
 	private Set<TrackDTO> tracks;
-	
+	private Set<AlbumWriterDTO> albumWriter;
+	private Set<AlbumTagDTO> albumTag;
 	
 	
 	public AlbumDTO() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
+	
 	public AlbumDTO(Long albumId, String title, Long artistId, Timestamp releaseDate, String coverImagePath,
-			Set<TrackDTO> tracks) {
+			Set<TrackDTO> tracks, Set<AlbumWriterDTO> albumWriter, Set<AlbumTagDTO> albumTag) {
 		super();
 		this.albumId = albumId;
 		this.title = title;
@@ -27,6 +29,8 @@ public class AlbumDTO {
 		this.releaseDate = releaseDate;
 		this.coverImagePath = coverImagePath;
 		this.tracks = tracks;
+		this.albumWriter = albumWriter;
+		this.albumTag = albumTag;
 	}
 	public Long getAlbumId() {
 		return albumId;
@@ -64,9 +68,17 @@ public class AlbumDTO {
 	public void setTracks(Set<TrackDTO> tracks) {
 		this.tracks = tracks;
 	}
-	
-	
-	
-	
+	public Set<AlbumWriterDTO> getAlbumWriter() {
+		return albumWriter;
+	}
+	public void setAlbumWriter(Set<AlbumWriterDTO> albumWriter) {
+		this.albumWriter = albumWriter;
+	}
+	public Set<AlbumTagDTO> getAlbumTag() {
+		return albumTag;
+	}
+	public void setAlbumTag(Set<AlbumTagDTO> albumTag) {
+		this.albumTag = albumTag;
+	}
 	
 }

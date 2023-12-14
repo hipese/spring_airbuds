@@ -62,9 +62,5 @@ public class AlbumTag {
 	public void setAlbumTagList(AlbumTagList albumTagList) {
 		this.albumTagList = albumTagList;
 	}
-
-	
-	
-	
 	
 }
