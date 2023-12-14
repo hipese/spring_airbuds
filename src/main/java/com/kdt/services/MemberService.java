@@ -204,6 +204,18 @@ public class MemberService implements UserDetailsService{
 		}
 	}
 	
+	public MemberDTO findId(String name, String email){
+		Member list = mRepo.findByNameAndEmail(name,email);
+		MemberDTO dtos = mMapper.toDto(list);
+		return dtos;
+	}
+	
+//	public List<MemberDTO> findId(String email){
+//		List<Member> list = mRepo.findByEmail(email);
+//		List<MemberDTO> dtos = mMapper.toDtoList(list);
+//		return dtos;
+//	}
+	
 	public boolean isDupleID(String id) {
 		Optional<Member> m = mRepo.findById(id);
 		if(m.isEmpty())
