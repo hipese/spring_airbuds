@@ -31,4 +31,15 @@ public class QnaAnswerService {
 		return dtoList;
 	}
 	
+	public void deleteAnswer(Long seq) {
+		QnaAnswer qa = qnaRepo.findById(seq).get();
+		qnaRepo.delete(qa);
+	}
+	
+	public void updateAnswer(QnaAnswerDTO dto) {
+		QnaAnswer qa = qnaRepo.findById(dto.getAnswerSeq()).get();
+		qnaMapper.updateEntityFromDto(dto, qa);
+		qnaRepo.save(qa);
+	}
+	
 }
