@@ -1,5 +1,7 @@
 package com.kdt.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kdt.dto.MemberDTO;
@@ -34,24 +37,32 @@ public class MemberController {
 	@PostMapping("/verify/{code}")
 	public ResponseEntity<String> verify(@PathVariable String code) {
 		memberService.verifyMember(code);
-		if(memberService.verifyMember(code)) {			
+		if(memberService.verifyMember(code)) {         
 			return ResponseEntity.ok("success");
 		}
 		return ResponseEntity.ok("fail");
 	}
-	
+
 	// 임시 비밀번호 전송하는
-//	@PostMapping("/register/{email}")
-//	public ResponseEntity<String> password(@PathVariable String email) {
-//		memberService.sendTemporaryPasswordEmail(email);
-//		return ResponseEntity.ok("success");
-//	}
-	
+	@PostMapping("/password")
+	public ResponseEntity<String> password(@RequestParam String id, @RequestParam String email) {
+		MemberDTO dto = memberService.findMemberById(id);
+		memberService.sendTemporaryPasswordEmail(dto.getId(),email);
+		return ResponseEntity.ok("success");
+	}
+
+	// 아이디 찾는
+	@PostMapping("/findId")
+	public ResponseEntity <List<MemberDTO>> findId(@RequestParam String name, @RequestParam String email) {
+		List<MemberDTO> list = memberService.findId(name,email);
+		return ResponseEntity.ok(list);
+	}
+
 	@PostMapping("/checkID")
 	public ResponseEntity<Boolean> checkID(@RequestBody MemberDTO dto) {
 		return ResponseEntity.ok(memberService.isDupleID(dto.getId()));
 	}
-	
+
 	@PostMapping("/register")
 	public ResponseEntity<Void> register(@RequestBody MemberDTO dto) {
 		try {
@@ -62,21 +73,21 @@ public class MemberController {
 		}
 		return ResponseEntity.ok().build();
 	}
-	
+
 	@GetMapping("/isLogined")
 	public ResponseEntity<String> isLogined() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		
-		if (authentication != null && authentication.isAuthenticated() && !authentication.getPrincipal().equals("anonymousUser")) {
-            Object principal = authentication.getPrincipal();
 
-            if (principal instanceof UserDetails) {
-                return ResponseEntity.ok(((UserDetails) principal).getUsername());
-            } else {
-                return ResponseEntity.ok(principal.toString()); 
-            }
-        }
+		if (authentication != null && authentication.isAuthenticated() && !authentication.getPrincipal().equals("anonymousUser")) {
+			Object principal = authentication.getPrincipal();
+
+			if (principal instanceof UserDetails) {
+				return ResponseEntity.ok(((UserDetails) principal).getUsername());
+			} else {
+				return ResponseEntity.ok(principal.toString()); 
+			}
+		}
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	}
-	
+
 }
