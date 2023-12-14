@@ -41,7 +41,9 @@ public class Album {
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name="album_id")
 	private Set<Track> tracks;
-
+	
+	
+	private Set<AlbumTag> albumTag;
 	
 	public Album(Long albumId, String title, Long artistId, Timestamp releaseDate, Long genreId, String coverImagePath,
 			String writer, Set<Track> tracks) {

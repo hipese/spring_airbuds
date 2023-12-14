@@ -35,7 +35,8 @@ public class TrackController {
 											@RequestParam("writer") String writer, 
 											@RequestParam(value = "tag", required = false) Long[] tag,
 											@RequestParam("login") String loginId) throws Exception {
-
+		
+	
 		tService.insert(files, name, durations, image_path, imagefile, writer, tag, releaseDate, loginId);
 		return ResponseEntity.ok().build();
 	}
