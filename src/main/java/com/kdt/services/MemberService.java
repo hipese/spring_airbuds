@@ -48,8 +48,6 @@ public class MemberService implements UserDetailsService{
 		return su;
 	}
 	
-	
-
 	@Transactional
 	public void sendVerificationEmail(String email) {
 		// 인증 코드 생성
@@ -113,6 +111,8 @@ public class MemberService implements UserDetailsService{
 			msgg+= "</div>";
 
 			message.setText(msgg,"utf-8", "html");
+			
+			System.out.println(verificationCode);
 
 			javaMailSender.send(message);
 
@@ -152,23 +152,18 @@ public class MemberService implements UserDetailsService{
 		return shuffledPassword.toString();
 	}
 
-	// 임시 비밀번호 생성 및 전송 메서드
-	public void sendTemporaryPasswordEmail(String email) {
+	// 임시 비밀번호 생성 및 DB 변경 및 메일 전송 메서드
+	public void sendTemporaryPasswordEmail(String id, String email) {
 		// 생성한 임시 비밀번호
 		String temporaryPassword = generateRandomPasswordCode(8);
-
-		// 세션에 임시 비밀번호 저장 (옵션)
-		saveTemporaryPasswordInSession(temporaryPassword);
-
+		// 비밀번호 변경
+		
 		// 이메일 전송
 		sendPasswordEmail(email, temporaryPassword);
 	}
-
-	// 임시 비밀번호 저장 메서드 (세션에 저장할 경우)
-	private void saveTemporaryPasswordInSession(String temporaryPassword) {
-		ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-		attributes.getRequest().getSession(true).setAttribute("temporaryPassword", temporaryPassword);
-	}
+	
+	// 임시 비밀번호로 비밀번호 변경 메서드
+	
 
 	// 임시 비밀번호 전송 메서드
 	private void sendPasswordEmail(String email, String temporaryPassword) {
@@ -195,6 +190,8 @@ public class MemberService implements UserDetailsService{
 
 			// 메시지 설정
 			message.setText(msgBody, "utf-8", "html");
+			
+			System.out.println(temporaryPassword);
 
 			// 이메일 전송
 			javaMailSender.send(message);
@@ -204,17 +201,17 @@ public class MemberService implements UserDetailsService{
 		}
 	}
 	
-	public MemberDTO findId(String name, String email){
-		Member list = mRepo.findByNameAndEmail(name,email);
-		MemberDTO dtos = mMapper.toDto(list);
-		return dtos;
+	public MemberDTO findMemberById(String id){
+		Member m = mRepo.findAllById(id);
+		MemberDTO dto = mMapper.toDto(m);
+		return dto;
 	}
 	
-//	public List<MemberDTO> findId(String email){
-//		List<Member> list = mRepo.findByEmail(email);
-//		List<MemberDTO> dtos = mMapper.toDtoList(list);
-//		return dtos;
-//	}
+	public List<MemberDTO> findId(String name, String email){
+		List<Member> list = mRepo.findByNameAndEmail(name,email);
+		List<MemberDTO> dtos = mMapper.toDtoList(list);
+		return dtos;
+	}
 	
 	public boolean isDupleID(String id) {
 		Optional<Member> m = mRepo.findById(id);

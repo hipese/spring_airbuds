@@ -1,5 +1,7 @@
 package com.kdt.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,17 +44,18 @@ public class MemberController {
 	}
 
 	// 임시 비밀번호 전송하는
-	//   @PostMapping("/register/{email}")
-	//   public ResponseEntity<String> password(@PathVariable String email) {
-	//      memberService.sendTemporaryPasswordEmail(email);
-	//      return ResponseEntity.ok("success");
-	//   }
+	@PostMapping("/password")
+	public ResponseEntity<String> password(@RequestParam String id, @RequestParam String email) {
+		MemberDTO dto = memberService.findMemberById(id);
+		memberService.sendTemporaryPasswordEmail(dto.getId(),email);
+		return ResponseEntity.ok("success");
+	}
 
 	// 아이디 찾는
 	@PostMapping("/findId")
-	public ResponseEntity <String> findId(@RequestParam String name, @RequestParam String email) {
-		MemberDTO list = memberService.findId(name,email);
-		return ResponseEntity.ok(list.getId());
+	public ResponseEntity <List<MemberDTO>> findId(@RequestParam String name, @RequestParam String email) {
+		List<MemberDTO> list = memberService.findId(name,email);
+		return ResponseEntity.ok(list);
 	}
 
 	@PostMapping("/checkID")

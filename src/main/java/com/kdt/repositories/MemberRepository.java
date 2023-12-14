@@ -8,7 +8,7 @@ import com.kdt.domain.entity.Member;
 
 public interface MemberRepository extends JpaRepository<Member, String> {
 
-	Member findByNameAndEmail(String name, String email);
+	List<Member> findByNameAndEmail(String name, String email);
 	
-	List<Member> findByEmail(String email);
+	Member findAllById(String email);
 }
