@@ -23,18 +23,18 @@ public class AlbumController {
 											@RequestParam("duration") String[] durations,
 											@RequestParam("image_path") String[] image_path,
 											@RequestParam("releaseDate") String releaseDate,
-											@RequestParam(value = "imagefile", required = false) MultipartFile imagefile,
-											@RequestParam("writer") String[] writer,
+											@RequestParam(value = "titleImage", required = false) MultipartFile titleImage,
+											@RequestParam("writer") String[] writers,
+											@RequestParam("albumselectTag") String[] selectTag,
 											@RequestParam(value="tag", required = false) String[] tag,
+											@RequestParam(value="order", required = false) String[] order,
 											@RequestParam("albumTitle") String albumTitle,
 											@RequestParam("login") String loginId)throws Exception{
 		
-
-		System.out.println(albumTitle);
-		System.out.println(releaseDate);
-		System.out.println("로그인 값:"+loginId);
 		
-		aService.insert(files,name,durations,image_path,releaseDate,imagefile,writer);
+//		aService.insert(files,name,durations,image_path,releaseDate,titleImage,writer);
 		return ResponseEntity.ok().build();
 	}
+	
+	
 }
