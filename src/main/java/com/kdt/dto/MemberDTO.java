@@ -94,7 +94,22 @@ public class MemberDTO {
 	}
 	public MemberDTO() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
+	
+//	@Override
+//    public String toString() {
+//        return "MemberDTO{" +
+//                "id='" + id + '\'' +
+//                ", password='" + password + '\'' +
+//                ", name='" + name + '\'' +
+//                ", birth=" + birth +
+//                ", contact='" + contact + '\'' +
+//                ", email='" + email + '\'' +
+//                ", profile_image='" + profile_image + '\'' +
+//                ", background_image='" + background_image + '\'' +
+//                ", role='" + role + '\'' +
+//                ", enabled=" + enabled +
+//                '}';
+//    }
 	
 }
