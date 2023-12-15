@@ -3,6 +3,8 @@ package com.kdt.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.kdt.domain.entity.MusicLike;
@@ -29,7 +31,7 @@ public class LikeService {
 		List<MusicLikeDTO> dto = mlMapper.toDtoList(list);
 		return dto;
 	}
-	
+
 	public void deleteFavorite(MusicLikeDTO dto) {
 		MusicLike ml = mlRepo.selectAllByNameAndTrack(dto.getId(), dto.getTrackId());
 		if(ml != null) {
