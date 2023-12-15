@@ -1,9 +1,12 @@
 package com.kdt.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,29 +28,52 @@ public class TrackController {
 
 	@PostMapping
 	public ResponseEntity<Void> uploadMusic(@RequestParam("file") MultipartFile files,
-			@RequestParam("name") String name, @RequestParam("duration") String durations,
-			@RequestParam("image_path") String image_path, @RequestParam("releaseDate") String releaseDate,
-			@RequestParam(value = "imagefile", required = false) MultipartFile imagefile,
-			@RequestParam("writer") String writer, @RequestParam(value = "tag", required = false) Long[] tag,
-			@RequestParam("login") String loginId) throws Exception {
-
+											@RequestParam("name") String name, 
+											@RequestParam("duration") String durations,
+											@RequestParam("image_path") String image_path, @RequestParam("releaseDate") String releaseDate,
+											@RequestParam(value = "imagefile", required = false) MultipartFile imagefile,
+											@RequestParam("writer") String writer, 
+											@RequestParam(value = "tag", required = false) Long[] tag,
+											@RequestParam("login") String loginId) throws Exception {
+		
+	
 		tService.insert(files, name, durations, image_path, imagefile, writer, tag, releaseDate, loginId);
 		return ResponseEntity.ok().build();
 	}
 
 	@PostMapping("/multiUpload")
 	public ResponseEntity<Void> multiUpload(@RequestParam("file") MultipartFile[] files,
-			@RequestParam("name") String[] name, @RequestParam("duration") String[] durations,
-			@RequestParam("image_path") String[] image_path, @RequestParam("releaseDate") String releaseDate,
-			@RequestParam(value = "imagefile", required = false) MultipartFile imagefile,
-			@RequestParam("writer") String[] writer, @RequestParam(value = "tag", required = false) Long[] tag)
-			throws Exception {
-
-//		System.out.println("name: "+name[0]+"이거 다음행 날짜값 나와야함");
-//		System.out.println(releaseDate);
-//		System.out.println(tag);
-
-//		tService.insertAlbum(files,name,durations,image_path,releaseDate,imagefile,writer,playlist);
+											@RequestParam("name") String[] name, 
+											@RequestParam("duration") String[] durations,
+											@RequestParam("image_path") String[] image_path, 
+											@RequestParam("releaseDate") String releaseDate,
+											@RequestParam(value = "titleImage", required = false) MultipartFile titleImage,
+											@RequestParam(value = "imagefile", required = false) MultipartFile[] imagefile,
+											@RequestParam("writer") String writer,
+											@RequestParam MultiValueMap<String, String> trackTags,
+											@RequestParam("login") String loginId)throws Exception {
+		 for (int i = 0; i < files.length; i++) {
+		        // 각 파일에 대한 태그 처리
+		        List<Long> tagIds = new ArrayList<>();
+		        for (String tagKey : trackTags.keySet()) {
+		            if (tagKey.startsWith("tags[" + i + "]")) {
+		                tagIds.addAll(trackTags.get(tagKey).stream()
+		                                .map(Long::parseLong)
+		                                .collect(Collectors.toList()));
+		            }
+		        }
+		       
+		        // imagefile이 null이 아닐 때만 imagefile[i]를 사용
+		        MultipartFile currentImageFile = null;
+		        if (imagefile != null && imagefile.length > i) {
+		            currentImageFile = imagefile[i];
+		        }
+		        
+		        // 각 파일에 대한 데이터 저장
+		        tService.insert(files[i], name[i], durations[i], image_path[0], 
+		        		currentImageFile, writer, tagIds.toArray(new Long[0]), 
+		                        releaseDate, loginId);
+		    }
 		return ResponseEntity.ok().build();
 	}
 
@@ -83,7 +109,7 @@ public class TrackController {
 
 	@DeleteMapping("/{track_id}")
 	public ResponseEntity<Void> deleteByIdTrack(@PathVariable Long track_id) {
-
+		
 		tService.deleteByIdTrack(track_id);
 		return ResponseEntity.ok().build();
 	}
