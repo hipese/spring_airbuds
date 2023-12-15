@@ -64,6 +64,8 @@ public class QnAController {
 	
 	@PostMapping("/reply")
 	public ResponseEntity<Void> getReplyPost(@RequestBody QnaAnswerDTO dto){
+		Instant time = Instant.now();
+		dto.setAnswerWriteDate(time);
 		qaService.insertAnswer(dto);
 		return ResponseEntity.ok().build();
 	}
