@@ -9,9 +9,9 @@ import com.kdt.domain.entity.MusicLike;
 import com.kdt.domain.entity.QnaFile;
 
 public interface MusicLikeRepository extends JpaRepository<MusicLike, Long>{
-	@Query("select ml from MusicLike ml where ml.Id = ?1%")
-	List<MusicLike> selectAllByName(String Id);
+	@Query("select ml from MusicLike ml where ml.userId = ?1%")
+	List<MusicLike> selectAllByName(String userId);
 	
-	@Query("select ml from MusicLike ml where ml.Id = ?1% and ml.trackId = ?2%")
-	List<MusicLike> selectAllByNameAndTrack(String Id, Long trackId);
+	@Query("select ml from MusicLike ml where ml.userId = ?1% and ml.trackId = ?2%")
+	List<MusicLike> selectAllByNameAndTrack(String userId, Long trackId);
 }
