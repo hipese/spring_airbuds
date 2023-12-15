@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 
 @Entity
 public class MusicLike {
@@ -19,6 +20,7 @@ public class MusicLike {
 	
 	@Column(name = "id")
 	private String Id;
+		
 
 	public MusicLike() {
 		super();
