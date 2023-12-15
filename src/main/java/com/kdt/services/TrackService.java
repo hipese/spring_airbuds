@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kdt.domain.entity.MusicTags;
@@ -151,14 +153,15 @@ public class TrackService {
 		
 	}
 	
-	public void multiUpload(MultipartFile[] files, 
-	 		   String[] name,
-			   String[] durations, 
-			   String[] image_path,
-			   MultipartFile imagefile, 
-			   String[] writer, 
-			   String[] tag)
-	throws Exception{
+	public void insertMultiUpload(MultipartFile[] files,
+								  String[] name, 
+								  String[] durations,
+								  String[] image_path, 
+								  String releaseDate,
+								  MultipartFile imagefile,
+								  String writer,
+								  MultiValueMap<String, String> trackTags,
+								  String loginId)throws Exception{
 		
 	}
 

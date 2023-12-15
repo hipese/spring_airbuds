@@ -1,34 +1,34 @@
 package com.kdt.dto;
 
-import java.security.Timestamp;
+
+import java.time.Instant;
 import java.util.Set;
 
 public class AlbumDTO {
-
 	private Long albumId;
 	private String title;
-	private Long artistId;
-	private Timestamp releaseDate;
-	private Long genreId;
+	private String artistId;
+	private Instant releaseDate;
 	private String coverImagePath;
-	private String writer;
 	private Set<TrackDTO> tracks;
+	private Set<AlbumWriterDTO> albumWriter;
+	private Set<AlbumTagDTO> albumTag;
 	
 	public AlbumDTO() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public AlbumDTO(Long albumId, String title, Long artistId, Timestamp releaseDate, Long genreId,
-			String coverImagePath, String writer, Set<TrackDTO> tracks) {
+	public AlbumDTO(Long albumId, String title, String artistId, Instant releaseDate, String coverImagePath,
+			Set<TrackDTO> tracks, Set<AlbumWriterDTO> albumWriter, Set<AlbumTagDTO> albumTag) {
 		super();
 		this.albumId = albumId;
 		this.title = title;
 		this.artistId = artistId;
 		this.releaseDate = releaseDate;
-		this.genreId = genreId;
 		this.coverImagePath = coverImagePath;
-		this.writer = writer;
 		this.tracks = tracks;
+		this.albumWriter = albumWriter;
+		this.albumTag = albumTag;
 	}
 	public Long getAlbumId() {
 		return albumId;
@@ -42,23 +42,17 @@ public class AlbumDTO {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public Long getArtistId() {
+	public String getArtistId() {
 		return artistId;
 	}
-	public void setArtistId(Long artistId) {
+	public void setArtistId(String artistId) {
 		this.artistId = artistId;
 	}
-	public Timestamp getReleaseDate() {
+	public Instant getReleaseDate() {
 		return releaseDate;
 	}
-	public void setReleaseDate(Timestamp releaseDate) {
+	public void setReleaseDate(Instant releaseDate) {
 		this.releaseDate = releaseDate;
-	}
-	public Long getGenreId() {
-		return genreId;
-	}
-	public void setGenreId(Long genreId) {
-		this.genreId = genreId;
 	}
 	public String getCoverImagePath() {
 		return coverImagePath;
@@ -66,19 +60,24 @@ public class AlbumDTO {
 	public void setCoverImagePath(String coverImagePath) {
 		this.coverImagePath = coverImagePath;
 	}
-	public String getWriter() {
-		return writer;
-	}
-	public void setWriter(String writer) {
-		this.writer = writer;
-	}
 	public Set<TrackDTO> getTracks() {
 		return tracks;
 	}
 	public void setTracks(Set<TrackDTO> tracks) {
 		this.tracks = tracks;
 	}
-	
+	public Set<AlbumWriterDTO> getAlbumWriter() {
+		return albumWriter;
+	}
+	public void setAlbumWriter(Set<AlbumWriterDTO> albumWriter) {
+		this.albumWriter = albumWriter;
+	}
+	public Set<AlbumTagDTO> getAlbumTag() {
+		return albumTag;
+	}
+	public void setAlbumTag(Set<AlbumTagDTO> albumTag) {
+		this.albumTag = albumTag;
+	}
 	
 	
 	
