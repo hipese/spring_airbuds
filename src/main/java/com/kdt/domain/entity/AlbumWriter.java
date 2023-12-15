@@ -17,23 +17,19 @@ public class AlbumWriter {
 	@Column(name="album_id")
 	private Long albumId;
 	
-	@Column(name="artist_id")
-	private String artistId;
-	
 	@Column(name="artist_nickname")
 	private String artistNickname;
 	
-	
+
 	public AlbumWriter() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public AlbumWriter(Long seq, Long albumId, String artistId, String artistNickname) {
+	public AlbumWriter(Long seq, Long albumId, String artistNickname) {
 		super();
 		this.seq = seq;
 		this.albumId = albumId;
-		this.artistId = artistId;
 		this.artistNickname = artistNickname;
 	}
 
@@ -51,14 +47,6 @@ public class AlbumWriter {
 
 	public void setAlbumId(Long albumId) {
 		this.albumId = albumId;
-	}
-
-	public String getArtistId() {
-		return artistId;
-	}
-
-	public void setArtistId(String artistId) {
-		this.artistId = artistId;
 	}
 
 	public String getArtistNickname() {

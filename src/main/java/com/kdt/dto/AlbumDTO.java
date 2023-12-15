@@ -1,26 +1,24 @@
 package com.kdt.dto;
 
-import java.security.Timestamp;
+
+import java.time.Instant;
 import java.util.Set;
 
 public class AlbumDTO {
-
 	private Long albumId;
 	private String title;
-	private Long artistId;
-	private Timestamp releaseDate;
+	private String artistId;
+	private Instant releaseDate;
 	private String coverImagePath;
 	private Set<TrackDTO> tracks;
 	private Set<AlbumWriterDTO> albumWriter;
 	private Set<AlbumTagDTO> albumTag;
 	
-	
 	public AlbumDTO() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	
-	public AlbumDTO(Long albumId, String title, Long artistId, Timestamp releaseDate, String coverImagePath,
+	public AlbumDTO(Long albumId, String title, String artistId, Instant releaseDate, String coverImagePath,
 			Set<TrackDTO> tracks, Set<AlbumWriterDTO> albumWriter, Set<AlbumTagDTO> albumTag) {
 		super();
 		this.albumId = albumId;
@@ -44,16 +42,16 @@ public class AlbumDTO {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public Long getArtistId() {
+	public String getArtistId() {
 		return artistId;
 	}
-	public void setArtistId(Long artistId) {
+	public void setArtistId(String artistId) {
 		this.artistId = artistId;
 	}
-	public Timestamp getReleaseDate() {
+	public Instant getReleaseDate() {
 		return releaseDate;
 	}
-	public void setReleaseDate(Timestamp releaseDate) {
+	public void setReleaseDate(Instant releaseDate) {
 		this.releaseDate = releaseDate;
 	}
 	public String getCoverImagePath() {
@@ -80,5 +78,7 @@ public class AlbumDTO {
 	public void setAlbumTag(Set<AlbumTagDTO> albumTag) {
 		this.albumTag = albumTag;
 	}
+	
+	
 	
 }

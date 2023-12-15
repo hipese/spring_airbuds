@@ -2,6 +2,7 @@ package com.kdt.controllers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kdt.services.AlbumService;
+import com.kdt.services.TrackService;
 
 @RestController
 @RequestMapping("/api/album")
@@ -22,6 +24,9 @@ public class AlbumController {
 
 	@Autowired
 	AlbumService aService;
+	
+	@Autowired
+	TrackService tService;
 	
 	@PostMapping
 	public ResponseEntity<Void> insertAlbum(@RequestParam("file") MultipartFile[] files, 
@@ -31,31 +36,13 @@ public class AlbumController {
 											@RequestParam("releaseDate") String releaseDate,
 											@RequestParam(value = "titleImage", required = false) MultipartFile titleImage,
 											@RequestParam("writer") String[] writers,
-											@RequestParam("albumselectTag") Long[] albumselectTag,
+											@RequestParam("albumselectTag" ) Long[] albumselectTag,
 											@RequestParam(value="order", required = false) String[] order,
 											@RequestParam("albumTitle") String albumTitle,
 											@RequestParam("login") String loginId,
 											@RequestParam MultiValueMap<String, String> trackTags)throws Exception{
-	
-
-	    System.out.println("Album Select Tags: " + Arrays.toString(albumselectTag));
 	    
-	 // tags 데이터 처리
-	    for (int i = 0; i < files.length; i++) {
-	        // 각 파일에 대한 태그 처리
-	        List<Long> tagIds = new ArrayList<>();
-	        for (String tagKey : trackTags.keySet()) {
-	            if (tagKey.startsWith("tags[" + i + "]")) {
-	                tagIds.addAll(trackTags.get(tagKey).stream()
-	                                .map(Long::parseLong)
-	                                .collect(Collectors.toList()));
-	            }
-	        }
-	        System.out.println("Tags for file " + i + ": " + tagIds);
-	        
-	    }
-		
-//		aService.insert(files,name,durations,image_path,releaseDate,titleImage,writer);
+//		aService.insertAlbum(files,name,durations,image_path,releaseDate,titleImage,writers,albumselectTag,order,albumTitle,loginId,trackTags);
 		return ResponseEntity.ok().build();
 	}
 	

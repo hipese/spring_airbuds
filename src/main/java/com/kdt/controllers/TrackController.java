@@ -52,11 +52,6 @@ public class TrackController {
 											@RequestParam("writer") String writer,
 											@RequestParam MultiValueMap<String, String> trackTags,
 											@RequestParam("login") String loginId)throws Exception {
-
-//		System.out.println("뭐로 가져옴 이미지"+image_path[0]);
-//		System.out.println(imagefile[0].getOriginalFilename()+" : "+imagefile[1].getOriginalFilename());
-		
-		System.out.println("이미지 파일 있냐?"+imagefile);
 		 for (int i = 0; i < files.length; i++) {
 		        // 각 파일에 대한 태그 처리
 		        List<Long> tagIds = new ArrayList<>();
