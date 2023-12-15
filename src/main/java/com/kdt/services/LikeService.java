@@ -22,8 +22,14 @@ public class LikeService {
 	private MusicLikeMapper mlMapper;
 	
 	public void insertFavorite(MusicLikeDTO dto) {
-		MusicLike ml = mlMapper.toEntity(dto);
-		mlRepo.save(ml);
+		List<MusicLike> mlList = mlRepo.selectAllByNameAndTrack(dto.getId(), dto.getTrackId());
+		if(mlList.size() > 0) {
+			return;
+		}else {
+			MusicLike ml = mlMapper.toEntity(dto);
+			mlRepo.save(ml);
+		}
+		
 	}
 	
 	public List<MusicLikeDTO> selectAllById(String id){
@@ -33,9 +39,12 @@ public class LikeService {
 	}
 
 	public void deleteFavorite(MusicLikeDTO dto) {
-		MusicLike ml = mlRepo.selectAllByNameAndTrack(dto.getId(), dto.getTrackId());
+		List<MusicLike> ml = mlRepo.selectAllByNameAndTrack(dto.getId(), dto.getTrackId());
 		if(ml != null) {
-			mlRepo.delete(ml);
+			for(MusicLike m : ml) {
+				mlRepo.delete(m);
+			}
+			
 		}
 	}
 

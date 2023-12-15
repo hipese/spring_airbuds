@@ -15,5 +15,5 @@ public interface MusicLikeRepository extends JpaRepository<MusicLike, Long>{
 	List<MusicLike> selectAllByName(String Id);
 	
 	@Query("select ml from MusicLike ml where ml.Id = ?1% and ml.trackId = ?2%")
-	MusicLike selectAllByNameAndTrack(String Id, Long trackId);
+	List<MusicLike> selectAllByNameAndTrack(String Id, Long trackId);
 }
