@@ -127,8 +127,4 @@ public class Album {
 	public void setAlbumTag(Set<AlbumTag> albumTag) {
 		this.albumTag = albumTag;
 	}
-	
-
-	
-	
 }

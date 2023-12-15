@@ -1,6 +1,7 @@
 package com.kdt.services;
 
 import java.io.File;
+import java.security.Principal;
 import java.sql.Time;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ public class AlbumService {
 
 	@Transactional
 	public void insertAlbum(MultipartFile[] files, String[] name, String[] durations, String[] image_path,
-			String releaseDate, MultipartFile titleImage, String[] writers, Long[] albumselectTag, String[] order,
+			String releaseDate, MultipartFile titleImage, String[] writers, Long[] albumselectTag, Long[] order,
 			String albumTitle, String loginId, MultiValueMap<String, String> trackTags) throws Exception {
 
 		File imagePath = new File("c:/tracks/image");
@@ -104,7 +105,6 @@ public class AlbumService {
 		
 //		각각의 track값을 같이 저장하는 기능
 		Set<Track> track = new HashSet<>();
-
 		for (int i = 0; i < files.length; i++) {
 //			음원 저장
 			if (files[i] != null) {
@@ -124,9 +124,9 @@ public class AlbumService {
 				TrackDTO dto = new TrackDTO();
 				dto.setTitle(name[i]);
 				dto.setAlbumId(entity.getAlbumId());
+				dto.setTrackNumber(order[i]);
 				dto.setDuration(durationTime);
 				dto.setFilePath(sys_filename);
-				dto.setTrackNumber(0L);
 				dto.setViewCount(0L);
 				dto.setWriter(writers[i]);
 				dto.setReleaseDate(Instant.parse(releaseDate));
@@ -140,15 +140,15 @@ public class AlbumService {
 	            for (Long tagId : tagIdsArray) {
 	                MusicTags musicTag = musicReop.findById(tagId).orElse(null);
 	                if (musicTag != null) {
-	                    TrackTag trackTag = new TrackTag();
-	                    trackTag.setMusicTags(musicTag);
-	                    trackTag.setTrack(trackEntity);
-	                    tagRepo.save(trackTag);
-	                    trackTags.add(trackTag);
+	                    TrackTag tag = new TrackTag();
+	                    tag.setMusicTags(musicTag);
+	                    tag.setTrack(trackEntity);
+	                    tagRepo.save(tag);
+	                    trackTag.add(tag);
 	                }
 	            }
 
-				trackEntity.setTrackTags(trackTags);
+				trackEntity.setTrackTags(trackTag);
 				savedTrack = tRepo.save(trackEntity);
 
 //				set에 track값을 저장
@@ -187,14 +187,13 @@ public class AlbumService {
 
 		}
 
-
 //		엘범 태그값 저장
 		Set<AlbumTag> albumtags = new HashSet<>();
 		for (int i = 0; i < albumselectTag.length; i++) {
 			AlbumTagList albumtaglist = atlRepo.findById(albumselectTag[i]).get();
 			AlbumTag albumtag = new AlbumTag();
 			albumtag.setAlbumTagList(albumtaglist);
-			albumtag.setAlbumId(entity);
+			albumtag.setAlbum(savaAlum);
 
 			atRepo.save(albumtag);
 			albumtags.add(albumtag);
@@ -217,6 +216,14 @@ public class AlbumService {
 		entity.setAlbumWriter(albumWriters);
 
 		aRepo.save(entity);
+	}
+	
+	public List<AlbumDTO> selectByLoginId(Principal principal){
+		String artist_id=principal.getName();
+		
+		List<Album> entity=aRepo.findAllByArtistIdStartingWith(artist_id);
+		List<AlbumDTO> dtos=aMapper.toDtoList(entity);
+		return dtos;
 	}
 
 	private String convertSecondsToTimeString(long seconds) {

@@ -19,23 +19,22 @@ public class AlbumTag {
 	
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="album_id")
-	private Album albumId;
+	private Album album;
 	
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="tag_id")
 	private AlbumTagList albumTagList;
 
 	
-	
 	public AlbumTag() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public AlbumTag(Long id, Album albumId, AlbumTagList albumTagList) {
+	public AlbumTag(Long id, Album album, AlbumTagList albumTagList) {
 		super();
 		this.id = id;
-		this.albumId = albumId;
+		this.album = album;
 		this.albumTagList = albumTagList;
 	}
 
@@ -47,12 +46,12 @@ public class AlbumTag {
 		this.id = id;
 	}
 
-	public Album getAlbumId() {
-		return albumId;
+	public Album getAlbum() {
+		return album;
 	}
 
-	public void setAlbumId(Album albumId) {
-		this.albumId = albumId;
+	public void setAlbum(Album album) {
+		this.album = album;
 	}
 
 	public AlbumTagList getAlbumTagList() {
@@ -62,5 +61,9 @@ public class AlbumTag {
 	public void setAlbumTagList(AlbumTagList albumTagList) {
 		this.albumTagList = albumTagList;
 	}
+
+	
+	
+	
 	
 }
