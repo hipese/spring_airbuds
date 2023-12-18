@@ -24,9 +24,6 @@ public class PlaylistController {
 	@Autowired
 	private PlaylistService plServ;
 	
-	@Autowired
-	private HttpSession session;
-	
 	@PostMapping
 	public ResponseEntity<Void> insert(Principal principal, @RequestBody PlaylistDTO pldto) {
 		String userId = principal.getName();
