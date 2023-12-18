@@ -1,6 +1,9 @@
 package com.kdt.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.kdt.domain.entity.CurrentPlayList;
@@ -13,13 +16,19 @@ public class CurrentPlayListService {
 
 	@Autowired
 	private CurrentPlayListRepository cpRepo;
-	
+
 	@Autowired
 	private CurrentPlayListMapper cpMapper;
-	
-	public void insert(CurrentPlayListDTO dto) throws Exception{
-	    CurrentPlayList cplist = cpMapper.toEntity(dto);
-	    cpRepo.save(cplist);
+
+	public void insert(CurrentPlayListDTO dto) throws Exception {
+		CurrentPlayList cplist = cpMapper.toEntity(dto);
+		cpRepo.save(cplist);
+	}
+
+	public List<CurrentPlayListDTO> selectById(String id) {
+		List<CurrentPlayList> playlists = cpRepo.findAllByIdStartingWith(id, Sort.by(Sort.Order.desc("seq")));
+		List<CurrentPlayListDTO> dtos = cpMapper.toDtoList(playlists);
+		return dtos;
 	}
 
 }
