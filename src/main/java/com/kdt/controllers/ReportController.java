@@ -9,14 +9,16 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kdt.dto.MemberDTO;
 import com.kdt.dto.ReportAnswerDTO;
 import com.kdt.dto.ReportDTO;
-import com.kdt.dto.ReportDTO;
+import com.kdt.services.MemberService;
 import com.kdt.services.ReportAnswerService;
 import com.kdt.services.ReportService;
 
@@ -29,6 +31,9 @@ public class ReportController {
 
 	@Autowired
 	private ReportAnswerService raService;
+	
+	@Autowired
+	private MemberService mService;
 
 	// 신고 insert
 	@PostMapping
@@ -59,7 +64,7 @@ public class ReportController {
 		return ResponseEntity.ok(list);
 	}
 
-	@PostMapping("/reply")
+	@PostMapping("/answer")
 	public ResponseEntity<Void> getReplyPost(@RequestBody ReportAnswerDTO dto){
 		Instant time = Instant.now();
 		dto.setReportAnswerWriteDate(time);
@@ -67,7 +72,7 @@ public class ReportController {
 		return ResponseEntity.ok().build();
 	}
 
-	@GetMapping("/replylist/{seq}")
+	@GetMapping("/answerlist/{seq}")
 	public ResponseEntity<List<ReportAnswerDTO>> getReplyList(@PathVariable Long seq){
 		List<ReportAnswerDTO> list = raService.selectReplies(seq);
 		return ResponseEntity.ok(list);
@@ -87,8 +92,16 @@ public class ReportController {
 
 	// 이메일로 안내메시지를 전송하는
 	@PostMapping("/notice")
-	public ResponseEntity<String> register(@RequestParam String email, @RequestParam String contents) {
-		rService.sendEmail(email, contents);
+	public ResponseEntity<String> notice(@RequestParam String id, @RequestParam String contents) {
+		MemberDTO dto = mService.findEmail(id);
+		rService.sendEmail(dto.getEmail(), contents);
+		return ResponseEntity.ok("success");
+	}
+	
+	// 답변 완료
+	@PutMapping("/state/{reportSeq}")
+	public ResponseEntity<String> changeState(@PathVariable Long reportSeq) {
+		rService.changeState(reportSeq);
 		return ResponseEntity.ok("success");
 	}
 }

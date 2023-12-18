@@ -58,10 +58,8 @@ public class ReportService {
 				raRepo.delete(qa);
 			}
 		}
-		
 		//Post Delete
-		rRepo.delete(Report);
-		
+		rRepo.delete(Report);	
 	}
 	
 	// 내용 전송 메서드
@@ -95,5 +93,15 @@ public class ReportService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	// 답변 완료
+	public void changeState(Long reportSeq) {
+		Report r = rRepo.findById(reportSeq).get();
+		ReportDTO dto = new ReportDTO();
+		dto.setReportAnswerState(1L);
+		
+		rMapper.updateEntityFromDto(dto, r);
+		rRepo.save(r);	
 	}
 }
