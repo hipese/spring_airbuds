@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kdt.dto.LikeTrackViewDTO;
 import com.kdt.dto.TrackDTO;
 import com.kdt.services.TrackService;
 
@@ -132,6 +133,12 @@ public class TrackController {
 		
 		tService.deleteByIdTrack(track_id);
 		return ResponseEntity.ok().build();
+	}
+	
+	@GetMapping("/like_count/{write_id}")
+	public ResponseEntity<List<LikeTrackViewDTO>> getLikeTrack(@PathVariable String write_id){
+		List<LikeTrackViewDTO> list = tService.getTrackLike(write_id);
+		return ResponseEntity.ok(list);
 	}
 
 }
