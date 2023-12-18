@@ -24,15 +24,15 @@ public class LikenFollowController {
 	private LikeService lService;
 	
 	@PostMapping
-	public ResponseEntity<String> addFavorite(MusicLikeDTO dto){
-		System.out.println(dto.getTrackId());
-		if(dto.getId().equals("")) {
+	public ResponseEntity<Long> addFavorite(MusicLikeDTO dto){
+		if(dto.getUserId().equals("")) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
-		System.out.println(dto.getId());
-		lService.insertFavorite(dto);
+		System.out.println("userid"+dto.getUserId());
+		System.out.println("trackid"+dto.getTrackId());
+		Long seq = lService.insertFavorite(dto);
 		
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok(seq);
 	}
 	
 	@GetMapping("/{id}")
@@ -43,7 +43,7 @@ public class LikenFollowController {
 	
 	@PostMapping("/delete")
 	public ResponseEntity<String> deleteFavorite(MusicLikeDTO dto){
-		System.out.println(dto.getId());
+		System.out.println(dto.getUserId());
 		lService.deleteFavorite(dto);
 		return ResponseEntity.ok(null);
 	}
