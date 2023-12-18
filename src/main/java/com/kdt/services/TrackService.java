@@ -1,9 +1,9 @@
 package com.kdt.services;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Time;
 import java.time.Instant;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kdt.domain.entity.MusicTags;
@@ -153,18 +151,66 @@ public class TrackService {
 		
 	}
 	
-	public void insertMultiUpload(MultipartFile[] files,
-								  String[] name, 
-								  String[] durations,
-								  String[] image_path, 
-								  String releaseDate,
-								  MultipartFile imagefile,
-								  String writer,
-								  MultiValueMap<String, String> trackTags,
-								  String loginId)throws Exception{
+	
+	@Transactional
+	public void updateTrack(Long trackId, 
+							String title, 
+							String previmagePath,
+							MultipartFile imagefile,
+							String writer, 
+							Long[] tag) throws Exception {
+		
+		Track entity=tRepo.findById(trackId).get();
+		entity.setTitle(title);
+		entity.setWriter(writer);
+		
+//		변경된 이미지가 있으면 교체
+		if(imagefile!=null) {
+			TrackImages ientity=imageRepo.findById(trackId).get();
+			
+			File imagePath = new File("c:/tracks/image");
+			if (!imagePath.exists()) {
+				imagePath.mkdir();
+			}
+//			기존에 존재하는 이미지를 삭제
+		    if(previmagePath != null && !previmagePath.isEmpty()) {
+		        File prevImageFile = new File(imagePath, previmagePath);
+		        if(prevImageFile.exists()) {
+		            boolean isDeleted = prevImageFile.delete();
+		            if(!isDeleted) {
+		                throw new IOException("Failed to delete existing image file: " + prevImageFile.getAbsolutePath());
+		            }
+		        }
+		    }
+			
+//			새로운 이미지를 저장 이미지를 삭제
+			 MultipartFile imgFile = imagefile;
+		     String imageName = imgFile.getOriginalFilename();
+		     String sys_imageName = UUID.randomUUID().toString() + "_" + imageName;
+		     File destImageFile = new File(imagePath, sys_imageName);
+		     imgFile.transferTo(destImageFile);
+
+			
+//			경로 교체
+			ientity.setImagePath(sys_imageName);
+			imageRepo.save(ientity);
+		}
+		
+		Set<TrackTag> trackTags = new HashSet<>();
+		for(int i=0;i<tag.length;i++) {
+			MusicTags mentity=musicReop.findById(tag[i]).get();
+			
+			TrackTag tracktag=new TrackTag();
+			tracktag.setMusicTags(mentity);
+			tracktag.setTrack(entity);
+			
+			tagRepo.save(tracktag);
+			trackTags.add(tracktag);
+		}
+		entity.setTrackTags(trackTags);
 		
 	}
-
+	
 	public List<TrackDTO> selectAll() {
 		List<Track> entity = tRepo.findAllByFetchJoin();
 		List<TrackDTO> dtos = tMapper.toDtoList(entity);
