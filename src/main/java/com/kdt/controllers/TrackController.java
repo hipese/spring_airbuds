@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kdt.dto.LikeTrackViewDTO;
 import com.kdt.dto.TrackDTO;
 import com.kdt.services.TrackService;
 
@@ -76,7 +77,25 @@ public class TrackController {
 		    }
 		return ResponseEntity.ok().build();
 	}
-
+	
+	
+	@PostMapping("/update")
+	public ResponseEntity<TrackDTO> updateTrack(@RequestParam("trackId") Long trackId, 
+											@RequestParam("title") String title, 
+											@RequestParam("previmagePath") String previmagePath,
+											@RequestParam(value = "imagefile", required = false) MultipartFile imagefile,
+											@RequestParam("writer") String writer, 
+											@RequestParam(value = "tags", required = false)  Long[] tag)throws Exception{
+		
+		
+		System.out.println(trackId);
+		
+		TrackDTO dto=tService.updateTrack(trackId,title,previmagePath,imagefile,writer,tag);
+		
+		return ResponseEntity.ok(dto);
+	}
+	
+	
 	@GetMapping
 	public ResponseEntity<List<TrackDTO>> selectAll() {
 		List<TrackDTO> dtos = tService.selectAll();
@@ -106,12 +125,20 @@ public class TrackController {
 		List<TrackDTO> dtos = tService.recentAll();
 		return ResponseEntity.ok(dtos);
 	}
+	
+	
 
 	@DeleteMapping("/{track_id}")
 	public ResponseEntity<Void> deleteByIdTrack(@PathVariable Long track_id) {
 		
 		tService.deleteByIdTrack(track_id);
 		return ResponseEntity.ok().build();
+	}
+	
+	@GetMapping("/like_count/{write_id}")
+	public ResponseEntity<List<LikeTrackViewDTO>> getLikeTrack(@PathVariable String write_id){
+		List<LikeTrackViewDTO> list = tService.getTrackLike(write_id);
+		return ResponseEntity.ok(list);
 	}
 
 }
