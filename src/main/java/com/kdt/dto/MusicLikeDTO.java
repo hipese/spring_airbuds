@@ -1,19 +1,14 @@
 package com.kdt.dto;
 
+import java.util.Set;
+
+import com.kdt.domain.entity.Track;
+
 public class MusicLikeDTO {
 
 	private Long likeSeq;
 	private String userId;
 	private Long trackId;
-	public MusicLikeDTO() {
-		super();
-	}
-	public MusicLikeDTO(Long likeSeq, String userId, Long trackId) {
-		super();
-		this.likeSeq = likeSeq;
-		this.userId = userId;
-		this.trackId = trackId;
-	}
 	public Long getLikeSeq() {
 		return likeSeq;
 	}
@@ -31,6 +26,13 @@ public class MusicLikeDTO {
 	}
 	public void setTrackId(Long trackId) {
 		this.trackId = trackId;
+	}
+	public MusicLikeDTO(Long likeSeq, String userId, Long trackId) {
+		this.likeSeq = likeSeq;
+		this.userId = userId;
+		this.trackId = trackId;
+	}
+	public MusicLikeDTO() {
 	}
 	
 	

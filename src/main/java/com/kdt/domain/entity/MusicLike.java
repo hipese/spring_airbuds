@@ -54,5 +54,6 @@ public class MusicLike {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
+
 	
 }
