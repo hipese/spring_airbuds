@@ -1,15 +1,14 @@
 package com.kdt.controllers;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,15 +23,15 @@ public class LikenFollowController {
 	private LikeService lService;
 	
 	@PostMapping
-	public ResponseEntity<String> addFavorite(MusicLikeDTO dto){
-		System.out.println(dto.getTrackId());
-		if(dto.getId().equals("")) {
+	public ResponseEntity<Long> addFavorite(MusicLikeDTO dto){
+		if(dto.getUserId().equals("")) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
-		System.out.println(dto.getId());
-		lService.insertFavorite(dto);
+		System.out.println("userid"+dto.getUserId());
+		System.out.println("trackid"+dto.getTrackId());
+		Long seq = lService.insertFavorite(dto);
 		
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok(seq);
 	}
 	
 	@GetMapping("/{id}")
@@ -43,7 +42,7 @@ public class LikenFollowController {
 	
 	@PostMapping("/delete")
 	public ResponseEntity<String> deleteFavorite(MusicLikeDTO dto){
-		System.out.println(dto.getId());
+		System.out.println(dto.getUserId());
 		lService.deleteFavorite(dto);
 		return ResponseEntity.ok(null);
 	}
