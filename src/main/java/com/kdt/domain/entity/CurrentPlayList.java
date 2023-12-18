@@ -26,7 +26,7 @@ public class CurrentPlayList {
 	private String id;
 	
 	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name="track_id")
+	@JoinColumn(name="track_id", referencedColumnName = "track_id")
 	private Set<Track> tracks;
 
 	public Long getSeq() {
