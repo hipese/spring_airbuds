@@ -77,7 +77,25 @@ public class TrackController {
 		    }
 		return ResponseEntity.ok().build();
 	}
-
+	
+	
+	@PostMapping("/update")
+	public ResponseEntity<TrackDTO> updateTrack(@RequestParam("trackId") Long trackId, 
+											@RequestParam("title") String title, 
+											@RequestParam("previmagePath") String previmagePath,
+											@RequestParam(value = "imagefile", required = false) MultipartFile imagefile,
+											@RequestParam("writer") String writer, 
+											@RequestParam(value = "tags", required = false)  Long[] tag)throws Exception{
+		
+		
+		System.out.println(trackId);
+		
+		TrackDTO dto=tService.updateTrack(trackId,title,previmagePath,imagefile,writer,tag);
+		
+		return ResponseEntity.ok(dto);
+	}
+	
+	
 	@GetMapping
 	public ResponseEntity<List<TrackDTO>> selectAll() {
 		List<TrackDTO> dtos = tService.selectAll();
@@ -107,6 +125,8 @@ public class TrackController {
 		List<TrackDTO> dtos = tService.recentAll();
 		return ResponseEntity.ok(dtos);
 	}
+	
+	
 
 	@DeleteMapping("/{track_id}")
 	public ResponseEntity<Void> deleteByIdTrack(@PathVariable Long track_id) {
