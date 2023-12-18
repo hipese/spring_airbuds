@@ -3,15 +3,15 @@ package com.kdt.dto;
 public class MusicLikeDTO {
 
 	private Long likeSeq;
-	private String Id;
+	private String userId;
 	private Long trackId;
 	public MusicLikeDTO() {
 		super();
 	}
-	public MusicLikeDTO(Long likeSeq, String id, Long trackId) {
+	public MusicLikeDTO(Long likeSeq, String userId, Long trackId) {
 		super();
 		this.likeSeq = likeSeq;
-		Id = id;
+		this.userId = userId;
 		this.trackId = trackId;
 	}
 	public Long getLikeSeq() {
@@ -20,11 +20,11 @@ public class MusicLikeDTO {
 	public void setLikeSeq(Long likeSeq) {
 		this.likeSeq = likeSeq;
 	}
-	public String getId() {
-		return Id;
+	public String getUserId() {
+		return userId;
 	}
-	public void setId(String id) {
-		Id = id;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 	public Long getTrackId() {
 		return trackId;

@@ -5,7 +5,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 
 @Entity
 public class MusicLike {
@@ -19,18 +18,17 @@ public class MusicLike {
 	private Long trackId;
 	
 	@Column(name = "id")
-	private String Id;
-		
+	private String userId;
 
 	public MusicLike() {
 		super();
 	}
 
-	public MusicLike(Long likeSeq, Long trackId, String id) {
+	public MusicLike(Long likeSeq, Long trackId, String userId) {
 		super();
 		this.likeSeq = likeSeq;
 		this.trackId = trackId;
-		Id = id;
+		this.userId = userId;
 	}
 
 	public Long getLikeSeq() {
@@ -49,13 +47,12 @@ public class MusicLike {
 		this.trackId = trackId;
 	}
 
-	public String getId() {
-		return Id;
+	public String getUserId() {
+		return userId;
 	}
 
-	public void setId(String id) {
-		Id = id;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
-
 	
 }
