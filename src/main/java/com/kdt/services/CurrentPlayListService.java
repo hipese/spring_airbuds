@@ -3,8 +3,10 @@ package com.kdt.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.kdt.domain.entity.CurrentPlayList;
 import com.kdt.dto.CurrentPlayListDTO;
@@ -20,15 +22,21 @@ public class CurrentPlayListService {
 	@Autowired
 	private CurrentPlayListMapper cpMapper;
 
-	public void insert(CurrentPlayListDTO dto) throws Exception {
-		CurrentPlayList cplist = cpMapper.toEntity(dto);
-		cpRepo.save(cplist);
+	 @Transactional
+	    public void insert(CurrentPlayListDTO dto) throws Exception {
+	        // 삭제
+	        cpRepo.deleteByIdAndTrackId(dto.getId(), dto.getTrackId());
+
+	        // 삽입
+	        cpRepo.insertCurrentPlayList(dto.getSeq(), dto.getTrackId(), dto.getId());
+	    }
+
+	public List<CurrentPlayListDTO> selectById(String id, int page, int pageSize) {
+	    PageRequest pageRequest = PageRequest.of(page, pageSize, Sort.by(Sort.Order.desc("seq")));
+	    List<CurrentPlayList> playlists = cpRepo.findAllByIdStartingWith(id, pageRequest);
+	    List<CurrentPlayListDTO> dtos = cpMapper.toDtoList(playlists);
+	    return dtos;
 	}
 
-	public List<CurrentPlayListDTO> selectById(String id) {
-		List<CurrentPlayList> playlists = cpRepo.findAllByIdStartingWith(id, Sort.by(Sort.Order.desc("seq")));
-		List<CurrentPlayListDTO> dtos = cpMapper.toDtoList(playlists);
-		return dtos;
-	}
 
 }
