@@ -7,7 +7,7 @@ import com.kdt.domain.entity.Track;
 public class MusicLikeDTO {
 
 	private Long likeSeq;
-	private String id;
+	private String userId;
 	private Long trackId;
 	public Long getLikeSeq() {
 		return likeSeq;
@@ -15,11 +15,11 @@ public class MusicLikeDTO {
 	public void setLikeSeq(Long likeSeq) {
 		this.likeSeq = likeSeq;
 	}
-	public String getId() {
-		return id;
+	public String getUserId() {
+		return userId;
 	}
-	public void setId(String id) {
-		this.id = id;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 	public Long getTrackId() {
 		return trackId;
@@ -27,12 +27,13 @@ public class MusicLikeDTO {
 	public void setTrackId(Long trackId) {
 		this.trackId = trackId;
 	}
-	public MusicLikeDTO(Long likeSeq, String id, Long trackId) {
+	public MusicLikeDTO(Long likeSeq, String userId, Long trackId) {
 		this.likeSeq = likeSeq;
-		this.id = id;
+		this.userId = userId;
 		this.trackId = trackId;
 	}
 	public MusicLikeDTO() {
 	}
+	
 	
 }

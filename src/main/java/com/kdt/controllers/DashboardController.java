@@ -24,9 +24,22 @@ public class DashboardController {
 	@Autowired
 	private DashboardService dService;
 	
-	@GetMapping
+	@GetMapping("/report")
 	public ResponseEntity<List<HashMap<String,Object>>> getReport(){
 		List<Map<String,Object>> list = dService.getList();
+		List<HashMap<String, Object>> resultList = new ArrayList<>();
+
+        for (Map<String, Object> originalMap : list) {
+            HashMap<String, Object> resultMap = new HashMap<>(originalMap);
+            resultList.add(resultMap);
+        }
+		
+		return ResponseEntity.ok(resultList);
+	}
+	
+	@GetMapping("/music")
+	public ResponseEntity<List<HashMap<String,Object>>> getMusic(){
+		List<Map<String,Object>> list = dService.getMusicData();
 		List<HashMap<String, Object>> resultList = new ArrayList<>();
 
         for (Map<String, Object> originalMap : list) {

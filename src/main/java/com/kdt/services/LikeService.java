@@ -21,25 +21,26 @@ public class LikeService {
 	@Autowired
 	private MusicLikeMapper mlMapper;
 	
-	public void insertFavorite(MusicLikeDTO dto) {
-		List<MusicLike> mlList = mlRepo.selectAllByNameAndTrack(dto.getId(), dto.getTrackId());
+	public Long insertFavorite(MusicLikeDTO dto) {
+		List<MusicLike> mlList = mlRepo.selectAllByNameAndTrack(dto.getUserId(), dto.getTrackId());
 		if(mlList.size() > 0) {
-			return;
+			return null;
 		}else {
 			MusicLike ml = mlMapper.toEntity(dto);
-			mlRepo.save(ml);
-		}
+			Long likeseq = mlRepo.save(ml).getLikeSeq();
+			return likeseq;
+		}		
 		
 	}
 	
-	public List<MusicLikeDTO> selectAllById(String id){
-		List<MusicLike> list = mlRepo.selectAllByName(id);
+	public List<MusicLikeDTO> selectAllById(String userId){
+		List<MusicLike> list = mlRepo.selectAllByName(userId);
 		List<MusicLikeDTO> dto = mlMapper.toDtoList(list);
 		return dto;
 	}
 
 	public void deleteFavorite(MusicLikeDTO dto) {
-		List<MusicLike> ml = mlRepo.selectAllByNameAndTrack(dto.getId(), dto.getTrackId());
+		List<MusicLike> ml = mlRepo.selectAllByNameAndTrack(dto.getUserId(), dto.getTrackId());
 		if(ml != null) {
 			for(MusicLike m : ml) {
 				mlRepo.delete(m);

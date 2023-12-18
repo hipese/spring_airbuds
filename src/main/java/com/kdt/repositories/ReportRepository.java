@@ -12,5 +12,5 @@ import com.kdt.domain.entity.Report;
 public interface ReportRepository extends JpaRepository<Report, Long>{
 	
 	@Query("SELECT function('YEAR',r.reportWriteDate) AS year, function('MONTH',r.reportWriteDate) AS month, function('COUNT',r) AS count FROM Report r GROUP BY function('YEAR',r.reportWriteDate), function('MONTH',r.reportWriteDate) ORDER BY function('YEAR',r.reportWriteDate), function('MONTH',r.reportWriteDate)")
-	public List<Map<String, Object>> selectReportByMonth();
+	List<Map<String, Object>> selectReportByMonth();
 }

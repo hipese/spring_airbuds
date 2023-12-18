@@ -1,6 +1,7 @@
 package com.kdt.domain.entity;
 
-import java.security.Timestamp;
+
+import java.sql.Timestamp;
 import java.util.Set;
 
 import jakarta.persistence.CascadeType;
@@ -24,41 +25,43 @@ public class Album {
 	private String title;
 	
 	@Column(name="artist_id")
-	private Long artistId;
+	private String artistId;
 	
 	@Column(name="release_date")
 	private Timestamp releaseDate;
 	
-	@Column(name="genre_id")
-	private Long genreId;
-	
 	@Column(name="cover_image_path")
 	private String coverImagePath;
-	
-	@Column(name="writer")
-	private String writer;
 	
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name="album_id")
 	private Set<Track> tracks;
-
 	
-	public Album(Long albumId, String title, Long artistId, Timestamp releaseDate, Long genreId, String coverImagePath,
-			String writer, Set<Track> tracks) {
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name="album_id")
+	private Set<AlbumWriter> albumWriter;
+	
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name="album_id")
+	private Set<AlbumTag> albumTag;
+	
+
+	public Album() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public Album(Long albumId, String title, String artistId, Timestamp releaseDate, String coverImagePath,
+			Set<Track> tracks, Set<AlbumWriter> albumWriter, Set<AlbumTag> albumTag) {
 		super();
 		this.albumId = albumId;
 		this.title = title;
 		this.artistId = artistId;
 		this.releaseDate = releaseDate;
-		this.genreId = genreId;
 		this.coverImagePath = coverImagePath;
-		this.writer = writer;
 		this.tracks = tracks;
-	}
-
-	public Album() {
-		super();
-		// TODO Auto-generated constructor stub
+		this.albumWriter = albumWriter;
+		this.albumTag = albumTag;
 	}
 
 	public Long getAlbumId() {
@@ -77,11 +80,11 @@ public class Album {
 		this.title = title;
 	}
 
-	public Long getArtistId() {
+	public String getArtistId() {
 		return artistId;
 	}
 
-	public void setArtistId(Long artistId) {
+	public void setArtistId(String artistId) {
 		this.artistId = artistId;
 	}
 
@@ -93,28 +96,12 @@ public class Album {
 		this.releaseDate = releaseDate;
 	}
 
-	public Long getGenreId() {
-		return genreId;
-	}
-
-	public void setGenreId(Long genreId) {
-		this.genreId = genreId;
-	}
-
 	public String getCoverImagePath() {
 		return coverImagePath;
 	}
 
 	public void setCoverImagePath(String coverImagePath) {
 		this.coverImagePath = coverImagePath;
-	}
-
-	public String getWriter() {
-		return writer;
-	}
-
-	public void setWriter(String writer) {
-		this.writer = writer;
 	}
 
 	public Set<Track> getTracks() {
@@ -124,7 +111,20 @@ public class Album {
 	public void setTracks(Set<Track> tracks) {
 		this.tracks = tracks;
 	}
-	
-	
-	
+
+	public Set<AlbumWriter> getAlbumWriter() {
+		return albumWriter;
+	}
+
+	public void setAlbumWriter(Set<AlbumWriter> albumWriter) {
+		this.albumWriter = albumWriter;
+	}
+
+	public Set<AlbumTag> getAlbumTag() {
+		return albumTag;
+	}
+
+	public void setAlbumTag(Set<AlbumTag> albumTag) {
+		this.albumTag = albumTag;
+	}
 }
