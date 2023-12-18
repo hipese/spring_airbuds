@@ -7,8 +7,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import com.kdt.domain.entity.Report;
+import com.kdt.domain.entity.ReportAnswer;
 import com.kdt.dto.ReportDTO;
+import com.kdt.mappers.ReportAnswerMapper;
 import com.kdt.mappers.ReportMapper;
+import com.kdt.repositories.ReportAnswerRepository;
 import com.kdt.repositories.ReportRepository;
 
 import jakarta.mail.internet.InternetAddress;
@@ -25,15 +28,42 @@ public class ReportService {
 	private ReportMapper rMapper;
 	
 	@Autowired
+	private ReportAnswerRepository raRepo;
+	
+	@Autowired
+	private ReportAnswerMapper raMapper;
+	
+	@Autowired
 	private JavaMailSender javaMailSender;
 	
-	// 
 	public List<ReportDTO> selectAll(){
 		List<Report> list = rRepo.findAll();
 		List<ReportDTO> dtos = rMapper.toDtoList(list);
 		return dtos;
 	}
 
+	public ReportDTO getContents(Long seq) throws Exception{
+		Report Report = rRepo.findById(seq).get();
+		ReportDTO dto = rMapper.toDto(Report);
+		return dto;
+	}
+	
+	public void deletePost(Long seq) throws Exception{
+		Report Report = rRepo.findById(seq).get();
+		
+		//Answer delete
+		List<ReportAnswer> qaList = raRepo.selectAllByParentSeq(seq);
+		if(qaList.size() > 0) {
+			for(ReportAnswer qa : qaList) {
+				raRepo.delete(qa);
+			}
+		}
+		
+		//Post Delete
+		rRepo.delete(Report);
+		
+	}
+	
 	// 내용 전송 메서드
 	public void sendEmail(String email, String contents) {
 		try {

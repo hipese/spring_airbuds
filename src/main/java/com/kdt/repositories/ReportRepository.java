@@ -12,6 +12,10 @@ public interface ReportRepository extends JpaRepository<Report, Long>{
 	
 	// 신고 월별 데이터 산출
 	@Query("SELECT function('YEAR',r.reportWriteDate) AS year, function('MONTH',r.reportWriteDate) AS month, function('COUNT',r) AS count FROM Report r GROUP BY function('YEAR',r.reportWriteDate), function('MONTH',r.reportWriteDate) ORDER BY function('YEAR',r.reportWriteDate), function('MONTH',r.reportWriteDate)")
+<<<<<<< HEAD
 	public List<Map<String, Object>> selectReportByMonth();
 	
+=======
+	List<Map<String, Object>> selectReportByMonth();
+>>>>>>> da25d8e048171c0bd3ceb601aba68bc4ea94f4db
 }
