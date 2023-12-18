@@ -80,7 +80,7 @@ public class TrackController {
 	
 	
 	@PostMapping("/update")
-	public ResponseEntity<Void> updateTrack(@RequestParam("trackId") Long trackId, 
+	public ResponseEntity<TrackDTO> updateTrack(@RequestParam("trackId") Long trackId, 
 											@RequestParam("title") String title, 
 											@RequestParam("previmagePath") String previmagePath,
 											@RequestParam(value = "imagefile", required = false) MultipartFile imagefile,
@@ -90,9 +90,9 @@ public class TrackController {
 		
 		System.out.println(trackId);
 		
-		tService.updateTrack(trackId,title,previmagePath,imagefile,writer,tag);
+		TrackDTO dto=tService.updateTrack(trackId,title,previmagePath,imagefile,writer,tag);
 		
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok(dto);
 	}
 	
 	

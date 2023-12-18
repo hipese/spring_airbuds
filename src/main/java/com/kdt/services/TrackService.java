@@ -112,8 +112,7 @@ public class TrackService {
 			Set<TrackTag> trackTags = new HashSet<>();
 			
 			for(int j = 0; j < tag.length; j++) {
-				System.out.println("MuiscTag에서 id 값: "+tag[j]);
-
+				
 //				muisctag에 존재하는 tag와 알맞은 값
 				MusicTags musictag=musicReop.findById(tag[j]).get();
 				
@@ -162,7 +161,7 @@ public class TrackService {
 	
 	
 	@Transactional
-	public void updateTrack(Long trackId, 
+	public TrackDTO updateTrack(Long trackId, 
 							String title, 
 							String previmagePath,
 							MultipartFile imagefile,
@@ -175,7 +174,7 @@ public class TrackService {
 		
 //		변경된 이미지가 있으면 교체
 		if(imagefile!=null) {
-			TrackImages ientity=imageRepo.findById(trackId).get();
+			TrackImages ientity=imageRepo.findByTrackImagesTrackId(trackId);
 			
 			File imagePath = new File("c:/tracks/image");
 			if (!imagePath.exists()) {
@@ -202,9 +201,15 @@ public class TrackService {
 			
 //			경로 교체
 			ientity.setImagePath(sys_imageName);
+			
+			
 			imageRepo.save(ientity);
 		}
 		
+//		기존에 있는 trackTags전부 삭제 
+		tagRepo.deleteAllByTrackTagTrackId(trackId);
+	
+//		그 후 다시 설정
 		Set<TrackTag> trackTags = new HashSet<>();
 		for(int i=0;i<tag.length;i++) {
 			MusicTags mentity=musicReop.findById(tag[i]).get();
@@ -217,6 +222,9 @@ public class TrackService {
 			trackTags.add(tracktag);
 		}
 		entity.setTrackTags(trackTags);
+		tRepo.save(entity);
+		
+		return tMapper.toDto(entity);
 		
 	}
 	
