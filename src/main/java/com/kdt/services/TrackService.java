@@ -17,14 +17,18 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kdt.domain.entity.LikeTrackView;
 import com.kdt.domain.entity.MusicTags;
 import com.kdt.domain.entity.Track;
 import com.kdt.domain.entity.TrackImages;
 import com.kdt.domain.entity.TrackTag;
+import com.kdt.dto.LikeTrackViewDTO;
 import com.kdt.dto.TrackDTO;
 import com.kdt.dto.TrackImageDTO;
+import com.kdt.mappers.LikeTrackViewMapper;
 import com.kdt.mappers.TrackImageMapper;
 import com.kdt.mappers.TrackMapper;
+import com.kdt.repositories.LikeTrackViewRepository;
 import com.kdt.repositories.MusicTagRepository;
 import com.kdt.repositories.TrackImageRepository;
 import com.kdt.repositories.TrackRepository;
@@ -49,7 +53,12 @@ public class TrackService {
 
 	@Autowired
 	private TrackImageMapper imageMapper;
-
+	
+	@Autowired
+	private LikeTrackViewMapper ltvMapper;
+	
+	@Autowired
+	private LikeTrackViewRepository ltvRepo;
 
 	@Transactional
 	public void insert(MultipartFile files, 
@@ -256,5 +265,11 @@ public class TrackService {
 		long minutes = (seconds % 3600) / 60;
 		long secs = seconds % 60;
 		return String.format("%02d:%02d:%02d", hours, minutes, secs);
+	}
+	
+	public List<LikeTrackViewDTO> getTrackLike(String write_id){
+		List<LikeTrackView> ltv = ltvRepo.selectCountByName(write_id);
+		List<LikeTrackViewDTO> dtoList = ltvMapper.toDtoList(ltv);
+		return dtoList;
 	}
 }
