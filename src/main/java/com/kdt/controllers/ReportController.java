@@ -18,9 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.kdt.dto.MemberDTO;
 import com.kdt.dto.ReportAnswerDTO;
 import com.kdt.dto.ReportDTO;
+import com.kdt.dto.SanctionViewDTO;
 import com.kdt.services.MemberService;
 import com.kdt.services.ReportAnswerService;
 import com.kdt.services.ReportService;
+import com.kdt.services.SanctionService;
+import com.kdt.services.TrackService;
 
 @RestController
 @RequestMapping("/api/report")
@@ -31,9 +34,15 @@ public class ReportController {
 
 	@Autowired
 	private ReportAnswerService raService;
-	
+
 	@Autowired
 	private MemberService mService;
+
+	@Autowired
+	private TrackService tService;
+
+	@Autowired
+	private SanctionService svService;
 
 	// 신고 insert
 	@PostMapping
@@ -64,6 +73,7 @@ public class ReportController {
 		return ResponseEntity.ok(list);
 	}
 
+	// 답변 작성
 	@PostMapping("/answer")
 	public ResponseEntity<Void> getReplyPost(@RequestBody ReportAnswerDTO dto){
 		Instant time = Instant.now();
@@ -72,18 +82,21 @@ public class ReportController {
 		return ResponseEntity.ok().build();
 	}
 
+	// 답변 리스트 
 	@GetMapping("/answerlist/{seq}")
 	public ResponseEntity<List<ReportAnswerDTO>> getReplyList(@PathVariable Long seq){
 		List<ReportAnswerDTO> list = raService.selectReplies(seq);
 		return ResponseEntity.ok(list);
 	}
 
+	// Detail 로
 	@GetMapping("/contents/{seq}")
 	public ResponseEntity<ReportDTO> getContents(@PathVariable Long seq) throws Exception{
 		ReportDTO dto = rService.getContents(seq);
 		return ResponseEntity.ok(dto);
 	}
 
+	// 신고 삭제
 	@DeleteMapping("/delete/{seq}")
 	public ResponseEntity<String> deletePost(@PathVariable Long seq) throws Exception{
 		rService.deletePost(seq);	
@@ -97,11 +110,47 @@ public class ReportController {
 		rService.sendEmail(dto.getEmail(), contents);
 		return ResponseEntity.ok("success");
 	}
-	
+
 	// 답변 완료
 	@PutMapping("/state/{reportSeq}")
 	public ResponseEntity<String> changeState(@PathVariable Long reportSeq) {
 		rService.changeState(reportSeq);
 		return ResponseEntity.ok("success");
 	}
+
+	// 모든 Track 리스트 및 제재
+	@GetMapping("/trackList")
+	public ResponseEntity <List<SanctionViewDTO>> selectAllTrack() {
+		List<SanctionViewDTO> list = svService.selectAll();
+		return ResponseEntity.ok(list);
+	}
+
+	// 제재
+	@PutMapping("/sanction/state")
+	public ResponseEntity<String> changeSanctionState(@RequestParam Long trackId, @RequestParam String reason) {
+		svService.changeSanctionState(trackId,reason);
+		return ResponseEntity.ok("success");
+	}
+	
+	// 커버이미지 디폴트값으로
+	@PutMapping("/sanction/image/{trackId}")
+	public ResponseEntity<String> changeImage(@PathVariable Long trackId) {
+		svService.changeImage(trackId);
+		return ResponseEntity.ok("success");
+	}
+
+	// 모든 제재된 리스트
+	@GetMapping("/sanctionList")
+	public ResponseEntity <List<SanctionViewDTO>> selectAllSanction() {
+		List<SanctionViewDTO> list = svService.selectSanctionAll();
+		return ResponseEntity.ok(list);
+	}
+
+	// 해제
+	@PutMapping("/sanction/release/{trackId}")
+	public ResponseEntity<String> releaseSanction(@PathVariable Long trackId) {
+		svService.releaseSanction(trackId);
+		return ResponseEntity.ok("success");
+	}
+
 }
