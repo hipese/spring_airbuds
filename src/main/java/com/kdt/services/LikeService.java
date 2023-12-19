@@ -1,13 +1,17 @@
 package com.kdt.services;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.kdt.domain.entity.CurrentPlayList;
 import com.kdt.domain.entity.MusicLike;
+import com.kdt.dto.CurrentPlayListDTO;
 import com.kdt.dto.MusicLikeDTO;
 import com.kdt.mappers.MusicLikeMapper;
 import com.kdt.repositories.MusicLikeRepository;
@@ -47,5 +51,20 @@ public class LikeService {
 			}
 			
 		}
+	}
+	
+	public List<MusicLikeDTO> selectAllTracksById(Principal id) {
+		String id2 = id.getName();
+		List<MusicLike> playlists = mlRepo.findAllByIdStartingWith(id2, Sort.by(Sort.Order.desc("likeSeq")));
+		List<MusicLikeDTO> dtos = mlMapper.toDtoList(playlists);
+		return dtos;
+	}
+
+	public List<MusicLikeDTO> selectById(Principal id, int page, int pageSize) {
+		String id2 = id.getName();
+		PageRequest pageRequest = PageRequest.of(page, pageSize, Sort.by(Sort.Order.desc("likeSeq")));
+		List<MusicLike> playlists = mlRepo.findByIdStartingWith(id2, pageRequest);
+		List<MusicLikeDTO> dtos = mlMapper.toDtoList(playlists);
+		return dtos;
 	}
 }
