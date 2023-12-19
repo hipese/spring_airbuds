@@ -6,9 +6,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kdt.domain.entity.ReplyLikeCount;
 import com.kdt.domain.entity.TrackReply;
+import com.kdt.dto.ReplyLikeCountDTO;
 import com.kdt.dto.TrackReplyDTO;
+import com.kdt.mappers.ReplyLikeCountMapper;
 import com.kdt.mappers.TrackReplyMapper;
+import com.kdt.repositories.ReplyLikeCountRepository;
 import com.kdt.repositories.TrackReplyRepository;
 
 @Service
@@ -18,7 +22,13 @@ public class TrackReplyService {
 	private TrackReplyRepository trRepo;
 	
 	@Autowired
+	private ReplyLikeCountRepository lcRepo;
+	
+	@Autowired
 	private TrackReplyMapper trMapper;
+	
+	@Autowired
+	private ReplyLikeCountMapper lcMapper;
 	
 	public void insert(TrackReplyDTO dto) {
 		Instant time = Instant.now();
@@ -27,9 +37,9 @@ public class TrackReplyService {
 		trRepo.save(reply);
 	}
 	
-	public List<TrackReplyDTO> selectByTrackId(Long seq){
-		List<TrackReply> replies = trRepo.selectAllByParentSeq(seq);
-		List<TrackReplyDTO> replyDtos = trMapper.toDtoList(replies);
+	public List<ReplyLikeCountDTO> selectByTrackId(Long seq){
+		List<ReplyLikeCount> replies = lcRepo.selectAllByParentSeq(seq);
+		List<ReplyLikeCountDTO> replyDtos = lcMapper.toDtoList(replies);
 		return replyDtos;
 	}
 	
