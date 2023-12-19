@@ -1,9 +1,13 @@
 package com.kdt.services;
 
+import java.io.File;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kdt.domain.entity.Member;
 import com.kdt.dto.MemberDTO;
@@ -230,5 +235,38 @@ public class MemberService implements UserDetailsService{
 		
 		Member m = mMapper.toEntity(dto);
 		mRepo.save(m);
+	}
+	
+	public Map<String, String> getProfiles(String targetID) {
+		Map<String, String> images = new HashMap<>();
+		Member m = mRepo.findById(targetID).get();
+		images.put("profile_image", m.getProfile_image());
+		images.put("background_image", m.getBackground_image());
+		return images;
+	}
+	
+	public void uploadBackgroundImage(MultipartFile file, String userID) throws Exception {
+		if(file == null) {
+			throw new Exception("file is empty");
+		}
+		if(userID == null) {
+			throw new Exception("userID is undefined");
+		}
+		
+		File imagePath = new File("c:/images/backgroundImages");
+		if (!imagePath.exists()) {
+			imagePath.mkdir();
+		}
+		
+		String filename = file.getOriginalFilename();
+		String sys_filename = UUID.randomUUID() + "_" + filename; 
+		File destImageFile = new File(imagePath, sys_filename);
+        file.transferTo(destImageFile);
+        
+        Member m = mRepo.findById(userID).get();
+        m.setBackground_image(sys_filename);
+        mRepo.save(m);
+        
+		
 	}
 }
