@@ -114,7 +114,7 @@ public class TrackController {
 		return ResponseEntity.ok(dto);
 	}
 
-	@GetMapping("/findById")
+	@GetMapping("/findById/{write_id}")
 	public ResponseEntity<List<TrackDTO>> selectfindById(@PathVariable String write_id) {
 		List<TrackDTO> dtos = tService.selectfindById(write_id);
 		return ResponseEntity.ok(dtos);
