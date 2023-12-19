@@ -259,18 +259,18 @@ public class MemberService implements UserDetailsService{
 			throw new Exception("userID is undefined");
 		}
 		
-		File imagePath = new File("c:/images/backgroundImages");
+		File imagePath = new File("c:/backgroundImages");
 		if (!imagePath.exists()) {
 			imagePath.mkdir();
 		}
 		
 		String filename = file.getOriginalFilename();
-		String sys_filename = UUID.randomUUID() + "_" + filename; 
+		String sys_filename = UUID.randomUUID() + "_" + filename;
 		File destImageFile = new File(imagePath, sys_filename);
         file.transferTo(destImageFile);
         
         Member m = mRepo.findById(userID).get();
-        m.setBackground_image(sys_filename);
+        m.setBackground_image("/backgroundImages/" + sys_filename);
         mRepo.save(m);
         
 		
