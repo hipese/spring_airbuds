@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kdt.dto.ReplyLikeCountDTO;
 import com.kdt.dto.TrackReplyDTO;
 import com.kdt.services.TrackReplyService;
 
@@ -30,8 +31,8 @@ public class TrackReplyController {
 	}
 	
 	@GetMapping("/{seq}")
-	public ResponseEntity<List<TrackReplyDTO>> selectByTrackId(@PathVariable Long seq){
-		List<TrackReplyDTO> list = trService.selectByTrackId(seq);
+	public ResponseEntity<List<ReplyLikeCountDTO>> selectByTrackId(@PathVariable Long seq){
+		List<ReplyLikeCountDTO> list = trService.selectByTrackId(seq);
 		return ResponseEntity.ok(list);
 	}
 	
