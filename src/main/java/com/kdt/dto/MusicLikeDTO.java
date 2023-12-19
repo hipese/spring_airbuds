@@ -9,6 +9,7 @@ public class MusicLikeDTO {
 	private Long likeSeq;
 	private String userId;
 	private Long trackId;
+	private Set<TrackDTO> tracks;
 	public Long getLikeSeq() {
 		return likeSeq;
 	}
@@ -27,12 +28,22 @@ public class MusicLikeDTO {
 	public void setTrackId(Long trackId) {
 		this.trackId = trackId;
 	}
-	public MusicLikeDTO(Long likeSeq, String userId, Long trackId) {
+	public Set<TrackDTO> getTracks() {
+		return tracks;
+	}
+	public void setTracks(Set<TrackDTO> tracks) {
+		this.tracks = tracks;
+	}
+	public MusicLikeDTO(Long likeSeq, String userId, Long trackId, Set<TrackDTO> tracks) {
+		super();
 		this.likeSeq = likeSeq;
 		this.userId = userId;
 		this.trackId = trackId;
+		this.tracks = tracks;
 	}
 	public MusicLikeDTO() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 	
 	

@@ -1,5 +1,6 @@
 package com.kdt.controllers;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +29,17 @@ public class CurrentPlayListController {
 		cpService.insert(dto);
 		return ResponseEntity.ok().build();
 	}
+	
+	@GetMapping("/all")
+	public ResponseEntity<List<CurrentPlayListDTO>> selectAllById(Principal id) {
+		List<CurrentPlayListDTO> dtos = cpService.selectAllById(id);
+		return ResponseEntity.ok(dtos);
+	}
 
-	@GetMapping("/{id}")
-	public ResponseEntity<List<CurrentPlayListDTO>> selectById(@PathVariable String id,
+	@GetMapping
+	public ResponseEntity<List<CurrentPlayListDTO>> selectById(
 	        @RequestParam(name = "page", defaultValue = "0") int page,
-	        @RequestParam(name = "pageSize", defaultValue = "6") int pageSize) {
+	        @RequestParam(name = "pageSize", defaultValue = "6") int pageSize, Principal id) {
 
 	    List<CurrentPlayListDTO> dtos = cpService.selectById(id, page, pageSize);
 
