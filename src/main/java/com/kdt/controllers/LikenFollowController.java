@@ -84,4 +84,10 @@ public class LikenFollowController {
 		return ResponseEntity.ok(data);
 		
 	}
+	
+	@GetMapping("/follwingData/{memberId}")
+	public ResponseEntity<List<HashMap<String, Object>>> getFollowingData(@PathVariable String memberId){
+		List<HashMap<String, Object>> list = fService.getMyFollow(memberId);
+		return ResponseEntity.ok(list);
+	}
 }
