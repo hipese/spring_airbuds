@@ -6,6 +6,6 @@ import com.kdt.domain.entity.Album;
 import com.kdt.dto.AlbumDTO;
 
 @Mapper(componentModel = "spring")
-public interface AlbumMapper extends GenericMapper<AlbumDTO, Album>{
+public interface AlbumMapper extends GenericMapper<AlbumDTO, Album> {
 
 }

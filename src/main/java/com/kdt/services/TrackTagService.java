@@ -1,5 +1,6 @@
 package com.kdt.services;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,5 +29,13 @@ public class TrackTagService {
 		List<TrackTagDTO> dtoList = tagMapper.toDtoList(list);
 		return dtoList;
 
+	}
+	
+	public List<TrackTagDTO> selectTagById(Long id){
+	    
+		List<TrackTag> entitys=tagRepo.findAllByTrackTagTrackId(id);
+		System.out.println("추출은 되냐?"+entitys.get(0).getId());
+		List<TrackTagDTO> dtos = tagMapper.toDtoList(entitys);
+		return  dtos;
 	}
 }
