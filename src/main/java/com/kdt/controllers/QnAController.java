@@ -101,4 +101,10 @@ public class QnAController {
 		return ResponseEntity.ok().build();
 	}
 	
+	@PutMapping("/qnaState")
+	public ResponseEntity<String> updateAnswerState(QnaDTO dto){
+		qService.updateState(dto);
+		return ResponseEntity.ok("답변 완료");
+	}
+	
 }

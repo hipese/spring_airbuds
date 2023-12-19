@@ -44,4 +44,9 @@ public class AnnounceService {
 		AnnounceBoardDTO dto = aMapper.toDto(ab);
 		return dto;
 	}
+	
+	public void deleteAnnounce(Long seq) {
+		AnnounceBoard ab = aRepo.findById(seq).get();
+		aRepo.delete(ab);
+	}
 }
