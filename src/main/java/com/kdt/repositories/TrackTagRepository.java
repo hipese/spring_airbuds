@@ -23,4 +23,8 @@ public interface TrackTagRepository extends JpaRepository<TrackTag, Long> {
 	@Transactional
 	@Query("DELETE FROM TrackTag t WHERE t.track.id = :trackId")
 	void deleteAllByTrackTagTrackId(@Param("trackId") Long trackId);
+	
+	@Query("select t FROM TrackTag t WHERE t.track.id = :trackId")
+	List<TrackTag> findAllByTrackTagTrackId(@Param("trackId") Long trackId);
+	
 }

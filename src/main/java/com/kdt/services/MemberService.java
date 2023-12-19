@@ -213,6 +213,12 @@ public class MemberService implements UserDetailsService{
 		return dtos;
 	}
 	
+	public MemberDTO findEmail(String id){
+		Member m = mRepo.findAllById(id);
+		MemberDTO dto = mMapper.toDto(m);
+		return dto;
+	}
+	
 	public boolean isDupleID(String id) {
 		Optional<Member> m = mRepo.findById(id);
 		if(m.isEmpty())
