@@ -110,6 +110,11 @@ public class QnaService {
 		
 		//Post Delete
 		qRepo.delete(qna);
-		
+	}
+	
+	public void updateState(QnaDTO dto) {
+		Qna q = qRepo.findById(dto.getQnaSeq()).get();
+		qMapper.updateEntityFromDto(dto, q);
+		qRepo.save(q);
 	}
 }
