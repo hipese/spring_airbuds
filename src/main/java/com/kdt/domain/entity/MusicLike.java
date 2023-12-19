@@ -1,10 +1,15 @@
 package com.kdt.domain.entity;
 
+import java.util.Set;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class MusicLike {
@@ -19,17 +24,10 @@ public class MusicLike {
 	
 	@Column(name = "id")
 	private String userId;
-
-	public MusicLike() {
-		super();
-	}
-
-	public MusicLike(Long likeSeq, Long trackId, String userId) {
-		super();
-		this.likeSeq = likeSeq;
-		this.trackId = trackId;
-		this.userId = userId;
-	}
+	
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name="track_id", referencedColumnName = "track_id")
+	private Set<Track> tracks;
 
 	public Long getLikeSeq() {
 		return likeSeq;
@@ -55,5 +53,26 @@ public class MusicLike {
 		this.userId = userId;
 	}
 
-	
+	public Set<Track> getTracks() {
+		return tracks;
+	}
+
+	public void setTracks(Set<Track> tracks) {
+		this.tracks = tracks;
+	}
+
+	public MusicLike(Long likeSeq, Long trackId, String userId, Set<Track> tracks) {
+		super();
+		this.likeSeq = likeSeq;
+		this.trackId = trackId;
+		this.userId = userId;
+		this.tracks = tracks;
+	}
+
+	public MusicLike() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+
 }
