@@ -56,4 +56,33 @@ public class AlbumController {
 		List<AlbumDTO> dto=aService.selectByLoginId(principal);
 		return ResponseEntity.ok(dto);
 	}
+	
+	
+	@PostMapping("/updateAlbum")
+	public ResponseEntity<AlbumDTO> updateAlbum(@RequestParam(value="file", required = false) MultipartFile[] files, 
+												@RequestParam(value = "name", required = false) String[] name,
+												@RequestParam(value = "duration", required = false) String[] durations,
+												@RequestParam(value="image_path", required = false) String[] image_path,
+												@RequestParam(value = "writer", required = false) String[] writers,
+												@RequestParam(value = "titleImage", required = false) MultipartFile titleImage,
+												@RequestParam("albumselectTag") Long[] albumselectTag,
+												@RequestParam("albumTitle") String albumTitle,
+												@RequestParam("albumsWriters") String [] albumsWriters,
+												@RequestParam("Tracktitles") String [] Tracktitles,
+												@RequestParam(value="prevImage" ,required = false) String prevImage,
+												@RequestParam(value="deleteTrack" ,required = false) Long[] deleteTrack,
+												@RequestParam MultiValueMap<String, String> trackTags,
+												@RequestParam(value="albumId" ,required = false) Long albumId) throws Exception{
+				
+		System.out.println("일단 오냐?");
+		System.out.println(files);
+		System.out.println(deleteTrack);
+		System.out.println("함수 실행전!!!");
+		AlbumDTO dto=aService.updateAlbum(files,name,durations,image_path,writers,titleImage,
+				albumselectTag,albumTitle,albumsWriters,Tracktitles,prevImage,deleteTrack,trackTags,albumId);
+		
+//		return ResponseEntity.ok(null);
+		return ResponseEntity.ok(dto);
+	}
+	
 }
