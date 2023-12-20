@@ -34,7 +34,6 @@ public class TrackTagService {
 	public List<TrackTagDTO> selectTagById(Long id){
 	    
 		List<TrackTag> entitys=tagRepo.findAllByTrackTagTrackId(id);
-		System.out.println("추출은 되냐?"+entitys.get(0).getId());
 		List<TrackTagDTO> dtos = tagMapper.toDtoList(entitys);
 		return  dtos;
 	}
