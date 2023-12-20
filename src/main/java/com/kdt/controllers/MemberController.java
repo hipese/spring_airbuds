@@ -51,6 +51,7 @@ public class MemberController {
 	public ResponseEntity<String> password(@RequestParam String id, @RequestParam String email) {
 		MemberDTO dto = memberService.findMemberById(id);
 		memberService.sendTemporaryPasswordEmail(dto.getId(),email);
+		memberService.changePassword(dto.getId(),"");
 		return ResponseEntity.ok("success");
 	}
 
