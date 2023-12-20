@@ -8,14 +8,18 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kdt.domain.entity.DailyStreaming;
 import com.kdt.domain.entity.DailyVisit;
 import com.kdt.domain.entity.MemberAgeView;
 import com.kdt.domain.entity.QnaAnswer;
+import com.kdt.dto.DailyStreamingDTO;
 import com.kdt.dto.DailyVisitDTO;
 import com.kdt.dto.MemberAgeViewDTO;
+import com.kdt.mappers.DailyStreamingMapper;
 import com.kdt.mappers.DailyVisitMapper;
 import com.kdt.mappers.MemberAgeViewMapper;
 import com.kdt.mappers.ReportMapper;
+import com.kdt.repositories.DailyStreamingRepository;
 import com.kdt.repositories.DailyVisitRepository;
 import com.kdt.repositories.MemberAgeViewRepository;
 import com.kdt.repositories.ReportRepository;
@@ -44,6 +48,12 @@ public class DashboardService {
 	
 	@Autowired
 	private DailyVisitMapper dvMapper;
+	
+	@Autowired
+	private DailyStreamingRepository dsRepo;
+	
+	@Autowired
+	private DailyStreamingMapper dsMapper;
 	
 	public List<Map<String,Object>> getList() {
 		List<Map<String,Object>> list = rRepo.selectReportByMonth();
@@ -81,6 +91,24 @@ public class DashboardService {
 	
 	public Long getDailtCount() {
 		Long count = dvRepo.selectVisitCount();
+		return count;
+	}
+	
+	public void insertStreamCount(DailyStreamingDTO dto) {
+		DailyStreaming ds = dsRepo.selectStreamByDate(dto.getTrackId());
+		if(ds == null) {			
+			dto.setStreamCount(1L);
+			ds = dsMapper.toEntity(dto);
+			dsRepo.save(ds);
+		}else {
+			dto.setStreamCount(ds.getStreamCount()+1L);
+			dsMapper.updateEntityFromDto(dto, ds);
+			dsRepo.save(ds);
+		}
+	}
+	
+	public Long getStreamCount() {
+		Long count = dsRepo.selectStreamCount();
 		return count;
 	}
 

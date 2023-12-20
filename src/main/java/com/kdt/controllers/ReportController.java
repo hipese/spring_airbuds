@@ -46,22 +46,22 @@ public class ReportController {
 
 	// 신고 insert
 	@PostMapping
-	public ResponseEntity<Void> getPost(@RequestParam("ReportTitle") String title,
-			@RequestParam("ReportContents") String contents,
+	public ResponseEntity<Void> insertReport(@RequestParam("reason") String title,
+			@RequestParam("trackId") String trackId,
 			@RequestParam("ReportWriter") String writer,
 			@RequestParam("ReportSubject") String subject,
-			@RequestParam("ReportCategory") String category,
-			@RequestParam("ReportWriteDate") Instant write_date ,
-			@RequestParam("ReportAnswerState") Long state) throws Exception{
+			@RequestParam("ReportCategory") String category) throws Exception{
 		ReportDTO dto = new ReportDTO();
 		dto.setReportSeq(0L);
 		dto.setReportTitle(title);
-		dto.setReportContents(contents);
+		dto.setReportContents(trackId+" 번 노래 신고 사유: "+title+" - "+category);
 		dto.setReportWriter(writer);
 		dto.setReportSubject(subject);
 		dto.setReportCategory(category);
-		dto.setReportWriteDate(write_date);
-		dto.setReportAnswerState(state);
+		dto.setReportWriteDate(Instant.now());
+		dto.setReportAnswerState(0L);
+		
+		rService.insertReport(dto);
 
 		return ResponseEntity.ok().build();
 	}	
@@ -131,7 +131,7 @@ public class ReportController {
 		svService.changeSanctionState(trackId,reason);
 		return ResponseEntity.ok("success");
 	}
-	
+
 	// 커버이미지 디폴트값으로
 	@PutMapping("/sanction/image/{trackId}")
 	public ResponseEntity<String> changeImage(@PathVariable Long trackId) {
