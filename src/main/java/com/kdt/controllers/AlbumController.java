@@ -74,9 +74,7 @@ public class AlbumController {
 												@RequestParam MultiValueMap<String, String> trackTags,
 												@RequestParam(value="albumId" ,required = false) Long albumId) throws Exception{
 				
-		System.out.println("일단 오냐?");
-		System.out.println(files);
-		System.out.println(deleteTrack);
+
 		System.out.println("함수 실행전!!!");
 		AlbumDTO dto=aService.updateAlbum(files,name,durations,image_path,writers,titleImage,
 				albumselectTag,albumTitle,albumsWriters,Tracktitles,prevImage,deleteTrack,trackTags,albumId);

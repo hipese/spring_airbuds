@@ -226,31 +226,37 @@ public class AlbumService {
 								MultiValueMap<String, String> trackTags,
 								Long albumId)throws Exception {
 		
-		System.out.println("함수 실행!!!");
+		
 		System.out.println("files null이여도 옵니다.: "+ files);
 //		앨범 변경
 		Album entity= aRepo.findById(albumId).get();
 		File imagePath = new File("c:/tracks/image");
 		entity.setTitle(albumTitle);
+		String sys_imageName = null ;
+		System.out.println("현재 이미지: "+entity.getCoverImagePath());
+		System.out.println("예전 이미지: "+prevImage);
 		
-		String sys_imageName = UUID.randomUUID().toString() + "_" + titleImage.getOriginalFilename();
-		
-		System.out.println("여기까지 왔나요?"+entity.getAlbumId());
-//		이미지가 변경되었을 시 동작
-		if(!(entity.getCoverImagePath().equals(prevImage))) {
+		if(titleImage!=null) {
+			sys_imageName=UUID.randomUUID().toString() + "_" + titleImage.getOriginalFilename();
 			
-			entity.setCoverImagePath(sys_imageName);
-			
-			// Save new image
-	        if (!imagePath.exists()) {
-	            imagePath.mkdir();
-	        }
-	        File newImageFile = new File(imagePath, sys_imageName);
-	        titleImage.transferTo(newImageFile);
+//			이미지가 변경되었을 시 동작
+			if(!(titleImage.getOriginalFilename().equals(prevImage))) {
+				
+				entity.setCoverImagePath(sys_imageName);
+				
+				// Save new image
+		        if (!imagePath.exists()) {
+		            imagePath.mkdir();
+		        }
+		        File newImageFile = new File(imagePath, sys_imageName);
+		        titleImage.transferTo(newImageFile);
 
-	        // Delete old image file
-	        deleteOldImage(prevImage);
+		        // Delete old image file
+		        deleteOldImage(prevImage);
+			}
+			
 		}
+		
 		
 //		엘범 테그 설정하는 기능
 		Set<AlbumTag> albumTags = createAlbumTags(albumselectTag, entity);
@@ -261,7 +267,7 @@ public class AlbumService {
 //		트랙을 삽입하는 로직 작성
 		if(files!=null) {
 //			삭제할 트랙이 있으면 먼저 제거
-			if(deleteTrack.length>0) {
+			if(deleteTrack!=null) {
 				for(int i=0;i<deleteTrack.length;i++) {
 					tRepo.deleteById(deleteTrack[i]);
 				}
@@ -345,8 +351,15 @@ public class AlbumService {
 			}
 		}
 		
+		if(deleteTrack!=null) {
+			System.out.println("삭제된 트랙의 길이"+deleteTrack.length);
+		}
+		
+		
 //		트랙의 값 수정 여기를 제일 먼저 고쳐야 한다.
-		Set<Track> tracks =entity.getTracks();
+		Album updateEnttity=aRepo.findById(albumId).get();
+		
+		Set<Track> tracks =updateEnttity.getTracks();
 		System.out.println("넌 얼마니 김"+tracks.size());
 		System.out.println("albumsWriter에 길이: "+albumsWriter.length);
 		System.out.println("Tracktitles에 길이: "+Tracktitles.length);
@@ -363,6 +376,7 @@ public class AlbumService {
 	        throw new IllegalArgumentException("Length of albumsWriter and Tracktitles arrays must match the number of tracks");
 	    }
 		
+	    System.out.println("이거뜸?1");
 		Set<AlbumWriter> albumWriters = new HashSet<>();
 
 		for (int i = 0; i < albumsWriter.length; i++) {
@@ -376,7 +390,8 @@ public class AlbumService {
 			awRepo.save(writerNickname);
 			albumWriters.add(writerNickname);
 		}
-
+		
+		 System.out.println("이거뜸?2");
 		entity.setAlbumWriter(albumWriters);
 
 		Album saveAlbum=aRepo.save(entity);
