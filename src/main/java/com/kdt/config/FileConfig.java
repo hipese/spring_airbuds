@@ -11,5 +11,6 @@ public class FileConfig implements WebMvcConfigurer{
 		registry.addResourceHandler("/uploads/**").addResourceLocations("file:c:/uploads/");
 		registry.addResourceHandler("/tracks/image/**").addResourceLocations("file:c:/tracks/image/");
 		registry.addResourceHandler("/tracks/**").addResourceLocations("file:c:/tracks/");
+		registry.addResourceHandler("/backgroundImages/**").addResourceLocations("file:c:/backgroundImages/");
 	}
 }

@@ -1,6 +1,8 @@
 package com.kdt.controllers;
 
+import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kdt.dto.MemberDTO;
 import com.kdt.services.MemberService;
@@ -88,6 +91,23 @@ public class MemberController {
 			}
 		}
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	}
+	
+	@GetMapping("/getProfiles/{targetID}")
+	public ResponseEntity<Map<String, String>> getProfiles(@PathVariable String targetID) {
+		return ResponseEntity.ok(memberService.getProfiles(targetID));
+	}
+	
+	@PostMapping("/uploadBackground")
+	public ResponseEntity<Void> uploadBackgroundImage(@RequestParam MultipartFile newBgImage, Principal principal) {
+		try {
+			memberService.uploadBackgroundImage(newBgImage, principal.getName());
+			return ResponseEntity.ok().build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		
 	}
 
 }
