@@ -162,13 +162,21 @@ public class MemberService implements UserDetailsService{
 		// 생성한 임시 비밀번호
 		String temporaryPassword = generateRandomPasswordCode(8);
 		// 비밀번호 변경
-		
+		changePassword(id, temporaryPassword);
 		// 이메일 전송
 		sendPasswordEmail(email, temporaryPassword);
 	}
 	
 	// 임시 비밀번호로 비밀번호 변경 메서드
-	
+	@Transactional
+	public void changePassword(String id, String temporaryPassword) {
+	    Member member = mRepo.findById(id).orElseThrow(() -> new RuntimeException("Member not found with id: " + id));
+
+	    // 비밀번호를 발급 받은 임시비밀번호로 변경
+	    String encodedPassword = new BCryptPasswordEncoder().encode(temporaryPassword);
+	    member.setPassword(encodedPassword);
+	    mRepo.save(member);
+	}
 
 	// 임시 비밀번호 전송 메서드
 	private void sendPasswordEmail(String email, String temporaryPassword) {

@@ -32,6 +32,11 @@ public class ReportService {
 	@Autowired
 	private JavaMailSender javaMailSender;
 	
+	public void insertReport(ReportDTO dto) {
+		Report ab = rMapper.toEntity(dto);
+		rRepo.save(ab);
+	}
+	
 	public List<ReportDTO> selectAll(){
 		List<Report> list = rRepo.findAll();
 		List<ReportDTO> dtos = rMapper.toDtoList(list);
