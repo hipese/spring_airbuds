@@ -11,10 +11,13 @@ import org.springframework.stereotype.Service;
 
 import com.kdt.domain.entity.CurrentPlayList;
 import com.kdt.domain.entity.MusicLike;
+import com.kdt.domain.entity.Track;
 import com.kdt.dto.CurrentPlayListDTO;
 import com.kdt.dto.MusicLikeDTO;
 import com.kdt.mappers.MusicLikeMapper;
 import com.kdt.repositories.MusicLikeRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class LikeService {
@@ -44,13 +47,7 @@ public class LikeService {
 	}
 
 	public void deleteFavorite(MusicLikeDTO dto) {
-		List<MusicLike> ml = mlRepo.selectAllByNameAndTrack(dto.getUserId(), dto.getTrackId());
-		if(ml != null) {
-			for(MusicLike m : ml) {
-				mlRepo.delete(m);
-			}
-			
-		}
+		mlRepo.deleteByUserIdAndTrackId(dto.getUserId(), dto.getTrackId());
 	}
 	
 	public List<MusicLikeDTO> selectAllTracksById(Principal id) {
