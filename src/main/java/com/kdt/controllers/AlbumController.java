@@ -75,10 +75,13 @@ public class AlbumController {
 												@RequestParam(value="albumId" ,required = false) Long albumId) throws Exception{
 				
 
-		System.out.println("함수 실행전!!!");
+		System.err.println("작성자 숫자: "+albumsWriters.length);
+		System.err.println("트랙제목 숫자: "+Tracktitles.length);
+		System.err.println("writers 숫자: "+writers[0]);
+		
 		AlbumDTO dto=aService.updateAlbum(files,name,durations,image_path,writers,titleImage,
 				albumselectTag,albumTitle,albumsWriters,Tracktitles,prevImage,deleteTrack,trackTags,albumId);
-		System.out.println("리턴후 오냐?");
+	
 //		return ResponseEntity.ok(null);
 		return ResponseEntity.ok(dto);
 	}
