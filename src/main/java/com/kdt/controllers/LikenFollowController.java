@@ -1,5 +1,6 @@
 package com.kdt.controllers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.security.Principal;
 import java.util.List;
@@ -88,6 +89,12 @@ public class LikenFollowController {
 	@GetMapping("/follwingData/{memberId}")
 	public ResponseEntity<List<HashMap<String, Object>>> getFollowingData(@PathVariable String memberId){
 		List<HashMap<String, Object>> list = fService.getMyFollow(memberId);
+//		List<FollowingSingerViewDTO> filteredList = new ArrayList<>();
+//		for(FollowingSingerViewDTO dto : list) {
+//			if(dto.getMemberId().equals(memberId)) {
+//				filteredList.add(dto);
+//			}
+//		}
 		return ResponseEntity.ok(list);
 	}
 }
