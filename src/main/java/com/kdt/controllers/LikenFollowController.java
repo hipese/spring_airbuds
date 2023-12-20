@@ -52,7 +52,7 @@ public class LikenFollowController {
 
 	@PostMapping("/delete")
 	public ResponseEntity<String> deleteFavorite(MusicLikeDTO dto) {
-		System.out.println(dto.getUserId());
+		System.out.println(dto.getTrackId());
 		lService.deleteFavorite(dto);
 		return ResponseEntity.ok(null);
 	}
