@@ -91,8 +91,7 @@ public class AlbumService {
 
 		// 각 파일별 태그 ID 배열 생성
 		List<Long[]> tagIdsForFiles = extractTagIdsForFiles(trackTags, files.length);
-		
-		
+
 //		각각의 track값을 같이 저장하는 기능
 		Set<Track> track = new HashSet<>();
 		for (int i = 0; i < files.length; i++) {
@@ -122,32 +121,32 @@ public class AlbumService {
 				dto.setReleaseDate(Instant.parse(releaseDate));
 				dto.setWriteId(loginId);
 				dto.setBan(0L);
-				
+
 				Track trackEntity = tMapper.toEntity(dto);
 				Set<TrackTag> trackTag = new HashSet<>();
-				
+
 				// 해당 파일의 태그 처리
-	            Long[] tagIdsArray = tagIdsForFiles.get(i);
-	            for (Long tagId : tagIdsArray) {
-	                MusicTags musicTag = musicReop.findById(tagId).orElse(null);
-	                if (musicTag != null) {
-	                    TrackTag tag = new TrackTag();
-	                    tag.setMusicTags(musicTag);
-	                    tag.setTrack(trackEntity);
-	                    tagRepo.save(tag);
-	                    trackTag.add(tag);
-	                }
-	            }
+				Long[] tagIdsArray = tagIdsForFiles.get(i);
+				for (Long tagId : tagIdsArray) {
+					MusicTags musicTag = musicReop.findById(tagId).orElse(null);
+					if (musicTag != null) {
+						TrackTag tag = new TrackTag();
+						tag.setMusicTags(musicTag);
+						tag.setTrack(trackEntity);
+						tagRepo.save(tag);
+						trackTag.add(tag);
+					}
+				}
 
 				trackEntity.setTrackTags(trackTag);
 				savedTrack = tRepo.save(trackEntity);
 
 //				set에 track값을 저장
 				track.add(trackEntity);
-				
+
 				// 트랙 이미지 파일 처리
 				if (titleImage != null) {
-					
+
 					TrackImageDTO imagedto = new TrackImageDTO();
 					imagedto.setTrackId(savedTrack.getTrackId());
 					imagedto.setImagePath(sys_imageName);
@@ -179,16 +178,15 @@ public class AlbumService {
 		}
 
 //		엘범 태그값 저장
-		 Set<AlbumTag> albumTags = createAlbumTags(albumselectTag, entity);
+		Set<AlbumTag> albumTags = createAlbumTags(albumselectTag, entity);
 
-		   
-		 entity.setAlbumTag(albumTags);
+		entity.setAlbumTag(albumTags);
 
 //		엘범 제작자 저장
 		Set<AlbumWriter> albumWriters = new HashSet<>();
 
 		for (int i = 0; i < writers.length; i++) {
-			
+
 			AlbumWriter writerNickname = new AlbumWriter();
 			writerNickname.setAlbumId(savaAlum.getAlbumId());
 			writerNickname.setArtistNickname(writers[i]);
@@ -201,75 +199,124 @@ public class AlbumService {
 
 		aRepo.save(entity);
 	}
-	
-	public List<AlbumDTO> selectByLoginId(Principal principal){
-		String artist_id=principal.getName();
-		
-		List<Album> entity=aRepo.findAllByArtistIdStartingWith(artist_id);
-		List<AlbumDTO> dtos=aMapper.toDtoList(entity);
+
+	public List<AlbumDTO> selectByLoginId(Principal principal) {
+		String artist_id = principal.getName();
+
+		List<Album> entity = aRepo.findAllByArtistIdStartingWith(artist_id);
+		List<AlbumDTO> dtos = aMapper.toDtoList(entity);
 		return dtos;
 	}
-	
-	
+
 	@Transactional
-	public AlbumDTO updateAlbum(MultipartFile[] files, 
-								String[] name,
-								String[] durations,
-								String[] writers,
-								String[] image_path,
-								MultipartFile titleImage,
-								Long[] albumselectTag,
-								String albumTitle,
-								String [] albumsWriter,
-								String [] Tracktitles,
-								String prevImage,
-								Long[] deleteTrack,
-								MultiValueMap<String, String> trackTags,
-								Long albumId)throws Exception {
-		
+	public AlbumDTO updateAlbum(MultipartFile[] files, String[] name, String[] durations, String[] writers,
+			String[] image_path, MultipartFile titleImage, Long[] albumselectTag, String albumTitle,
+			String[] albumsWriter, String[] Tracktitles, String prevImage, Long[] deleteTrack,
+			MultiValueMap<String, String> trackTags, Long albumId) throws Exception {
+
 //		앨범 변경
-		Album entity= aRepo.findById(albumId).get();
+		Album entity = aRepo.findById(albumId).get();
 		File imagePath = new File("c:/tracks/image");
 		entity.setTitle(albumTitle);
-		String sys_imageName = null ;
+		String sys_imageName = null;
 		
-		if(titleImage!=null) {
-			sys_imageName=UUID.randomUUID().toString() + "_" + titleImage.getOriginalFilename();
-			
-//			이미지가 변경되었을 시 동작
-			if(!(titleImage.getOriginalFilename().equals(prevImage))) {
-				
-				entity.setCoverImagePath(sys_imageName);
-				
-				// Save new image
-		        if (!imagePath.exists()) {
-		            imagePath.mkdir();
-		        }
-		        File newImageFile = new File(imagePath, sys_imageName);
-		        titleImage.transferTo(newImageFile);
-
-		        // Delete old image file
-		        deleteOldImage(prevImage);
-			}
-			
+		if(deleteTrack!=null) {
+			 Track test = tRepo.findById(deleteTrack[0]).get();
+			 System.err.println("삭제한 트랙의 아이디: "+test.getTrackId());
+			 System.err.println("삭제한 트랙의 앨범 아이디: "+test.getAlbumId());
+			 System.err.println("삭제한 트랙의 이름: "+test.getTitle());
 		}
 		
+		 
+		if (titleImage != null) {
+			sys_imageName = UUID.randomUUID().toString() + "_" + titleImage.getOriginalFilename();
+
+			System.err.println("바꿔야할 이미지 사진의 이름: " + sys_imageName);
+//			이미지가 변경되었을 시 동작
+			if (!(titleImage.getOriginalFilename().equals(prevImage))) {
+
+				entity.setCoverImagePath(sys_imageName);
+
+				// Save new image
+				if (!imagePath.exists()) {
+					imagePath.mkdir();
+				}
+				File newImageFile = new File(imagePath, sys_imageName);
+				titleImage.transferTo(newImageFile);
+
+				// Delete old image file
+				deleteOldImage(prevImage);
+			}
+
+		}
+
 //		엘범 테그 설정하는 기능
 		Set<AlbumTag> albumTags = createAlbumTags(albumselectTag, entity);
 		entity.setAlbumTag(albumTags);
 		
 		
+//		만약 기존앨범의 트랙을 삭제했으면 삭제된 트랙의 albumId를 초기화
+		if (deleteTrack != null) {
+			System.err.println("deleteTrack몇개냐?: "+deleteTrack.length);
+			System.err.println("deleteTrack뭔갑?: "+deleteTrack[0]);
+		    for (int i = 0; i < deleteTrack.length; i++) {
+		        Track notalbumTrack = tRepo.findById(deleteTrack[i]).orElseThrow(
+		            () -> new RuntimeException("Track not found"));
+		        notalbumTrack.setAlbumId(null);
+		        tRepo.save(notalbumTrack);
+		    }
+		    // Flush changes to ensure they are reflected in the database
+		    tRepo.flush();
+		}
+
+
+//		트랙의 값 수정 여기를 제일 먼저 고쳐야 한다.
+		Album updatedAlbum = aRepo.findById(albumId).orElseThrow(() -> new RuntimeException("Album not found"));
+
+		Set<Track> updatedTracks = updatedAlbum.getTracks();
+		System.err.println("예전 트랙 지워졌냐? : "+updatedTracks.size());
+	
+		// Iterate over the tracks and update writer and title 삭제된 트랙수에 따라 다르게 설정하게 한다.
+		if (deleteTrack == null) {
+			if (updatedTracks.size() == albumsWriter.length && updatedTracks.size() == Tracktitles.length) {
+				int index = 0;
+				for (Track track : updatedTracks) {
+					track.setWriter(albumsWriter[index]);
+					track.setTitle(Tracktitles[index]);
+					tRepo.save(track); // Save each updated track
+					index++;
+				}
+			} else {
+				throw new IllegalArgumentException(
+						"Length of albumsWriter and Tracktitles arrays must match the number of tracks");
+			}
+		}else {
+			if (updatedTracks.size()== albumsWriter.length && updatedTracks.size() == Tracktitles.length) {
+				int index = 0;
+				for (Track track : updatedTracks) {
+					track.setWriter(albumsWriter[index]);
+					track.setTitle(Tracktitles[index]);
+					tRepo.save(track); // Save each updated track
+					index++;
+				}
+			} else {
+				throw new IllegalArgumentException(
+						"Length of albumsWriter and Tracktitles arrays must match the number of tracks");
+			}
+		}
+		
+		
 //		트랙을 삽입하는 로직 작성
-		if(files!=null) {
+		if (files != null) {
 //			삭제할 트랙이 있으면 먼저 제거
-		if(deleteTrack!=null) {
-		for(int i=0;i<deleteTrack.length;i++) {
-				tRepo.deleteById(deleteTrack[i]);
+			if (deleteTrack != null) {
+				for (int i = 0; i < deleteTrack.length; i++) {
+					tRepo.deleteById(deleteTrack[i]);
 				}
 			}
 			// 각 파일별 태그 ID 배열 생성
 			List<Long[]> tagIdsForFiles = extractTagIdsForFiles(trackTags, files.length);
-			
+
 			File uploadPath = new File("c:/tracks");
 			Set<Track> track = new HashSet<>();
 			for (int i = 0; i < files.length; i++) {
@@ -277,7 +324,7 @@ public class AlbumService {
 				if (files[i] != null) {
 					Track savedTrack = null;
 
-				MultipartFile Muiscfile = files[i];
+					MultipartFile Muiscfile = files[i];
 
 					String filename = Muiscfile.getOriginalFilename();
 					String sys_filename = UUID.randomUUID() + filename;
@@ -287,7 +334,7 @@ public class AlbumService {
 					long durationInSeconds = Math.round(durationDouble);
 					String timeString = convertSecondsToTimeString(durationInSeconds);
 					Time durationTime = Time.valueOf(timeString);
-					
+
 					int entityTracksSize = entity.getTracks().size();
 					
 					TrackDTO dto = new TrackDTO();
@@ -301,32 +348,32 @@ public class AlbumService {
 					dto.setReleaseDate(Instant.now());
 					dto.setWriteId(entity.getArtistId());
 					dto.setBan(0L);
-		
+
 					Track trackEntity = tMapper.toEntity(dto);
 					Set<TrackTag> trackTag = new HashSet<>();
-					
+
 					// 해당 파일의 태그 처리
-		            Long[] tagIdsArray = tagIdsForFiles.get(i);
-		            for (Long tagId : tagIdsArray) {
-		                MusicTags musicTag = musicReop.findById(tagId).orElse(null);
-		                if (musicTag != null) {
-		                    TrackTag tag = new TrackTag();
-		                    tag.setMusicTags(musicTag);
-		                    tag.setTrack(trackEntity);
-		                    tagRepo.save(tag);
-		                    trackTag.add(tag);
-		                }
-		            }
+					Long[] tagIdsArray = tagIdsForFiles.get(i);
+					for (Long tagId : tagIdsArray) {
+						MusicTags musicTag = musicReop.findById(tagId).orElse(null);
+						if (musicTag != null) {
+							TrackTag tag = new TrackTag();
+							tag.setMusicTags(musicTag);
+							tag.setTrack(trackEntity);
+							tagRepo.save(tag);
+							trackTag.add(tag);
+						}
+					}
 
 					trackEntity.setTrackTags(trackTag);
 					savedTrack = tRepo.save(trackEntity);
 
 //					set에 track값을 저장
 					track.add(trackEntity);
-					
+
 					// 트랙 이미지 파일 처리
 					if (titleImage != null) {
-						
+
 						TrackImageDTO imagedto = new TrackImageDTO();
 						imagedto.setTrackId(savedTrack.getTrackId());
 						imagedto.setImagePath(sys_imageName);
@@ -345,60 +392,18 @@ public class AlbumService {
 					Muiscfile.transferTo(destFile);
 				}
 			}
-		}
-		
-		if(deleteTrack!=null) {
-			System.out.println("삭제된 트랙의 길이"+deleteTrack.length);
-		}
-		
-		
-//		트랙의 값 수정 여기를 제일 먼저 고쳐야 한다.
-		Album updateEntity=aRepo.findById(albumId).get();
-		
-		Set<Track> tracks =updateEntity.getTracks();
-		System.err.println("넌 얼마니 김"+tracks.size());
-		System.err.println("albumsWriter에 길이: "+albumsWriter.length);
-		System.err.println("Tracktitles에 길이: "+Tracktitles.length);
-		// Iterate over the tracks and update writer and title 삭제된 트랙수에 따라 다르게 설정하게 한다.
-	    if(tracks.size() == albumsWriter.length && tracks.size() == Tracktitles.length) {
-	        int index = 0;
-	        for(Track track : tracks) {
-	            track.setWriter(albumsWriter[index]);
-	            track.setTitle(Tracktitles[index]);
-	            tRepo.save(track); // Save each updated track
-	            index++;
-	        }
-	    } else {
-	        throw new IllegalArgumentException("Length of albumsWriter and Tracktitles arrays must match the number of tracks");
-	    }
-		
-	   
-		Set<AlbumWriter> albumWriters = new HashSet<>();
-
-		for (int i = 0; i < albumsWriter.length; i++) {
-//			모든 작성자를 삭제
-			awRepo.deleteAllByAlbumWriterAlbumId(entity.getAlbumId());
 			
-			AlbumWriter writerNickname = new AlbumWriter();
-			writerNickname.setAlbumId(entity.getAlbumId());
-			writerNickname.setArtistNickname(albumsWriter[i]);
-
-			awRepo.save(writerNickname);
-			albumWriters.add(writerNickname);
 		}
 		
-		
-		entity.setAlbumWriter(albumWriters);
-		
-		
-//		Album saveAlbum=aRepo.save(entity);
-		
-		AlbumDTO dto=aMapper.toDto(entity);
-		
+	
+
+		Album saveAlbum = aRepo.save(entity);
+
+		AlbumDTO dto = aMapper.toDto(saveAlbum);
+
 		return dto;
 	}
 
-	
 //	===========================================
 //	시간 변환
 	public String convertSecondsToTimeString(long seconds) {
@@ -407,56 +412,49 @@ public class AlbumService {
 		long secs = seconds % 60;
 		return String.format("%02d:%02d:%02d", hours, minutes, secs);
 	}
-	
-	
+
 //	오래된 이미지 삭제
 	public void deleteOldImage(String imagePath) {
-	    if (imagePath != null && !imagePath.isEmpty()) {
-	        File oldImageFile = new File("c:/tracks/image", imagePath);
-	        if (oldImageFile.exists()) {
-	            oldImageFile.delete();
-	        }
-	    }
+		if (imagePath != null && !imagePath.isEmpty()) {
+			File oldImageFile = new File("c:/tracks/image", imagePath);
+			if (oldImageFile.exists()) {
+				oldImageFile.delete();
+			}
+		}
 	}
-	
+
 	public List<Long[]> extractTagIdsForFiles(MultiValueMap<String, String> trackTags, int fileCount) {
-        List<Long[]> tagIdsForFiles = new ArrayList<>();
+		List<Long[]> tagIdsForFiles = new ArrayList<>();
 
-        for (int i = 0; i < fileCount; i++) {
-            List<Long> tagIds = new ArrayList<>();
-            for (String tagKey : trackTags.keySet()) {
-                if (tagKey.startsWith("tags[" + i + "]")) {
-                    tagIds.addAll(trackTags.get(tagKey).stream()
-                                    .map(Long::parseLong)
-                                    .collect(Collectors.toList()));
-                }
-            }
-            Long[] tagIdsArray = tagIds.toArray(new Long[0]);
-            tagIdsForFiles.add(tagIdsArray);
-        }
+		for (int i = 0; i < fileCount; i++) {
+			List<Long> tagIds = new ArrayList<>();
+			for (String tagKey : trackTags.keySet()) {
+				if (tagKey.startsWith("tags[" + i + "]")) {
+					tagIds.addAll(trackTags.get(tagKey).stream().map(Long::parseLong).collect(Collectors.toList()));
+				}
+			}
+			Long[] tagIdsArray = tagIds.toArray(new Long[0]);
+			tagIdsForFiles.add(tagIdsArray);
+		}
 
-        return tagIdsForFiles;
-    }
-	
+		return tagIdsForFiles;
+	}
+
 //	태그 삽입하는 기능
 	private Set<AlbumTag> createAlbumTags(Long[] albumTagIds, Album album) {
 		atRepo.deleteAllByAlbumTagAlbumId(album.getAlbumId());
-		
-        Set<AlbumTag> albumTags = new HashSet<>();
-        for (Long tagId : albumTagIds) {
-            AlbumTagList albumTagList = atlRepo.findById(tagId).orElseThrow(
-                () -> new RuntimeException("Album tag list not found for ID: " + tagId));
-            
-            System.err.println("albumTagList id 확인:"+albumTagList.getTagId());
-            
-            AlbumTag albumTag = new AlbumTag();
-            albumTag.setAlbumTagList(albumTagList);
-            albumTag.setAlbum(album);
-            
-            System.err.println("엘범 id 확인:"+albumTag.getAlbum().getAlbumId());
-            atRepo.save(albumTag);
-            albumTags.add(albumTag);
-        }
-        return albumTags;
-    }
+
+		Set<AlbumTag> albumTags = new HashSet<>();
+		for (Long tagId : albumTagIds) {
+			AlbumTagList albumTagList = atlRepo.findById(tagId)
+					.orElseThrow(() -> new RuntimeException("Album tag list not found for ID: " + tagId));
+			AlbumTag albumTag = new AlbumTag();
+			albumTag.setAlbumTagList(albumTagList);
+			albumTag.setAlbum(album);
+
+			atRepo.save(albumTag);
+			albumTags.add(albumTag);
+		}
+		return albumTags;
+	}
 }
