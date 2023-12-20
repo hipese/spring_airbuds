@@ -78,7 +78,7 @@ public class AlbumController {
 		System.out.println("함수 실행전!!!");
 		AlbumDTO dto=aService.updateAlbum(files,name,durations,image_path,writers,titleImage,
 				albumselectTag,albumTitle,albumsWriters,Tracktitles,prevImage,deleteTrack,trackTags,albumId);
-		
+		System.out.println("리턴후 오냐?");
 //		return ResponseEntity.ok(null);
 		return ResponseEntity.ok(dto);
 	}

@@ -107,6 +107,7 @@ public class TrackService {
 			dto.setWriter(writer);
 			dto.setReleaseDate(Instant.parse(releaseDate));
 			dto.setWriteId(loginId);
+			dto.setBan(0L);
 			
 			Track entity= tMapper.toEntity(dto);
 			Set<TrackTag> trackTags = new HashSet<>();

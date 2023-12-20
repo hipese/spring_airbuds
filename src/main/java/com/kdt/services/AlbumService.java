@@ -121,7 +121,8 @@ public class AlbumService {
 				dto.setWriter(writers[i]);
 				dto.setReleaseDate(Instant.parse(releaseDate));
 				dto.setWriteId(loginId);
-
+				dto.setBan(0L);
+				
 				Track trackEntity = tMapper.toEntity(dto);
 				Set<TrackTag> trackTag = new HashSet<>();
 				
@@ -187,7 +188,7 @@ public class AlbumService {
 		Set<AlbumWriter> albumWriters = new HashSet<>();
 
 		for (int i = 0; i < writers.length; i++) {
-
+			
 			AlbumWriter writerNickname = new AlbumWriter();
 			writerNickname.setAlbumId(savaAlum.getAlbumId());
 			writerNickname.setArtistNickname(writers[i]);
@@ -226,15 +227,11 @@ public class AlbumService {
 								MultiValueMap<String, String> trackTags,
 								Long albumId)throws Exception {
 		
-		
-		System.out.println("files null이여도 옵니다.: "+ files);
 //		앨범 변경
 		Album entity= aRepo.findById(albumId).get();
 		File imagePath = new File("c:/tracks/image");
 		entity.setTitle(albumTitle);
 		String sys_imageName = null ;
-		System.out.println("현재 이미지: "+entity.getCoverImagePath());
-		System.out.println("예전 이미지: "+prevImage);
 		
 		if(titleImage!=null) {
 			sys_imageName=UUID.randomUUID().toString() + "_" + titleImage.getOriginalFilename();
@@ -257,19 +254,17 @@ public class AlbumService {
 			
 		}
 		
-		
 //		엘범 테그 설정하는 기능
 		Set<AlbumTag> albumTags = createAlbumTags(albumselectTag, entity);
 		entity.setAlbumTag(albumTags);
 		
-		aRepo.save(entity);
 		
 //		트랙을 삽입하는 로직 작성
 		if(files!=null) {
 //			삭제할 트랙이 있으면 먼저 제거
-			if(deleteTrack!=null) {
-				for(int i=0;i<deleteTrack.length;i++) {
-					tRepo.deleteById(deleteTrack[i]);
+		if(deleteTrack!=null) {
+		for(int i=0;i<deleteTrack.length;i++) {
+				tRepo.deleteById(deleteTrack[i]);
 				}
 			}
 			// 각 파일별 태그 ID 배열 생성
@@ -282,7 +277,7 @@ public class AlbumService {
 				if (files[i] != null) {
 					Track savedTrack = null;
 
-					MultipartFile Muiscfile = files[i];
+				MultipartFile Muiscfile = files[i];
 
 					String filename = Muiscfile.getOriginalFilename();
 					String sys_filename = UUID.randomUUID() + filename;
@@ -305,7 +300,8 @@ public class AlbumService {
 					dto.setWriter(writers[i]);
 					dto.setReleaseDate(Instant.now());
 					dto.setWriteId(entity.getArtistId());
-
+					dto.setBan(0L);
+		
 					Track trackEntity = tMapper.toEntity(dto);
 					Set<TrackTag> trackTag = new HashSet<>();
 					
@@ -357,13 +353,13 @@ public class AlbumService {
 		
 		
 //		트랙의 값 수정 여기를 제일 먼저 고쳐야 한다.
-		Album updateEnttity=aRepo.findById(albumId).get();
+		Album updateEntity=aRepo.findById(albumId).get();
 		
-		Set<Track> tracks =updateEnttity.getTracks();
-		System.out.println("넌 얼마니 김"+tracks.size());
-		System.out.println("albumsWriter에 길이: "+albumsWriter.length);
-		System.out.println("Tracktitles에 길이: "+Tracktitles.length);
-		// Iterate over the tracks and update writer and title
+		Set<Track> tracks =updateEntity.getTracks();
+		System.err.println("넌 얼마니 김"+tracks.size());
+		System.err.println("albumsWriter에 길이: "+albumsWriter.length);
+		System.err.println("Tracktitles에 길이: "+Tracktitles.length);
+		// Iterate over the tracks and update writer and title 삭제된 트랙수에 따라 다르게 설정하게 한다.
 	    if(tracks.size() == albumsWriter.length && tracks.size() == Tracktitles.length) {
 	        int index = 0;
 	        for(Track track : tracks) {
@@ -376,7 +372,7 @@ public class AlbumService {
 	        throw new IllegalArgumentException("Length of albumsWriter and Tracktitles arrays must match the number of tracks");
 	    }
 		
-	    System.out.println("이거뜸?1");
+	   
 		Set<AlbumWriter> albumWriters = new HashSet<>();
 
 		for (int i = 0; i < albumsWriter.length; i++) {
@@ -391,12 +387,13 @@ public class AlbumService {
 			albumWriters.add(writerNickname);
 		}
 		
-		 System.out.println("이거뜸?2");
-		entity.setAlbumWriter(albumWriters);
-
-		Album saveAlbum=aRepo.save(entity);
 		
-		AlbumDTO dto=aMapper.toDto(saveAlbum);
+		entity.setAlbumWriter(albumWriters);
+		
+		
+//		Album saveAlbum=aRepo.save(entity);
+		
+		AlbumDTO dto=aMapper.toDto(entity);
 		
 		return dto;
 	}
@@ -446,18 +443,20 @@ public class AlbumService {
 		atRepo.deleteAllByAlbumTagAlbumId(album.getAlbumId());
 		
         Set<AlbumTag> albumTags = new HashSet<>();
-
         for (Long tagId : albumTagIds) {
             AlbumTagList albumTagList = atlRepo.findById(tagId).orElseThrow(
                 () -> new RuntimeException("Album tag list not found for ID: " + tagId));
+            
+            System.err.println("albumTagList id 확인:"+albumTagList.getTagId());
+            
             AlbumTag albumTag = new AlbumTag();
             albumTag.setAlbumTagList(albumTagList);
             albumTag.setAlbum(album);
-
+            
+            System.err.println("엘범 id 확인:"+albumTag.getAlbum().getAlbumId());
             atRepo.save(albumTag);
             albumTags.add(albumTag);
         }
-
         return albumTags;
     }
 }
