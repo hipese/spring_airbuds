@@ -163,7 +163,6 @@ public class MemberService implements UserDetailsService{
 		String temporaryPassword = generateRandomPasswordCode(8);
 		// 비밀번호 변경
 		changePassword(id, temporaryPassword);
-		
 		// 이메일 전송
 		sendPasswordEmail(email, temporaryPassword);
 	}
@@ -176,7 +175,6 @@ public class MemberService implements UserDetailsService{
 	    // 비밀번호를 발급 받은 임시비밀번호로 변경
 	    String encodedPassword = new BCryptPasswordEncoder().encode(temporaryPassword);
 	    member.setPassword(encodedPassword);
-
 	    mRepo.save(member);
 	}
 
