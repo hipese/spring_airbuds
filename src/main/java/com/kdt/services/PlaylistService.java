@@ -40,7 +40,11 @@ public class PlaylistService {
 		pltRepo.saveAll(pltList);
 	}
 	
-	@Transactional
+	public void insertPlaylist(PlaylistDTO dto) {
+	    List<PlaylistTrack> pltList = pltMapper.toEntityList(dto.getPlaylistTracks()); // 수정
+	    pltRepo.saveAll(pltList);
+	}
+	
 	public List<PlaylistDTO> selectAll(String id) {
 		List<Playlist> list = plRepo.findByPlaylistWriteId(id);
 		List<PlaylistDTO> dtoList = plMapper.toDtoList(list);

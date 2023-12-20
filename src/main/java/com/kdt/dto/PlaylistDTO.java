@@ -8,6 +8,7 @@ public class PlaylistDTO {
     private String playlistWriteId;
 	private String playlistVisibility;
 	private List<PlaylistTrackDTO> playlistTrack;
+	private List<PlaylistTrackDTO> playlistTracks;
 	public Long getPlaylistSeq() {
 		return playlistSeq;
 	}
@@ -38,14 +39,23 @@ public class PlaylistDTO {
 	public void setPlaylistTrack(List<PlaylistTrackDTO> playlistTrack) {
 		this.playlistTrack = playlistTrack;
 	}
+	public List<PlaylistTrackDTO> getPlaylistTracks() {
+		return playlistTracks;
+	}
+	public void setPlaylistTracks(List<PlaylistTrackDTO> playlistTracks) {
+		this.playlistTracks = playlistTracks;
+	}
+	
 	public PlaylistDTO(Long playlistSeq, String playlistPlTitle, String playlistWriteId, String playlistVisibility,
-			List<PlaylistTrackDTO> playlistTrack) {
+			List<PlaylistTrackDTO> playlistTrack, List<PlaylistTrackDTO> playlistTracks) {
 		this.playlistSeq = playlistSeq;
 		this.playlistPlTitle = playlistPlTitle;
 		this.playlistWriteId = playlistWriteId;
 		this.playlistVisibility = playlistVisibility;
 		this.playlistTrack = playlistTrack;
+		this.playlistTracks = playlistTracks;
 	}
 	public PlaylistDTO() {
 	}
+	
 }

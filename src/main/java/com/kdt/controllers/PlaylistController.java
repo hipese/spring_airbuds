@@ -8,14 +8,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kdt.dto.PlaylistDTO;
 import com.kdt.services.PlaylistService;
-
-import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/api/playlist")
@@ -32,8 +31,16 @@ public class PlaylistController {
 		return ResponseEntity.ok().build();
 	}
 	
+	@PutMapping("/track/{playlistSeq}")
+	public ResponseEntity<Void> insertPlaylist(@PathVariable Long playlistSeq, @RequestBody PlaylistDTO pldto) {
+		pldto.getPlaylistTracks().get(0).setPlaylistParentSeq(playlistSeq);
+	    plServ.insertPlaylist(pldto);
+		return ResponseEntity.ok().build();
+	}
+
 	@GetMapping("/{playlist_write_id}")
 	public ResponseEntity<List<PlaylistDTO>> selectAll(@PathVariable("playlist_write_id") String playlistWriteId) {
+		System.out.println(playlistWriteId);
 	    List<PlaylistDTO> list = plServ.selectAll(playlistWriteId);
 	    return ResponseEntity.ok(list);
 	}
