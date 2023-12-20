@@ -50,4 +50,13 @@ public class PlaylistService {
 		List<PlaylistDTO> dtoList = plMapper.toDtoList(list);
 		return dtoList;
 	}
+	
+	public void deletePlaylist(Long playlistSeq) {
+		plRepo.deletePlaylistTracksByPlaylistParentSeq(playlistSeq);
+		plRepo.deleteById(playlistSeq);
+	}
+	
+	public void deleteTrack(Long playlistSeq) {
+		pltRepo.deleteById(playlistSeq);
+	}
 }

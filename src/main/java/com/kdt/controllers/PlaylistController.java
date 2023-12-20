@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kdt.dto.PlaylistDTO;
+import com.kdt.dto.PlaylistTrackDTO;
 import com.kdt.services.PlaylistService;
 
 @RestController
@@ -42,6 +44,18 @@ public class PlaylistController {
 	public ResponseEntity<List<PlaylistDTO>> selectAll(@PathVariable("playlist_write_id") String playlistWriteId) {
 	    List<PlaylistDTO> list = plServ.selectAll(playlistWriteId);
 	    return ResponseEntity.ok(list);
+	}
+	
+	@DeleteMapping("/{playlist_seq}")
+	public ResponseEntity<Void> deletePlaylist(@PathVariable("playlist_seq") Long playlistSeq) {
+		plServ.deletePlaylist(playlistSeq);
+		return ResponseEntity.ok().build();
+	}
+	
+	@DeleteMapping("/track/{playlist_seq}")
+	public ResponseEntity<Void> deleteTrack(@PathVariable("playlist_seq") Long playlistSeq) {
+		plServ.deleteTrack(playlistSeq);
+		return ResponseEntity.ok().build();
 	}
 	
 }
