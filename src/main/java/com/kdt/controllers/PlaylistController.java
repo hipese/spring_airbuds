@@ -33,14 +33,13 @@ public class PlaylistController {
 	
 	@PutMapping("/track/{playlistSeq}")
 	public ResponseEntity<Void> insertPlaylist(@PathVariable Long playlistSeq, @RequestBody PlaylistDTO pldto) {
-		pldto.getPlaylistTracks().get(0).setPlaylistParentSeq(playlistSeq);
+		pldto.getPlaylistTrack().get(0).setPlaylistParentSeq(playlistSeq);
 	    plServ.insertPlaylist(pldto);
 		return ResponseEntity.ok().build();
 	}
-
+	
 	@GetMapping("/{playlist_write_id}")
 	public ResponseEntity<List<PlaylistDTO>> selectAll(@PathVariable("playlist_write_id") String playlistWriteId) {
-		System.out.println(playlistWriteId);
 	    List<PlaylistDTO> list = plServ.selectAll(playlistWriteId);
 	    return ResponseEntity.ok(list);
 	}

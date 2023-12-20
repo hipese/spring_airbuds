@@ -41,7 +41,7 @@ public class PlaylistService {
 	}
 	
 	public void insertPlaylist(PlaylistDTO dto) {
-	    List<PlaylistTrack> pltList = pltMapper.toEntityList(dto.getPlaylistTracks()); // 수정
+	    List<PlaylistTrack> pltList = pltMapper.toEntityList(dto.getPlaylistTrack());
 	    pltRepo.saveAll(pltList);
 	}
 	

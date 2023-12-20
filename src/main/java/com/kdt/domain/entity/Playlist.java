@@ -33,7 +33,7 @@ public class Playlist {
 
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name="playlist_parent_seq")
-	private List<PlaylistTrack> playlistTracks;
+	private List<PlaylistTrack> playlistTrack;
 
 	public Long getPlaylistSeq() {
 		return playlistSeq;
@@ -67,24 +67,25 @@ public class Playlist {
 		this.playlistVisibility = playlistVisibility;
 	}
 
-	public List<PlaylistTrack> getPlaylistTracks() {
-		return playlistTracks;
+	public List<PlaylistTrack> getPlaylistTrack() {
+		return playlistTrack;
 	}
 
-	public void setPlaylistTracks(List<PlaylistTrack> playlistTracks) {
-		this.playlistTracks = playlistTracks;
+	public void setPlaylistTrack(List<PlaylistTrack> playlistTrack) {
+		this.playlistTrack = playlistTrack;
 	}
 
 	public Playlist(Long playlistSeq, String playlistPlTitle, String playlistWriteId, String playlistVisibility,
-			List<PlaylistTrack> playlistTracks) {
+			List<PlaylistTrack> playlistTrack) {
 		this.playlistSeq = playlistSeq;
 		this.playlistPlTitle = playlistPlTitle;
 		this.playlistWriteId = playlistWriteId;
 		this.playlistVisibility = playlistVisibility;
-		this.playlistTracks = playlistTracks;
+		this.playlistTrack = playlistTrack;
 	}
 
 	public Playlist() {
-	} 
+	}
+
 	
 }
