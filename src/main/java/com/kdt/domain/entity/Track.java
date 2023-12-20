@@ -13,7 +13,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 
 @Entity
 public class Track {
@@ -50,23 +49,22 @@ public class Track {
 
 	@OneToMany(mappedBy="track")
 	private Set<TrackTag> trackTags = new HashSet<>();
-	
+
 	@Column(name="release_date")
 	private Timestamp releaseDate;
-	
+
 	@Column(name="write_id")
 	private String writeId;
 
-	
-	
-	public Track() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+	@Column(name="ban")
+	private Long ban;
+
+	@Column(name="ban_reason")
+	private String banReason;
 
 	public Track(Long trackId, Long albumId, String title, Long trackNumber, Time duration, String filePath,
 			Long viewCount, String writer, Set<TrackImages> trackImages, Set<TrackTag> trackTags, Timestamp releaseDate,
-			String writeId) {
+			String writeId, Long ban, String banReason) {
 		super();
 		this.trackId = trackId;
 		this.albumId = albumId;
@@ -80,6 +78,8 @@ public class Track {
 		this.trackTags = trackTags;
 		this.releaseDate = releaseDate;
 		this.writeId = writeId;
+		this.ban = ban;
+		this.banReason = banReason;
 	}
 
 	public Long getTrackId() {
@@ -177,7 +177,25 @@ public class Track {
 	public void setWriteId(String writeId) {
 		this.writeId = writeId;
 	}
-	
 
-	
+	public Long getBan() {
+		return ban;
+	}
+
+	public void setBan(Long ban) {
+		this.ban = ban;
+	}
+
+	public String getBanReason() {
+		return banReason;
+	}
+
+	public void setBanReason(String banReason) {
+		this.banReason = banReason;
+	}
+
+	public Track() {
+		super();
+	}
+
 }

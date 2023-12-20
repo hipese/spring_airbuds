@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.kdt.domain.entity.Report;
 import com.kdt.domain.entity.ReportAnswer;
 import com.kdt.dto.ReportDTO;
-import com.kdt.mappers.ReportAnswerMapper;
 import com.kdt.mappers.ReportMapper;
 import com.kdt.repositories.ReportAnswerRepository;
 import com.kdt.repositories.ReportRepository;
@@ -29,9 +28,6 @@ public class ReportService {
 	
 	@Autowired
 	private ReportAnswerRepository raRepo;
-	
-	@Autowired
-	private ReportAnswerMapper raMapper;
 	
 	@Autowired
 	private JavaMailSender javaMailSender;
