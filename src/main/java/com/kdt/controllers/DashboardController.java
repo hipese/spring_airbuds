@@ -8,9 +8,12 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kdt.dto.DailyVisitDTO;
+import com.kdt.dto.MemberAgeViewDTO;
 import com.kdt.services.DashboardService;
 import com.kdt.services.MemberService;
 
@@ -48,5 +51,29 @@ public class DashboardController {
         }
 		
 		return ResponseEntity.ok(resultList);
+	}
+	
+	@GetMapping("/member")
+	public ResponseEntity<List<MemberAgeViewDTO>> getMember(){
+		List<MemberAgeViewDTO> list = dService.getMemberAge();
+		return ResponseEntity.ok(list);
+	}
+	
+	@GetMapping("/reportCount")
+	public ResponseEntity<Long> getReportCount(){
+		Long count = dService.getReportCount();
+		return ResponseEntity.ok(count);
+	}
+	
+	@PutMapping("/visit")
+	public ResponseEntity<String> insertVisit(DailyVisitDTO dto){
+		dService.insertVisit(dto);
+		return ResponseEntity.ok(null);
+	}
+	
+	@GetMapping("/visitorCount")
+	public ResponseEntity<Long> getVisitorCount(){
+		Long count = dService.getDailtCount();
+		return ResponseEntity.ok(count);
 	}
 }

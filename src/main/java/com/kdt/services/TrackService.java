@@ -1,9 +1,9 @@
 package com.kdt.services;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Time;
 import java.time.Instant;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -13,18 +13,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kdt.domain.entity.LikeTrackView;
 import com.kdt.domain.entity.MusicTags;
 import com.kdt.domain.entity.Track;
 import com.kdt.domain.entity.TrackImages;
 import com.kdt.domain.entity.TrackTag;
+import com.kdt.dto.LikeTrackViewDTO;
 import com.kdt.dto.TrackDTO;
 import com.kdt.dto.TrackImageDTO;
+import com.kdt.mappers.LikeTrackViewMapper;
 import com.kdt.mappers.TrackImageMapper;
 import com.kdt.mappers.TrackMapper;
+import com.kdt.repositories.LikeTrackViewRepository;
 import com.kdt.repositories.MusicTagRepository;
 import com.kdt.repositories.TrackImageRepository;
 import com.kdt.repositories.TrackRepository;
@@ -49,7 +51,12 @@ public class TrackService {
 
 	@Autowired
 	private TrackImageMapper imageMapper;
-
+	
+	@Autowired
+	private LikeTrackViewMapper ltvMapper;
+	
+	@Autowired
+	private LikeTrackViewRepository ltvRepo;
 
 	@Transactional
 	public void insert(MultipartFile files, 
@@ -105,8 +112,7 @@ public class TrackService {
 			Set<TrackTag> trackTags = new HashSet<>();
 			
 			for(int j = 0; j < tag.length; j++) {
-				System.out.println("MuiscTag에서 id 값: "+tag[j]);
-
+				
 //				muisctag에 존재하는 tag와 알맞은 값
 				MusicTags musictag=musicReop.findById(tag[j]).get();
 				
@@ -153,18 +159,75 @@ public class TrackService {
 		
 	}
 	
-	public void insertMultiUpload(MultipartFile[] files,
-								  String[] name, 
-								  String[] durations,
-								  String[] image_path, 
-								  String releaseDate,
-								  MultipartFile imagefile,
-								  String writer,
-								  MultiValueMap<String, String> trackTags,
-								  String loginId)throws Exception{
+	
+	@Transactional
+	public TrackDTO updateTrack(Long trackId, 
+							String title, 
+							String previmagePath,
+							MultipartFile imagefile,
+							String writer, 
+							Long[] tag) throws Exception {
+		
+		Track entity=tRepo.findById(trackId).get();
+		entity.setTitle(title);
+		entity.setWriter(writer);
+		
+//		변경된 이미지가 있으면 교체
+		if(imagefile!=null) {
+			TrackImages ientity=imageRepo.findByTrackImagesTrackId(trackId);
+			
+			File imagePath = new File("c:/tracks/image");
+			if (!imagePath.exists()) {
+				imagePath.mkdir();
+			}
+//			기존에 존재하는 이미지를 삭제
+		    if(previmagePath != null && !previmagePath.isEmpty()) {
+		        File prevImageFile = new File(imagePath, previmagePath);
+		        if(prevImageFile.exists()) {
+		            boolean isDeleted = prevImageFile.delete();
+		            if(!isDeleted) {
+		                throw new IOException("Failed to delete existing image file: " + prevImageFile.getAbsolutePath());
+		            }
+		        }
+		    }
+			
+//			새로운 이미지를 저장 이미지를 삭제
+			 MultipartFile imgFile = imagefile;
+		     String imageName = imgFile.getOriginalFilename();
+		     String sys_imageName = UUID.randomUUID().toString() + "_" + imageName;
+		     File destImageFile = new File(imagePath, sys_imageName);
+		     imgFile.transferTo(destImageFile);
+
+			
+//			경로 교체
+			ientity.setImagePath(sys_imageName);
+			
+			
+			imageRepo.save(ientity);
+		}
+		
+//		기존에 있는 trackTags전부 삭제 
+		tagRepo.deleteAllByTrackTagTrackId(trackId);
+	
+//		그 후 다시 설정
+		Set<TrackTag> trackTags = new HashSet<>();
+		for(int i=0;i<tag.length;i++) {
+			MusicTags mentity=musicReop.findById(tag[i]).get();
+			
+			TrackTag tracktag=new TrackTag();
+			tracktag.setMusicTags(mentity);
+			tracktag.setTrack(entity);
+			
+			tagRepo.save(tracktag);
+			trackTags.add(tracktag);
+		}
+		entity.setTrackTags(trackTags);
+		tRepo.save(entity);
+		
+		return tMapper.toDto(entity);
 		
 	}
-
+	
 	public List<TrackDTO> selectAll() {
 		List<Track> entity = tRepo.findAllByFetchJoin();
 		List<TrackDTO> dtos = tMapper.toDtoList(entity);
@@ -256,5 +319,11 @@ public class TrackService {
 		long minutes = (seconds % 3600) / 60;
 		long secs = seconds % 60;
 		return String.format("%02d:%02d:%02d", hours, minutes, secs);
+	}
+	
+	public List<LikeTrackViewDTO> getTrackLike(String write_id){
+		List<LikeTrackView> ltv = ltvRepo.selectCountByName(write_id);
+		List<LikeTrackViewDTO> dtoList = ltvMapper.toDtoList(ltv);
+		return dtoList;
 	}
 }
