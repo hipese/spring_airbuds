@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kdt.dto.DailyStreamingDTO;
 import com.kdt.dto.DailyVisitDTO;
 import com.kdt.dto.MemberAgeViewDTO;
 import com.kdt.services.DashboardService;
@@ -74,6 +75,18 @@ public class DashboardController {
 	@GetMapping("/visitorCount")
 	public ResponseEntity<Long> getVisitorCount(){
 		Long count = dService.getDailtCount();
+		return ResponseEntity.ok(count);
+	}
+	
+	@PutMapping("/addStream")
+	public ResponseEntity<String> insertStreamCount(DailyStreamingDTO dto){
+		dService.insertStreamCount(dto);
+		return ResponseEntity.ok(null);
+	}
+	
+	@GetMapping("/streamCount")
+	public ResponseEntity<Long> getStreamCount(){
+		Long count = dService.getStreamCount();
 		return ResponseEntity.ok(count);
 	}
 }

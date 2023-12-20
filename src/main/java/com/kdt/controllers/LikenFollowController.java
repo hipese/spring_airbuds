@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kdt.dto.CurrentPlayListDTO;
 import com.kdt.dto.MusicLikeDTO;
+import com.kdt.dto.MyMusicLikesDTO;
 import com.kdt.dto.SingerFollowDTO;
 import com.kdt.services.FollowService;
 import com.kdt.services.LikeService;
@@ -52,7 +53,6 @@ public class LikenFollowController {
 
 	@PostMapping("/delete")
 	public ResponseEntity<String> deleteFavorite(MusicLikeDTO dto) {
-		System.out.println(dto.getUserId());
 		lService.deleteFavorite(dto);
 		return ResponseEntity.ok(null);
 	}
@@ -122,4 +122,11 @@ public class LikenFollowController {
 //		}
 		return ResponseEntity.ok(list);
 	}
+	
+	@GetMapping("/myLikes/{id}")
+	public ResponseEntity<List<MyMusicLikesDTO>> getMyLikes(@PathVariable String id){
+		List<MyMusicLikesDTO> list = lService.getLikeCount(id);
+		return ResponseEntity.ok(list);
+	}
+	
 }
