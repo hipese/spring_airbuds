@@ -251,7 +251,6 @@ public class TrackService {
 		TrackDTO dtos=tMapper.toDto(entity);
 		return dtos;
 	}
-
 	
 	
 	public List<TrackDTO> selectfindById(String write_id){
