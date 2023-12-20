@@ -77,9 +77,8 @@ public class AlbumController {
 
 		System.err.println("작성자 숫자: "+albumsWriters.length);
 		System.err.println("트랙제목 숫자: "+Tracktitles.length);
-		System.err.println("writers 숫자: "+writers[0]);
 		
-		AlbumDTO dto=aService.updateAlbum(files,name,durations,image_path,writers,titleImage,
+		AlbumDTO dto=aService.updateAlbum(files,name,durations,writers,image_path,titleImage,
 				albumselectTag,albumTitle,albumsWriters,Tracktitles,prevImage,deleteTrack,trackTags,albumId);
 	
 //		return ResponseEntity.ok(null);

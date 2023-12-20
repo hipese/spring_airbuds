@@ -219,7 +219,15 @@ public class AlbumService {
 		File imagePath = new File("c:/tracks/image");
 		entity.setTitle(albumTitle);
 		String sys_imageName = null;
-
+		
+		if(deleteTrack!=null) {
+			 Track test = tRepo.findById(deleteTrack[0]).get();
+			 System.err.println("삭제한 트랙의 아이디: "+test.getTrackId());
+			 System.err.println("삭제한 트랙의 앨범 아이디: "+test.getAlbumId());
+			 System.err.println("삭제한 트랙의 이름: "+test.getTitle());
+		}
+		
+		 
 		if (titleImage != null) {
 			sys_imageName = UUID.randomUUID().toString() + "_" + titleImage.getOriginalFilename();
 
@@ -245,7 +253,59 @@ public class AlbumService {
 //		엘범 테그 설정하는 기능
 		Set<AlbumTag> albumTags = createAlbumTags(albumselectTag, entity);
 		entity.setAlbumTag(albumTags);
+		
+		
+//		만약 기존앨범의 트랙을 삭제했으면 삭제된 트랙의 albumId를 초기화
+		if (deleteTrack != null) {
+			System.err.println("deleteTrack몇개냐?: "+deleteTrack.length);
+			System.err.println("deleteTrack뭔갑?: "+deleteTrack[0]);
+		    for (int i = 0; i < deleteTrack.length; i++) {
+		        Track notalbumTrack = tRepo.findById(deleteTrack[i]).orElseThrow(
+		            () -> new RuntimeException("Track not found"));
+		        notalbumTrack.setAlbumId(null);
+		        tRepo.save(notalbumTrack);
+		    }
+		    // Flush changes to ensure they are reflected in the database
+		    tRepo.flush();
+		}
 
+
+//		트랙의 값 수정 여기를 제일 먼저 고쳐야 한다.
+		Album updatedAlbum = aRepo.findById(albumId).orElseThrow(() -> new RuntimeException("Album not found"));
+
+		Set<Track> updatedTracks = updatedAlbum.getTracks();
+		System.err.println("예전 트랙 지워졌냐? : "+updatedTracks.size());
+	
+		// Iterate over the tracks and update writer and title 삭제된 트랙수에 따라 다르게 설정하게 한다.
+		if (deleteTrack == null) {
+			if (updatedTracks.size() == albumsWriter.length && updatedTracks.size() == Tracktitles.length) {
+				int index = 0;
+				for (Track track : updatedTracks) {
+					track.setWriter(albumsWriter[index]);
+					track.setTitle(Tracktitles[index]);
+					tRepo.save(track); // Save each updated track
+					index++;
+				}
+			} else {
+				throw new IllegalArgumentException(
+						"Length of albumsWriter and Tracktitles arrays must match the number of tracks");
+			}
+		}else {
+			if (updatedTracks.size()== albumsWriter.length && updatedTracks.size() == Tracktitles.length) {
+				int index = 0;
+				for (Track track : updatedTracks) {
+					track.setWriter(albumsWriter[index]);
+					track.setTitle(Tracktitles[index]);
+					tRepo.save(track); // Save each updated track
+					index++;
+				}
+			} else {
+				throw new IllegalArgumentException(
+						"Length of albumsWriter and Tracktitles arrays must match the number of tracks");
+			}
+		}
+		
+		
 //		트랙을 삽입하는 로직 작성
 		if (files != null) {
 //			삭제할 트랙이 있으면 먼저 제거
@@ -276,8 +336,6 @@ public class AlbumService {
 					Time durationTime = Time.valueOf(timeString);
 
 					int entityTracksSize = entity.getTracks().size();
-					
-					System.err.println("함수에서의 writers의 값"+writers[i]);
 					
 					TrackDTO dto = new TrackDTO();
 					dto.setTitle(name[i]);
@@ -334,52 +392,10 @@ public class AlbumService {
 					Muiscfile.transferTo(destFile);
 				}
 			}
+			
 		}
-
-//		만약 기존앨범의 트랙을 삭제했으면 삭제된 트랙의 albumId를 초기화
-		if (deleteTrack != null) {
-		    for (int i = 0; i < deleteTrack.length; i++) {
-		        Track notalbumTrack = tRepo.findById(deleteTrack[i]).orElseThrow(
-		            () -> new RuntimeException("Track not found"));
-		        notalbumTrack.setAlbumId(null);
-		        tRepo.save(notalbumTrack);
-		    }
-		}
-
-//		트랙의 값 수정 여기를 제일 먼저 고쳐야 한다.
-		Album updateEntity = aRepo.findById(albumId).get();
-
-		Set<Track> tracks = updateEntity.getTracks();
-		System.err.println("예전 트랙 지워졌냐? : "+tracks.size());
+		
 	
-		// Iterate over the tracks and update writer and title 삭제된 트랙수에 따라 다르게 설정하게 한다.
-//		if (deleteTrack == null) {
-//			if (tracks.size() == albumsWriter.length && tracks.size() == Tracktitles.length) {
-//				int index = 0;
-//				for (Track track : tracks) {
-//					track.setWriter(albumsWriter[index]);
-//					track.setTitle(Tracktitles[index]);
-//					tRepo.save(track); // Save each updated track
-//					index++;
-//				}
-//			} else {
-//				throw new IllegalArgumentException(
-//						"Length of albumsWriter and Tracktitles arrays must match the number of tracks");
-//			}
-//		}else {
-//			if (tracks.size() == albumsWriter.length && tracks.size() == Tracktitles.length) {
-//				int index = 0;
-//				for (Track track : tracks) {
-//					track.setWriter(albumsWriter[index]);
-//					track.setTitle(Tracktitles[index]);
-//					tRepo.save(track); // Save each updated track
-//					index++;
-//				}
-//			} else {
-//				throw new IllegalArgumentException(
-//						"Length of albumsWriter and Tracktitles arrays must match the number of tracks");
-//			}
-//		}
 
 		Album saveAlbum = aRepo.save(entity);
 
