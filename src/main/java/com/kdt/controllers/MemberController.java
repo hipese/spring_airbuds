@@ -28,6 +28,13 @@ public class MemberController {
 
 	@Autowired
 	private MemberService memberService;
+	
+	// 아이디를 기준으로 Member 정보를 뽑아내는
+	@PostMapping("/{loginId}")
+	public ResponseEntity<MemberDTO> selectMember(@PathVariable String loginId) {
+		MemberDTO dto = memberService.findMemberById(loginId);
+		return ResponseEntity.ok(dto);
+	}
 
 	// 이메일로 전송하는
 	@PostMapping("/register/{email}")

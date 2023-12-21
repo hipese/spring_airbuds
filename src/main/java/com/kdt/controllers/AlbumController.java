@@ -60,6 +60,13 @@ public class AlbumController {
 		return ResponseEntity.ok(dto);
 	}
 	
+	@GetMapping("findByAlbumId/{albumId}")
+	public ResponseEntity<AlbumDTO> findByAlbumId(@PathVariable Long albumId){
+		
+		AlbumDTO dto=aService.findByAlbumId(albumId);
+		return ResponseEntity.ok(dto);
+	}
+	
 	
 	@PostMapping("/updateAlbum")
 	public ResponseEntity<AlbumDTO> updateAlbum(@RequestParam(value="file", required = false) MultipartFile[] files, 
