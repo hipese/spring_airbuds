@@ -7,10 +7,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -57,6 +60,13 @@ public class AlbumController {
 		return ResponseEntity.ok(dto);
 	}
 	
+	@GetMapping("findByAlbumId/{albumId}")
+	public ResponseEntity<AlbumDTO> findByAlbumId(@PathVariable Long albumId){
+		
+		AlbumDTO dto=aService.findByAlbumId(albumId);
+		return ResponseEntity.ok(dto);
+	}
+	
 	
 	@PostMapping("/updateAlbum")
 	public ResponseEntity<AlbumDTO> updateAlbum(@RequestParam(value="file", required = false) MultipartFile[] files, 
@@ -84,5 +94,16 @@ public class AlbumController {
 //		return ResponseEntity.ok(null);
 		return ResponseEntity.ok(dto);
 	}
+	
+	
+	@DeleteMapping("delete/{albumId}")
+	public ResponseEntity<Void> deleteAlbum(@PathVariable Long albumId){
+		System.out.println("전달받은 값: "+albumId);
+		
+		
+		aService.deleteAlbum(albumId);
+		return ResponseEntity.ok().build();
+	}
+	
 	
 }

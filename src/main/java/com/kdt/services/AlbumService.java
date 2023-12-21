@@ -24,6 +24,7 @@ import com.kdt.domain.entity.AlbumTagList;
 import com.kdt.domain.entity.AlbumWriter;
 import com.kdt.domain.entity.MusicTags;
 import com.kdt.domain.entity.Track;
+import com.kdt.domain.entity.TrackImages;
 import com.kdt.domain.entity.TrackTag;
 import com.kdt.dto.AlbumDTO;
 import com.kdt.dto.TrackDTO;
@@ -219,63 +220,54 @@ public class AlbumService {
 		File imagePath = new File("c:/tracks/image");
 		entity.setTitle(albumTitle);
 		String sys_imageName = null;
-		
-		if(deleteTrack!=null) {
-			 Track test = tRepo.findById(deleteTrack[0]).get();
-			 System.err.println("삭제한 트랙의 아이디: "+test.getTrackId());
-			 System.err.println("삭제한 트랙의 앨범 아이디: "+test.getAlbumId());
-			 System.err.println("삭제한 트랙의 이름: "+test.getTitle());
-		}
-		
-		 
+
+//		이미지가 변경되었을 시 동작이미지가 있으면 경로 변경
 		if (titleImage != null) {
 			sys_imageName = UUID.randomUUID().toString() + "_" + titleImage.getOriginalFilename();
 
 			System.err.println("바꿔야할 이미지 사진의 이름: " + sys_imageName);
-//			이미지가 변경되었을 시 동작
-			if (!(titleImage.getOriginalFilename().equals(prevImage))) {
-
-				entity.setCoverImagePath(sys_imageName);
-
-				// Save new image
-				if (!imagePath.exists()) {
-					imagePath.mkdir();
-				}
-				File newImageFile = new File(imagePath, sys_imageName);
-				titleImage.transferTo(newImageFile);
-
-				// Delete old image file
-				deleteOldImage(prevImage);
+			// Save new image
+			if (!imagePath.exists()) {
+				imagePath.mkdir();
 			}
+			File newImageFile = new File(imagePath, sys_imageName);
+			titleImage.transferTo(newImageFile);
+			// Delete old image file
+			deleteOldImage(prevImage);
 
+		}else {
+			sys_imageName=prevImage;
+			System.err.println("이미지 안바뀜: " + prevImage);
 		}
+		
+		entity.setCoverImagePath(sys_imageName);
+
+	
 
 //		엘범 테그 설정하는 기능
 		Set<AlbumTag> albumTags = createAlbumTags(albumselectTag, entity);
 		entity.setAlbumTag(albumTags);
-		
-		
+
 //		만약 기존앨범의 트랙을 삭제했으면 삭제된 트랙의 albumId를 초기화
 		if (deleteTrack != null) {
-			System.err.println("deleteTrack몇개냐?: "+deleteTrack.length);
-			System.err.println("deleteTrack뭔갑?: "+deleteTrack[0]);
-		    for (int i = 0; i < deleteTrack.length; i++) {
-		        Track notalbumTrack = tRepo.findById(deleteTrack[i]).orElseThrow(
-		            () -> new RuntimeException("Track not found"));
-		        notalbumTrack.setAlbumId(null);
-		        tRepo.save(notalbumTrack);
-		    }
-		    // Flush changes to ensure they are reflected in the database
-		    tRepo.flush();
+			System.err.println("deleteTrack몇개냐?: " + deleteTrack.length);
+			System.err.println("deleteTrack뭔갑?: " + deleteTrack[0]);
+			for (int i = 0; i < deleteTrack.length; i++) {
+				Track notalbumTrack = tRepo.findById(deleteTrack[i])
+						.orElseThrow(() -> new RuntimeException("Track not found"));
+				notalbumTrack.setAlbumId(null);
+				tRepo.save(notalbumTrack);
+			}
+			// Flush changes to ensure they are reflected in the database
+			tRepo.flush();
 		}
-
 
 //		트랙의 값 수정 여기를 제일 먼저 고쳐야 한다.
 		Album updatedAlbum = aRepo.findById(albumId).orElseThrow(() -> new RuntimeException("Album not found"));
 
 		Set<Track> updatedTracks = updatedAlbum.getTracks();
-		System.err.println("예전 트랙 지워졌냐? : "+updatedTracks.size());
-	
+		System.err.println("예전 트랙 지워졌냐? : " + updatedTracks.size());
+
 		// Iterate over the tracks and update writer and title 삭제된 트랙수에 따라 다르게 설정하게 한다.
 		if (deleteTrack == null) {
 			if (updatedTracks.size() == albumsWriter.length && updatedTracks.size() == Tracktitles.length) {
@@ -290,8 +282,8 @@ public class AlbumService {
 				throw new IllegalArgumentException(
 						"Length of albumsWriter and Tracktitles arrays must match the number of tracks");
 			}
-		}else {
-			if (updatedTracks.size()== albumsWriter.length && updatedTracks.size() == Tracktitles.length) {
+		} else {
+			if (updatedTracks.size() == albumsWriter.length && updatedTracks.size() == Tracktitles.length) {
 				int index = 0;
 				for (Track track : updatedTracks) {
 					track.setWriter(albumsWriter[index]);
@@ -304,20 +296,29 @@ public class AlbumService {
 						"Length of albumsWriter and Tracktitles arrays must match the number of tracks");
 			}
 		}
+
+//		기존 트랙의 값을 가지는 set
+		Set<Track> existingTracks = new HashSet<>(entity.getTracks());
 		
+//		기존에 존재하던 트랙에 이미지 경로를 재설정
+		for (Track track : existingTracks) {
+			TrackImages image =imageRepo.findByTrackImagesTrackId(track.getTrackId());
+			if (image != null) {
+		        // 기존의 트랙에 imagePath 업데이트
+				System.err.println("기존에 이미지경로 셋팅~: "+sys_imageName);
+		        image.setImagePath(sys_imageName);
+		        imageRepo.save(image); // 변경 사항을 데이터베이스에 저장
+		    }
+		}
 		
 //		트랙을 삽입하는 로직 작성
 		if (files != null) {
-//			삭제할 트랙이 있으면 먼저 제거
-			if (deleteTrack != null) {
-				for (int i = 0; i < deleteTrack.length; i++) {
-					tRepo.deleteById(deleteTrack[i]);
-				}
-			}
+
 			// 각 파일별 태그 ID 배열 생성
 			List<Long[]> tagIdsForFiles = extractTagIdsForFiles(trackTags, files.length);
 
 			File uploadPath = new File("c:/tracks");
+			
 			Set<Track> track = new HashSet<>();
 			for (int i = 0; i < files.length; i++) {
 //				음원 저장
@@ -336,7 +337,7 @@ public class AlbumService {
 					Time durationTime = Time.valueOf(timeString);
 
 					int entityTracksSize = entity.getTracks().size();
-					
+
 					TrackDTO dto = new TrackDTO();
 					dto.setTitle(name[i]);
 					dto.setAlbumId(entity.getAlbumId());
@@ -370,38 +371,99 @@ public class AlbumService {
 
 //					set에 track값을 저장
 					track.add(trackEntity);
-
+					
+//					새로 삽입하는 파일의 이미지 경로 랜더링을 다시한다.
 					// 트랙 이미지 파일 처리
 					if (titleImage != null) {
-
 						TrackImageDTO imagedto = new TrackImageDTO();
 						imagedto.setTrackId(savedTrack.getTrackId());
 						imagedto.setImagePath(sys_imageName);
+						System.err.println("이미지 뭐로 설정함? "+sys_imageName);
 						imageRepo.save(imageMapper.toEntity(imagedto));
-					}
-
-					if (titleImage == null) {
-						image_path[i] = "NULL";
+					}else {
+						image_path[i] = prevImage;
 						TrackImageDTO imagedto = new TrackImageDTO();
 						imagedto.setTrackId(savedTrack.getTrackId());
 						imagedto.setImagePath(image_path[i]);
 						imageRepo.save(imageMapper.toEntity(imagedto));
+						
 					}
 
 					File destFile = new File(uploadPath + File.separator + sys_filename);
 					Muiscfile.transferTo(destFile);
 				}
 			}
-			
+			existingTracks.addAll(track);
+			entity.setTracks(existingTracks);
 		}
-		
-	
 
 		Album saveAlbum = aRepo.save(entity);
 
 		AlbumDTO dto = aMapper.toDto(saveAlbum);
 
 		return dto;
+	}
+	
+	public AlbumDTO findByAlbumId(Long albumId) {
+		Album entity=aRepo.findById(albumId).get();
+		AlbumDTO dto=aMapper.toDto(entity);
+		return dto;
+	}
+
+	@Transactional
+	public void deleteAlbum(long albumId) {
+
+		Album entity = aRepo.findById(albumId).get();
+
+//		오래된 이미지 삭제
+
+//		여기서 트랙 삭제할때 내부에 tag, 이미지 전부 삭제해야 하는지 찾아보자
+		if (entity != null) {
+			// albumId과 일치하는 테그를 전부 삭제한다.
+			atRepo.deleteAllByAlbumTagAlbumId(albumId);
+
+//			예전 이미지를 삭제
+			deleteOldImage(entity.getCoverImagePath());
+
+//			각각의 트랙들과 관련된 정보들을 삭제한다
+			Set<Track> albumtracks = entity.getTracks();
+			for (Track track : albumtracks) {
+
+//				트랙에 존재라는 이미지 삭제
+				TrackImages imageEntity = imageRepo.findByTrackImagesTrackId(track.getTrackId());
+				String imagePath = "c:/tracks/image" + File.separator + imageEntity.getImagePath();
+				File imageToDelete = new File(imagePath);
+
+				if (imageToDelete.exists()) {
+					imageToDelete.delete();
+					imageRepo.deleteById(imageEntity.getTrackId());// 데이터베이스에서 이미지 삭제
+
+				} else {
+					System.out.println("파일이 존재하지 않습니다: " + imagePath);
+				}
+
+				// 각각의 트랙에서 track_id과 일치하는 테그를 전부 삭제한다.
+				tagRepo.deleteAllByTrackTagTrackId(track.getTrackId());
+
+//				트랙에서 음원이 존재하면 전부 삭제한다.
+				String filePath = "c:/tracks" + File.separator + track.getFilePath();
+				File fileToDelete = new File(filePath);
+
+				if (fileToDelete.exists()) {
+					fileToDelete.delete(); // 실제 경로 삭제
+					tRepo.deleteById(track.getTrackId()); // 데이터베이스에서 삭제
+				} else {
+					System.out.println("파일이 존재하지 않습니다: " + filePath);
+				}
+//				각 트랙을 삭제하는 함수
+				tRepo.deleteById(track.getTrackId());
+			}
+
+			awRepo.deleteAllByAlbumWriterAlbumId(albumId);
+			aRepo.deleteById(albumId);
+
+		}
+
 	}
 
 //	===========================================
