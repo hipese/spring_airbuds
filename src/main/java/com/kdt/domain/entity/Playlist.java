@@ -1,13 +1,11 @@
 package com.kdt.domain.entity;
 
 import java.util.List;
-import java.util.Set;
-
-import com.kdt.dto.PlaylistTrackDTO;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,9 +29,8 @@ public class Playlist {
 	@Column(name="playlist_visibility")
 	private String playlistVisibility;
 
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name="playlist_parent_seq")
-	private List<PlaylistTrack> playlistTrack;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="playlist")
+	private List<PlaylistTrack> playlistTracks;
 
 	public Long getPlaylistSeq() {
 		return playlistSeq;
@@ -67,25 +64,24 @@ public class Playlist {
 		this.playlistVisibility = playlistVisibility;
 	}
 
-	public List<PlaylistTrack> getPlaylistTrack() {
-		return playlistTrack;
+	public List<PlaylistTrack> getPlaylistTracks() {
+		return playlistTracks;
 	}
 
-	public void setPlaylistTrack(List<PlaylistTrack> playlistTrack) {
-		this.playlistTrack = playlistTrack;
+	public void setPlaylistTracks(List<PlaylistTrack> playlistTracks) {
+		this.playlistTracks = playlistTracks;
 	}
 
 	public Playlist(Long playlistSeq, String playlistPlTitle, String playlistWriteId, String playlistVisibility,
-			List<PlaylistTrack> playlistTrack) {
+			List<PlaylistTrack> playlistTracks) {
 		this.playlistSeq = playlistSeq;
 		this.playlistPlTitle = playlistPlTitle;
 		this.playlistWriteId = playlistWriteId;
 		this.playlistVisibility = playlistVisibility;
-		this.playlistTrack = playlistTrack;
+		this.playlistTracks = playlistTracks;
 	}
 
 	public Playlist() {
 	}
 
-	
 }
