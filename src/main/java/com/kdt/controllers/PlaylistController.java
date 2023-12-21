@@ -36,7 +36,7 @@ public class PlaylistController {
 	
 	@PutMapping("/track/{playlistSeq}")
 	public ResponseEntity<Void> insertPlaylist(@PathVariable Long playlistSeq, @RequestBody PlaylistDTO pldto) {
-		pldto.getPlaylistTracks().get(0).setPlaylistParentSeq(playlistSeq);
+//		pldto.getPlaylistTracks().get(0).setPlaylistParentSeq(playlistSeq);
 	    plServ.insertPlaylist(pldto);
 		return ResponseEntity.ok().build();
 	}
