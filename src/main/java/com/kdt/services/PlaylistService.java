@@ -32,30 +32,33 @@ public class PlaylistService {
 	@Transactional
 	public void insert(PlaylistDTO dto) {
 		Playlist pl = plMapper.toEntity(dto);
-		Long playlistSeq = plRepo.save(pl).getPlaylistSeq();
-		List<PlaylistTrack> pltList = pltMapper.toEntityList(dto.getPlaylistTrack());
-		for(PlaylistTrack plt : pltList) {
-			plt.setPlaylistParentSeq(playlistSeq);
+		List<PlaylistTrack> playlistTracks = pl.getPlaylistTracks();
+		for (PlaylistTrack track : playlistTracks) {
+			track.setPlaylist(pl);
 		}
-		pltRepo.saveAll(pltList);
+		plRepo.save(pl);
 	}
 	
+	@Transactional
 	public void insertPlaylist(PlaylistDTO dto) {
-	    List<PlaylistTrack> pltList = pltMapper.toEntityList(dto.getPlaylistTrack());
+	    List<PlaylistTrack> pltList = pltMapper.toEntityList(dto.getPlaylistTracks());
 	    pltRepo.saveAll(pltList);
 	}
 	
+	@Transactional
 	public List<PlaylistDTO> selectAll(String id) {
 		List<Playlist> list = plRepo.findByPlaylistWriteId(id);
 		List<PlaylistDTO> dtoList = plMapper.toDtoList(list);
 		return dtoList;
 	}
 	
+	@Transactional
 	public void deletePlaylist(Long playlistSeq) {
 		plRepo.deletePlaylistTracksByPlaylistParentSeq(playlistSeq);
 		plRepo.deleteById(playlistSeq);
 	}
 	
+	@Transactional
 	public void deleteTrack(Long playlistSeq) {
 		pltRepo.deleteById(playlistSeq);
 	}

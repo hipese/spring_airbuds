@@ -35,8 +35,9 @@ public class PlaylistTrack {
 	@Column(name="playlist_writer")
 	private String playlistWriter;
 
-	@Column(name="playlist_parent_seq")
-	private Long playlistParentSeq;
+	@ManyToOne
+	@JoinColumn(name="playlist_parent_seq")
+	private Playlist playlist;
 
 	public Long getPlaylistSeq() {
 		return playlistSeq;
@@ -94,16 +95,16 @@ public class PlaylistTrack {
 		this.playlistWriter = playlistWriter;
 	}
 
-	public Long getPlaylistParentSeq() {
-		return playlistParentSeq;
+	public Playlist getPlaylist() {
+		return playlist;
 	}
 
-	public void setPlaylistParentSeq(Long playlistParentSeq) {
-		this.playlistParentSeq = playlistParentSeq;
+	public void setPlaylist(Playlist playlist) {
+		this.playlist = playlist;
 	}
 
 	public PlaylistTrack(Long playlistSeq, Long playlistTrackId, String playlistTitle, String playlistImagePath,
-			Time playlistDuration, String playlistFilePath, String playlistWriter, Long playlistParentSeq) {
+			Time playlistDuration, String playlistFilePath, String playlistWriter, Playlist playlist) {
 		this.playlistSeq = playlistSeq;
 		this.playlistTrackId = playlistTrackId;
 		this.playlistTitle = playlistTitle;
@@ -111,7 +112,7 @@ public class PlaylistTrack {
 		this.playlistDuration = playlistDuration;
 		this.playlistFilePath = playlistFilePath;
 		this.playlistWriter = playlistWriter;
-		this.playlistParentSeq = playlistParentSeq;
+		this.playlist = playlist;
 	}
 
 	public PlaylistTrack() {
