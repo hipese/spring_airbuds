@@ -43,6 +43,12 @@ public class TrackReplyService {
 		return replyDtos;
 	}
 	
+	public List<TrackReplyDTO> selectByWriter(String writer){
+		List<TrackReply> replies = trRepo.selectAllById(writer);
+		List<TrackReplyDTO> replyDtos = trMapper.toDtoList(replies);
+		return replyDtos;
+	}
+	
 	public void deleteReply(Long seq) {
 		TrackReply reply = trRepo.findById(seq).get();
 		trRepo.delete(reply);

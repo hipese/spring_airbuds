@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kdt.dto.TrackTagDTO;
-import com.kdt.services.TrackService;
+
 import com.kdt.services.TrackTagService;
 
-import jakarta.websocket.server.PathParam;
+
 
 @RestController
 @RequestMapping("/api/trackTag")
@@ -31,7 +31,9 @@ public class TrackTagController {
 	
 	@GetMapping("/selectTagById/{id}")
 	public ResponseEntity<List<TrackTagDTO>> selectTagById(@PathVariable Long id){
+		System.err.println("여기로 오냐?");
 		List<TrackTagDTO> list=ttServ.selectTagById(id);
+		System.err.println(list);
 		return ResponseEntity.ok(list);
 	}
 }

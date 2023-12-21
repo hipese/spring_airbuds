@@ -36,6 +36,12 @@ public class TrackReplyController {
 		return ResponseEntity.ok(list);
 	}
 	
+	@GetMapping("/writer/{writer}")
+	public ResponseEntity<List<TrackReplyDTO>> selectByTrackId(@PathVariable String writer){
+		List<TrackReplyDTO> list = trService.selectByWriter(writer);
+		return ResponseEntity.ok(list);
+	}
+	
 	@DeleteMapping("/{seq}")
 	public ResponseEntity<String> deleteReply(@PathVariable Long seq){
 		trService.deleteReply(seq);
