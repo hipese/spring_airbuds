@@ -41,8 +41,14 @@ public class PlaylistService {
 	
 	@Transactional
 	public void insertPlaylist(PlaylistDTO dto) {
-	    List<PlaylistTrack> pltList = pltMapper.toEntityList(dto.getPlaylistTracks());
-	    pltRepo.saveAll(pltList);
+		Playlist playlist = plMapper.toEntity(dto);
+
+	    // Set the playlist reference for each track
+	    List<PlaylistTrack> playlistTracks = playlist.getPlaylistTracks();
+	    for (PlaylistTrack track : playlistTracks) {
+	        track.setPlaylist(playlist);
+	    }
+	    plRepo.save(playlist);
 	}
 	
 	@Transactional
