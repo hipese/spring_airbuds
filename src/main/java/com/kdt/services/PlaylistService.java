@@ -40,10 +40,23 @@ public class PlaylistService {
 		pltRepo.saveAll(pltList);
 	}
 	
-	@Transactional
+	public void insertPlaylist(PlaylistDTO dto) {
+	    List<PlaylistTrack> pltList = pltMapper.toEntityList(dto.getPlaylistTrack());
+	    pltRepo.saveAll(pltList);
+	}
+	
 	public List<PlaylistDTO> selectAll(String id) {
 		List<Playlist> list = plRepo.findByPlaylistWriteId(id);
 		List<PlaylistDTO> dtoList = plMapper.toDtoList(list);
 		return dtoList;
+	}
+	
+	public void deletePlaylist(Long playlistSeq) {
+		plRepo.deletePlaylistTracksByPlaylistParentSeq(playlistSeq);
+		plRepo.deleteById(playlistSeq);
+	}
+	
+	public void deleteTrack(Long playlistSeq) {
+		pltRepo.deleteById(playlistSeq);
 	}
 }
