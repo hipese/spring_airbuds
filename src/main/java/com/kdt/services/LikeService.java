@@ -2,6 +2,7 @@ package com.kdt.services;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -10,14 +11,19 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.kdt.domain.entity.CurrentPlayList;
+import com.kdt.domain.entity.HistoryLikeView;
 import com.kdt.domain.entity.MusicLike;
 import com.kdt.domain.entity.MyMusicLikes;
 import com.kdt.domain.entity.Track;
 import com.kdt.dto.CurrentPlayListDTO;
+import com.kdt.dto.HistoryLikeViewDTO;
 import com.kdt.dto.MusicLikeDTO;
 import com.kdt.dto.MyMusicLikesDTO;
+import com.kdt.mappers.HistoryLikeViewMapper;
 import com.kdt.mappers.MusicLikeMapper;
 import com.kdt.mappers.MyMusicLikesMapper;
+import com.kdt.repositories.CurrentPlayListRepository;
+import com.kdt.repositories.HistoryLikeViewRepository;
 import com.kdt.repositories.MusicLikeRepository;
 import com.kdt.repositories.MyMusicLikesRepository;
 
@@ -37,6 +43,15 @@ public class LikeService {
 	
 	@Autowired
 	private MyMusicLikesMapper mmlMapper;
+	
+	@Autowired
+	private CurrentPlayListRepository cplRepo;
+	
+	@Autowired
+	private HistoryLikeViewRepository hlvRepo;
+	
+	@Autowired
+	private HistoryLikeViewMapper hlvMapper;
 	
 	public Long insertFavorite(MusicLikeDTO dto) {
 		List<MusicLike> mlList = mlRepo.selectAllByNameAndTrack(dto.getUserId(), dto.getTrackId());
@@ -83,6 +98,21 @@ public class LikeService {
 	public List<MyMusicLikesDTO> getLikeCount(String id) {
 		List<MyMusicLikes> mml = mmlRepo.selectById(id);
 		List<MyMusicLikesDTO> dtoList = mmlMapper.toDtoList(mml);
+		return dtoList;
+	}
+	
+	public List<Object[]> getHistoryLike(String id){
+		//List<Map<String, Object>>
+		List<Object[]> list = cplRepo.selectLikeCountByName(id);
+		for(Object obj : list) {
+			System.out.println(obj.toString());
+		}
+		return list;
+	}
+	
+	public List<HistoryLikeViewDTO> getHistoryLikeCount(String id){
+		List<HistoryLikeView> hlv =  hlvRepo.gethistoryLike(id);
+		List<HistoryLikeViewDTO> dtoList = hlvMapper.toDtoList(hlv);
 		return dtoList;
 	}
 }
