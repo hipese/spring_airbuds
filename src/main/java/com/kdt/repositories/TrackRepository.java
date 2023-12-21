@@ -7,13 +7,22 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 
 import com.kdt.domain.entity.Track;
 
-public interface TrackRepository extends JpaRepository<Track, Long> {
+import jakarta.transaction.Transactional;
 
+public interface TrackRepository extends JpaRepository<Track, Long> {
+	
+	@Modifying
+	@Transactional
+	@Query("DELETE FROM Track t WHERE t.albumId = :albumId")
+	void deleteAllByTrackAlbumId(@Param("albumId") Long albumId);
+
+	
 	// fetch join 문법
 	@Query("select b from Track b left join fetch b.trackImages")
 	List<Track> findAllByFetchJoin();
