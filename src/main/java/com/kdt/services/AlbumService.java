@@ -403,6 +403,12 @@ public class AlbumService {
 
 		return dto;
 	}
+	
+	public AlbumDTO findByAlbumId(Long albumId) {
+		Album entity=aRepo.findById(albumId).get();
+		AlbumDTO dto=aMapper.toDto(entity);
+		return dto;
+	}
 
 	@Transactional
 	public void deleteAlbum(long albumId) {
