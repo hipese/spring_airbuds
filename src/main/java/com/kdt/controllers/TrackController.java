@@ -126,6 +126,13 @@ public class TrackController {
 		return ResponseEntity.ok(dtos);
 	}
 	
+	@GetMapping("/searchText/{searchText}")
+	public ResponseEntity<List<TrackDTO>> searchTrackByText(@PathVariable String searchText){
+		
+		System.out.println("값 온다. "+searchText);
+		List<TrackDTO> dtos = tService.searchTrackByText(searchText);
+		return ResponseEntity.ok(dtos);
+	}
 	
 
 	@DeleteMapping("/{track_id}")

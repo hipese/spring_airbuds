@@ -409,7 +409,14 @@ public class AlbumService {
 		AlbumDTO dto=aMapper.toDto(entity);
 		return dto;
 	}
-
+	
+	public List<AlbumDTO> searchAlbumByText(String searchText){
+		List<Album> entity=aRepo.findAllByTitleStartingWith(searchText);
+		List<AlbumDTO> dto=aMapper.toDtoList(entity);
+		return dto;
+	}
+	
+	
 	@Transactional
 	public void deleteAlbum(long albumId) {
 

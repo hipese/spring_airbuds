@@ -260,6 +260,13 @@ public class TrackService {
 		return dtos;
 	}
 	
+	public List<TrackDTO> searchTrackByText(String searchText){
+		
+		List<Track> entity=tRepo.findAllByTitleOrWriter(searchText);
+		List<TrackDTO> dtos=tMapper.toDtoList(entity);
+		return dtos;
+	}
+	
 	public List<TrackDTO> recentAll() {
 		Pageable pageable = PageRequest.of(0, 10);
 		List<Track> entity = tRepo.findAllByOrderByTrackIdDesc(pageable);

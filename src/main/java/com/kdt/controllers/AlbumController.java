@@ -84,9 +84,6 @@ public class AlbumController {
 												@RequestParam MultiValueMap<String, String> trackTags,
 												@RequestParam(value="albumId" ,required = false) Long albumId) throws Exception{
 				
-
-		System.err.println("작성자 숫자: "+albumsWriters.length);
-		System.err.println("트랙제목 숫자: "+Tracktitles.length);
 		
 		AlbumDTO dto=aService.updateAlbum(files,name,durations,writers,image_path,titleImage,
 				albumselectTag,albumTitle,albumsWriters,Tracktitles,prevImage,deleteTrack,trackTags,albumId);
@@ -95,6 +92,11 @@ public class AlbumController {
 		return ResponseEntity.ok(dto);
 	}
 	
+	@GetMapping("/searchText/{searchText}")
+	public ResponseEntity<List<AlbumDTO>> searchAlbumByText(@PathVariable String searchText){
+		List<AlbumDTO> dto=aService.searchAlbumByText(searchText);
+		return ResponseEntity.ok(dto);
+	}
 	
 	@DeleteMapping("delete/{albumId}")
 	public ResponseEntity<Void> deleteAlbum(@PathVariable Long albumId){
