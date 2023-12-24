@@ -2,6 +2,7 @@ package com.kdt.services;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.Principal;
 import java.sql.Time;
 import java.time.Instant;
 import java.util.HashSet;
@@ -176,14 +177,16 @@ public class TrackService {
 //		변경된 이미지가 있으면 교체
 		if(imagefile!=null) {
 			TrackImages ientity=imageRepo.findByTrackImagesTrackId(trackId);
+			System.err.println("앨범 뭐임: "+entity.getAlbumId());
 			
 			File imagePath = new File("c:/tracks/image");
 			if (!imagePath.exists()) {
 				imagePath.mkdir();
 			}
-//			기존에 존재하는 이미지를 삭제
-		    if(previmagePath != null && !previmagePath.isEmpty()) {
+//			기존에 존재하는 이미지를 삭제 단 앨범에 등록되어 있지 않을 떄
+		    if(previmagePath != null && !previmagePath.isEmpty()&&entity.getAlbumId()==null&&entity.getPrevAlbumId()==null) {
 		        File prevImageFile = new File(imagePath, previmagePath);
+
 		        if(prevImageFile.exists()) {
 		            boolean isDeleted = prevImageFile.delete();
 		            if(!isDeleted) {
@@ -192,7 +195,7 @@ public class TrackService {
 		        }
 		    }
 			
-//			새로운 이미지를 저장 이미지를 삭제
+//			새로운 이미지를 저장
 			 MultipartFile imgFile = imagefile;
 		     String imageName = imgFile.getOriginalFilename();
 		     String sys_imageName = UUID.randomUUID().toString() + "_" + imageName;
@@ -229,6 +232,19 @@ public class TrackService {
 		
 	}
 	
+	
+	public void albumIdSave(Long trackId,Long albumId) {
+		Track entity=tRepo.findById(trackId).get();
+		entity.setAlbumId(albumId);
+		tRepo.save(entity);
+	}
+	
+	public void albumIdDelete(Long trackId) {
+		Track entity=tRepo.findById(trackId).get();
+		entity.setAlbumId(null);
+		tRepo.save(entity);
+	}
+	
 	public List<TrackDTO> selectAll() {
 		List<Track> entity = tRepo.findAllByFetchJoin();
 		List<TrackDTO> dtos = tMapper.toDtoList(entity);
@@ -253,6 +269,11 @@ public class TrackService {
 		return dtos;
 	}
 	
+	public List<TrackDTO> LoginTracks(Principal principal){
+		List<Track> entitys=tRepo.findAllByWriterIdStartingWith(principal.getName());
+		List<TrackDTO> dtos=tMapper.toDtoList(entitys);
+		return dtos;
+	}
 	
 	public List<TrackDTO> selectfindById(String write_id){
 		List<Track> entity = tRepo.findAllByWriterIdStartingWith(write_id);

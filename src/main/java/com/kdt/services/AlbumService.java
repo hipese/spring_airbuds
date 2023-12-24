@@ -220,7 +220,7 @@ public class AlbumService {
 		File imagePath = new File("c:/tracks/image");
 		entity.setTitle(albumTitle);
 		String sys_imageName = null;
-
+		
 //		이미지가 변경되었을 시 동작이미지가 있으면 경로 변경
 		if (titleImage != null) {
 			sys_imageName = UUID.randomUUID().toString() + "_" + titleImage.getOriginalFilename();
@@ -237,7 +237,7 @@ public class AlbumService {
 
 		}else {
 			sys_imageName=prevImage;
-			System.err.println("이미지 안바뀜: " + prevImage);
+			
 		}
 		
 		entity.setCoverImagePath(sys_imageName);
@@ -255,6 +255,7 @@ public class AlbumService {
 			for (int i = 0; i < deleteTrack.length; i++) {
 				Track notalbumTrack = tRepo.findById(deleteTrack[i])
 						.orElseThrow(() -> new RuntimeException("Track not found"));
+				notalbumTrack.setPrevAlbumId(albumId);
 				notalbumTrack.setAlbumId(null);
 				tRepo.save(notalbumTrack);
 			}
@@ -403,6 +404,23 @@ public class AlbumService {
 
 		return dto;
 	}
+	
+	@Transactional
+	public AlbumDTO emptyAlbum(Principal principal) {
+		AlbumDTO dto=new AlbumDTO();
+		dto.setArtistId(principal.getName());
+		dto.setCoverImagePath(null);
+		dto.setTitle("익명의 앨범");
+		dto.setReleaseDate(Instant.now());
+		
+		Album entity = aMapper.toEntity(dto);
+	    Album savedEntity = aRepo.save(entity);
+	    
+	    AlbumDTO realdto=aMapper.toDto(savedEntity);
+	    
+		return realdto;
+	}
+	
 	
 	public AlbumDTO findByAlbumId(Long albumId) {
 		Album entity=aRepo.findById(albumId).get();

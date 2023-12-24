@@ -92,6 +92,13 @@ public class AlbumController {
 		return ResponseEntity.ok(dto);
 	}
 	
+	@PostMapping("/emptyAlbum")
+	public ResponseEntity<AlbumDTO> emptyAlbum(Principal principal){
+		
+		AlbumDTO dto=aService.emptyAlbum(principal);
+		return ResponseEntity.ok(dto);
+	}
+	
 	@GetMapping("/searchText/{searchText}")
 	public ResponseEntity<List<AlbumDTO>> searchAlbumByText(@PathVariable String searchText){
 		List<AlbumDTO> dto=aService.searchAlbumByText(searchText);

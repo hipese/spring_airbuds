@@ -1,5 +1,6 @@
 package com.kdt.controllers;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -87,21 +88,38 @@ public class TrackController {
 											@RequestParam("writer") String writer, 
 											@RequestParam(value = "tags", required = false)  Long[] tag)throws Exception{
 		
-		
-		System.out.println(trackId);
-		
 		TrackDTO dto=tService.updateTrack(trackId,title,previmagePath,imagefile,writer,tag);
 		
 		return ResponseEntity.ok(dto);
 	}
 	
+	@PostMapping("/albumIdSave")
+	public ResponseEntity<Void> albumIdSave(@RequestParam Long trackId, @RequestParam Long albumId) {
+	    
+		tService.albumIdSave(trackId,albumId);
+	    return ResponseEntity.ok().build();
+	}
+	 
+	@PostMapping("/albumIdDelete")
+	public ResponseEntity<Void> albumIdDelete(@RequestParam Long trackId) {
+	    
+		tService.albumIdDelete(trackId);
+	    return ResponseEntity.ok().build();
+	}
 	
 	@GetMapping
 	public ResponseEntity<List<TrackDTO>> selectAll() {
 		List<TrackDTO> dtos = tService.selectAll();
 		return ResponseEntity.ok(dtos);
 	}
-
+	
+	@GetMapping("/LoginTracks")
+	public ResponseEntity<List<TrackDTO>> LoginTracks(Principal principal) {
+		
+		List<TrackDTO> dtos = tService.LoginTracks(principal);
+		return ResponseEntity.ok(dtos);
+	}
+	
 	@GetMapping("/bywriter/{writer}")
 	public ResponseEntity<List<TrackDTO>> selectByWriter(@PathVariable String writer) {
 		List<TrackDTO> dtos = tService.selectByWriter(writer);
