@@ -245,6 +245,18 @@ public class TrackService {
 		tRepo.save(entity);
 	}
 	
+	public boolean isEditTrack(Principal principal, String writeId) {
+		if(principal==null) {
+			return false;
+		}
+		
+		if(principal.getName().equals(writeId)) {
+			return true;
+		}
+		
+		return false;
+	}
+	
 	public List<TrackDTO> selectAll() {
 		List<Track> entity = tRepo.findAllByFetchJoin();
 		List<TrackDTO> dtos = tMapper.toDtoList(entity);

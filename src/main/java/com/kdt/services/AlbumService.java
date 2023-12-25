@@ -405,6 +405,7 @@ public class AlbumService {
 		return dto;
 	}
 	
+//	기능 만들려다가 포기한 상태임
 	@Transactional
 	public AlbumDTO emptyAlbum(Principal principal) {
 		AlbumDTO dto=new AlbumDTO();
@@ -421,6 +422,19 @@ public class AlbumService {
 		return realdto;
 	}
 	
+//	내 앨범에 편집 기능을 사용할 수 있는지 아닌지 확인하는 부분
+	public boolean isEditAlbum(Principal principal,String artistId) {
+		
+		if(principal==null) {
+			return false;
+		}
+		
+		if(principal.getName().equals(artistId)) {
+			return true;
+		}
+		
+		return false;
+	}
 	
 	public AlbumDTO findByAlbumId(Long albumId) {
 		Album entity=aRepo.findById(albumId).get();

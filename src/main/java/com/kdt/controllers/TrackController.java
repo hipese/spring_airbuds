@@ -113,6 +113,16 @@ public class TrackController {
 		return ResponseEntity.ok(dtos);
 	}
 	
+	@GetMapping("/isEdit/{artistId}")
+	public ResponseEntity<Boolean> isEditTrack(Principal principal, @PathVariable String writeId){
+		
+		
+		boolean isEdit=tService.isEditTrack(principal,writeId);
+		
+		return ResponseEntity.ok(isEdit);
+	}
+	
+	
 	@GetMapping("/LoginTracks")
 	public ResponseEntity<List<TrackDTO>> LoginTracks(Principal principal) {
 		
