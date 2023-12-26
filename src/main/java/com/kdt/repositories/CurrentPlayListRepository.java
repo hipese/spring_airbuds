@@ -1,6 +1,7 @@
 package com.kdt.repositories;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +30,7 @@ public interface CurrentPlayListRepository extends JpaRepository<CurrentPlayList
     @Modifying
     @Query("INSERT INTO CurrentPlayList (seq, trackId, id) VALUES (:seq, :trackId, :id)")
     void insertCurrentPlayList(@Param("seq") Long seq, @Param("trackId") Long trackId, @Param("id") String id);
+    
+    @Query("select cpl.seq, cpl.trackId, COUNT(cpl) from CurrentPlayList cpl where cpl.id = :id group by cpl.trackId")
+    List<Object[]> selectLikeCountByName(@Param("id") String id);
 }
-
-

@@ -220,7 +220,7 @@ public class AlbumService {
 		File imagePath = new File("c:/tracks/image");
 		entity.setTitle(albumTitle);
 		String sys_imageName = null;
-
+		
 //		이미지가 변경되었을 시 동작이미지가 있으면 경로 변경
 		if (titleImage != null) {
 			sys_imageName = UUID.randomUUID().toString() + "_" + titleImage.getOriginalFilename();
@@ -237,7 +237,7 @@ public class AlbumService {
 
 		}else {
 			sys_imageName=prevImage;
-			System.err.println("이미지 안바뀜: " + prevImage);
+			
 		}
 		
 		entity.setCoverImagePath(sys_imageName);
@@ -255,6 +255,7 @@ public class AlbumService {
 			for (int i = 0; i < deleteTrack.length; i++) {
 				Track notalbumTrack = tRepo.findById(deleteTrack[i])
 						.orElseThrow(() -> new RuntimeException("Track not found"));
+				notalbumTrack.setPrevAlbumId(albumId);
 				notalbumTrack.setAlbumId(null);
 				tRepo.save(notalbumTrack);
 			}
@@ -403,7 +404,51 @@ public class AlbumService {
 
 		return dto;
 	}
-
+	
+//	기능 만들려다가 포기한 상태임
+	@Transactional
+	public AlbumDTO emptyAlbum(Principal principal) {
+		AlbumDTO dto=new AlbumDTO();
+		dto.setArtistId(principal.getName());
+		dto.setCoverImagePath(null);
+		dto.setTitle("익명의 앨범");
+		dto.setReleaseDate(Instant.now());
+		
+		Album entity = aMapper.toEntity(dto);
+	    Album savedEntity = aRepo.save(entity);
+	    
+	    AlbumDTO realdto=aMapper.toDto(savedEntity);
+	    
+		return realdto;
+	}
+	
+//	내 앨범에 편집 기능을 사용할 수 있는지 아닌지 확인하는 부분
+	public boolean isEditAlbum(Principal principal,String artistId) {
+		
+		if(principal==null) {
+			return false;
+		}
+		
+		if(principal.getName().equals(artistId)) {
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public AlbumDTO findByAlbumId(Long albumId) {
+		Album entity=aRepo.findById(albumId).get();
+		AlbumDTO dto=aMapper.toDto(entity);
+		return dto;
+	}
+	
+	public List<AlbumDTO> searchAlbumByText(String searchText){
+		List<Album> entity=aRepo.findAllByTitleStartingWith(searchText);
+		List<AlbumDTO> dto=aMapper.toDtoList(entity);
+		return dto;
+	}
+	
+	
 	@Transactional
 	public void deleteAlbum(long albumId) {
 

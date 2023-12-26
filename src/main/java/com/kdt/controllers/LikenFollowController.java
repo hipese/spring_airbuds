@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kdt.dto.CurrentPlayListDTO;
+import com.kdt.dto.HistoryLikeViewDTO;
 import com.kdt.dto.MusicLikeDTO;
 import com.kdt.dto.MyMusicLikesDTO;
 import com.kdt.dto.SingerFollowDTO;
@@ -127,6 +129,26 @@ public class LikenFollowController {
 	public ResponseEntity<List<MyMusicLikesDTO>> getMyLikes(@PathVariable String id){
 		List<MyMusicLikesDTO> list = lService.getLikeCount(id);
 		return ResponseEntity.ok(list);
+	}
+	
+	@GetMapping("/historyLike/{id}")
+	public ResponseEntity<List<HashMap<String, Object>>> getHistoryLike(@PathVariable String id){
+		List<Object[]> objlist = lService.getHistoryLike(id);
+		List<HashMap<String, Object>> result = new ArrayList<>();
+		for (Object[] obj : objlist) {
+			HashMap<String, Object> map = new HashMap<>();
+            map.put("seq", obj[0]);
+            map.put("trackId", obj[1]);
+            map.put("count", obj[2]);
+            result.add(map);
+        }
+		return ResponseEntity.ok(result);
+	}
+	
+	@GetMapping("/historyLikeCount/{id}")
+	public ResponseEntity<List<HistoryLikeViewDTO>> getHistoryLikeCount(@PathVariable String id){
+		List<HistoryLikeViewDTO> dtoList = lService.getHistoryLikeCount(id);
+		return ResponseEntity.ok(dtoList);
 	}
 	
 }

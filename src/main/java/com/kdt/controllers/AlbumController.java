@@ -60,6 +60,13 @@ public class AlbumController {
 		return ResponseEntity.ok(dto);
 	}
 	
+	@GetMapping("findByAlbumId/{albumId}")
+	public ResponseEntity<AlbumDTO> findByAlbumId(@PathVariable Long albumId){
+		
+		AlbumDTO dto=aService.findByAlbumId(albumId);
+		return ResponseEntity.ok(dto);
+	}
+	
 	
 	@PostMapping("/updateAlbum")
 	public ResponseEntity<AlbumDTO> updateAlbum(@RequestParam(value="file", required = false) MultipartFile[] files, 
@@ -77,9 +84,6 @@ public class AlbumController {
 												@RequestParam MultiValueMap<String, String> trackTags,
 												@RequestParam(value="albumId" ,required = false) Long albumId) throws Exception{
 				
-
-		System.err.println("작성자 숫자: "+albumsWriters.length);
-		System.err.println("트랙제목 숫자: "+Tracktitles.length);
 		
 		AlbumDTO dto=aService.updateAlbum(files,name,durations,writers,image_path,titleImage,
 				albumselectTag,albumTitle,albumsWriters,Tracktitles,prevImage,deleteTrack,trackTags,albumId);
@@ -88,6 +92,27 @@ public class AlbumController {
 		return ResponseEntity.ok(dto);
 	}
 	
+	@PostMapping("/emptyAlbum")
+	public ResponseEntity<AlbumDTO> emptyAlbum(Principal principal){
+		
+		AlbumDTO dto=aService.emptyAlbum(principal);
+		return ResponseEntity.ok(dto);
+	}
+	
+	@GetMapping("/isEdit/{artistId}")
+	public ResponseEntity<Boolean> isEditAlbum(Principal principal, @PathVariable String artistId){
+		
+		
+		boolean isEdit=aService.isEditAlbum(principal,artistId);
+		
+		return ResponseEntity.ok(isEdit);
+	}
+	
+	@GetMapping("/searchText/{searchText}")
+	public ResponseEntity<List<AlbumDTO>> searchAlbumByText(@PathVariable String searchText){
+		List<AlbumDTO> dto=aService.searchAlbumByText(searchText);
+		return ResponseEntity.ok(dto);
+	}
 	
 	@DeleteMapping("delete/{albumId}")
 	public ResponseEntity<Void> deleteAlbum(@PathVariable Long albumId){
