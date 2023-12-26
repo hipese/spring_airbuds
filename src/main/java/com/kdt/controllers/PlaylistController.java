@@ -1,6 +1,7 @@
 package com.kdt.controllers;
 
 import java.security.Principal;
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ public class PlaylistController {
 	
 	@PutMapping("/track/{playlistSeq}")
 	public ResponseEntity<Void> insertPlaylist(@PathVariable Long playlistSeq, @RequestBody PlaylistDTO pldto) {
-		pldto.getPlaylistTrack().get(0).setPlaylistParentSeq(playlistSeq);
+//		pldto.getPlaylistTracks().get(0).setPlaylistParentSeq(playlistSeq);
 	    plServ.insertPlaylist(pldto);
 		return ResponseEntity.ok().build();
 	}
