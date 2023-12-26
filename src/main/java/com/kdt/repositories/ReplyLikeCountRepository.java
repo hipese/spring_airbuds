@@ -9,6 +9,6 @@ import com.kdt.domain.entity.ReplyLikeCount;
 
 public interface ReplyLikeCountRepository extends JpaRepository<ReplyLikeCount, Long>{
 
-	@Query("select q from ReplyLikeCount q where q.trackId = ?1")
+	@Query("select q from ReplyLikeCount q where q.trackId = ?1 ORDER BY q.seq DESC")
 	List<ReplyLikeCount> selectAllByParentSeq(Long seq);
 }

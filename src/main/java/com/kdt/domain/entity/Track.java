@@ -61,10 +61,19 @@ public class Track {
 
 	@Column(name="ban_reason")
 	private String banReason;
+	
+	@Column(name="prev_album_id")
+	private Long prevAlbumId;
+	
+	
+	public Track() {
+		super();
+		
+	}
 
 	public Track(Long trackId, Long albumId, String title, Long trackNumber, Time duration, String filePath,
 			Long viewCount, String writer, Set<TrackImages> trackImages, Set<TrackTag> trackTags, Timestamp releaseDate,
-			String writeId, Long ban, String banReason) {
+			String writeId, Long ban, String banReason, Long prevAlbumId) {
 		super();
 		this.trackId = trackId;
 		this.albumId = albumId;
@@ -80,6 +89,7 @@ public class Track {
 		this.writeId = writeId;
 		this.ban = ban;
 		this.banReason = banReason;
+		this.prevAlbumId = prevAlbumId;
 	}
 
 	public Long getTrackId() {
@@ -194,8 +204,14 @@ public class Track {
 		this.banReason = banReason;
 	}
 
-	public Track() {
-		super();
+	public Long getPrevAlbumId() {
+		return prevAlbumId;
 	}
 
+	public void setPrevAlbumId(Long prevAlbumId) {
+		this.prevAlbumId = prevAlbumId;
+	}
+
+
+	
 }
