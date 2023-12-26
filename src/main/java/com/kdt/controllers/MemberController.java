@@ -98,6 +98,30 @@ public class MemberController {
 		return ResponseEntity.ok(memberService.getProfiles(targetID));
 	}
 	
+	@GetMapping("/getProfile")
+	public ResponseEntity<Map<String, String>> getProfile() {
+		
+		String userID = "";
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		
+		if (authentication != null && authentication.isAuthenticated() && !authentication.getPrincipal().equals("anonymousUser")) {
+			Object principal = authentication.getPrincipal();
+
+			if (principal instanceof UserDetails) {
+				userID = ((UserDetails) principal).getUsername();
+			} else {
+				userID = principal.toString(); 
+			}
+		}
+		
+		if (userID == "") {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+		
+		return ResponseEntity.ok(memberService.getProfiles(userID));
+	}
+	
 	@PostMapping("/uploadBackground")
 	public ResponseEntity<Void> uploadBackgroundImage(@RequestParam MultipartFile newBgImage, Principal principal) {
 		try {
