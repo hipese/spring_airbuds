@@ -52,6 +52,17 @@ public class PlaylistService {
 	}
 	
 	@Transactional
+    public void updatePlaylist(Long playlistSeq, String title) {
+        Playlist playlist = plRepo.findById(playlistSeq)
+                .orElseThrow(() -> new RuntimeException("Playlist not found"));
+
+        playlist.setPlaylistPlTitle(title);
+        System.out.println(title);
+
+        plRepo.save(playlist);
+    }
+	
+	@Transactional
 	public List<PlaylistDTO> selectAll(String id) {
 		List<Playlist> list = plRepo.findByPlaylistWriteId(id);
 		List<PlaylistDTO> dtoList = plMapper.toDtoList(list);
