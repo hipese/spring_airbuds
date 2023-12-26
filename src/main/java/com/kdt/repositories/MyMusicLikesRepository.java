@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.kdt.domain.entity.MyMusicLikes;
 
-public interface MyMusicLikesRepository extends JpaRepository<MyMusicLikes, String>{
+public interface MyMusicLikesRepository extends JpaRepository<MyMusicLikes, Long>{
 
 	@Query("select mml from MyMusicLikes mml where mml.id = ?1%")
 	List<MyMusicLikes> selectById(String id);
