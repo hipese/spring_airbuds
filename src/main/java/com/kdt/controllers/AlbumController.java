@@ -99,6 +99,14 @@ public class AlbumController {
 		return ResponseEntity.ok(dto);
 	}
 	
+	@GetMapping("/profileAlbum/{artistId}")
+	public ResponseEntity<List<AlbumDTO>> profileAlbum(@PathVariable String artistId){
+		
+		List<AlbumDTO> dtos=aService.profileAlbum(artistId);
+		return ResponseEntity.ok(dtos);
+	}
+	
+	
 	@GetMapping("/isEdit/{artistId}")
 	public ResponseEntity<Boolean> isEditAlbum(Principal principal, @PathVariable String artistId){
 		
