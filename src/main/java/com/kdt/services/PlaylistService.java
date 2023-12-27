@@ -52,11 +52,12 @@ public class PlaylistService {
 	}
 	
 	@Transactional
-    public void updatePlaylist(Long playlistSeq, String title) {
+    public void updatePlaylist(Long playlistSeq, String title, String visibility) {
         Playlist playlist = plRepo.findById(playlistSeq)
                 .orElseThrow(() -> new RuntimeException("Playlist not found"));
 
         playlist.setPlaylistPlTitle(title);
+        playlist.setPlaylistVisibility(visibility);
         System.out.println(title);
 
         plRepo.save(playlist);

@@ -49,8 +49,8 @@ public class PlaylistController {
 	public ResponseEntity<Void> updatePlaylist(@PathVariable Long playlistSeq, @RequestBody PlaylistDTO pldto) {
 		System.out.println(playlistSeq);
 		String title = pldto.getPlaylistPlTitle();
-		System.out.println(pldto.getPlaylistPlTitle());
-	    plServ.updatePlaylist(playlistSeq, title);
+		String visibility = pldto.getPlaylistVisibility();
+	    plServ.updatePlaylist(playlistSeq, title, visibility);
 		return ResponseEntity.ok().build();
 	}
 	
