@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.kdt.domain.entity.Member;
 import com.kdt.dto.MemberDTO;
 import com.kdt.mappers.MemberMapper;
+import com.kdt.repositories.MemberDAO;
 import com.kdt.repositories.MemberRepository;
 import com.kdt.security.SecurityUser;
 
@@ -43,6 +44,9 @@ public class MemberService implements UserDetailsService{
 	
 	@Autowired
 	private JavaMailSender javaMailSender;
+	
+	@Autowired
+	private MemberDAO memberdao;
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -282,5 +286,51 @@ public class MemberService implements UserDetailsService{
         mRepo.save(m);
         
 		
+	}
+	
+	public String uploadProfileImage(MultipartFile file, String userID) throws Exception {
+		
+		if(file == null) {
+			throw new Exception("file is empty");
+		}
+		if(userID == null) {
+			throw new Exception("userID is undefined");
+		}
+		
+		File imagePath = new File("c:/profileImages");
+		if (!imagePath.exists()) {
+			imagePath.mkdir();
+		}
+		
+		String filename = file.getOriginalFilename();
+		String sys_filename = UUID.randomUUID() + "_" + filename;
+		File destImageFile = new File(imagePath, sys_filename);
+        file.transferTo(destImageFile);
+        
+        String pathName = "/profileImages/" + sys_filename;
+        
+        Member m = mRepo.findById(userID).get();
+        m.setProfile_image(pathName);
+        mRepo.save(m);
+        return pathName;
+	}
+	
+	public void changeID(String id, String newID) {
+		memberdao.updateId(id, newID);
+	}
+	
+	public boolean checkPW(String id, String password) {
+		password = new BCryptPasswordEncoder().encode(password);
+		Member m = mRepo.findById(id).get();
+		if(m.getPassword().equals(password)) {
+			return true;
+		} else return false;
+	}
+	
+	public void changePW(String id, String newPassword) {
+		newPassword = new BCryptPasswordEncoder().encode(newPassword);
+		Member m = mRepo.findById(id).get();
+		m.setPassword(newPassword);
+		mRepo.save(m);
 	}
 }
