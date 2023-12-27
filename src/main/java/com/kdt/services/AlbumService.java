@@ -436,6 +436,12 @@ public class AlbumService {
 		return false;
 	}
 	
+	public List<AlbumDTO> profileAlbum(String artistId){
+		List<Album> entity=aRepo.findAllByArtistIdStartingWith(artistId);
+		List<AlbumDTO> dtos=aMapper.toDtoList(entity);
+		return dtos;
+	}
+	
 	public AlbumDTO findByAlbumId(Long albumId) {
 		Album entity=aRepo.findById(albumId).get();
 		AlbumDTO dto=aMapper.toDto(entity);
