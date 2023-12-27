@@ -10,9 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -139,6 +141,65 @@ public class MemberController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 		
+	}
+	
+	@PostMapping("/uploadProfile")
+	public ResponseEntity<String> uploadProfileImage(@RequestParam MultipartFile newProfileImage, Principal principal) {
+		try {
+			String path = memberService.uploadProfileImage(newProfileImage, principal.getName());
+			return ResponseEntity.ok(path);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+	
+	@PutMapping("/changeID")
+	public ResponseEntity<Void> changeID(@RequestBody String newID) {
+		String userID = "";
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		
+		if (authentication != null && authentication.isAuthenticated() && !authentication.getPrincipal().equals("anonymousUser")) {
+			Object principal = authentication.getPrincipal();
+
+			if (principal instanceof UserDetails) {
+				userID = ((UserDetails) principal).getUsername();
+			} else {
+				userID = principal.toString(); 
+			}
+		}
+		
+		if (userID == "") {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+		memberService.changeID(userID, newID);
+		return ResponseEntity.ok().build();
+	}
+	
+	@PutMapping("/changePW")
+	public ResponseEntity<Void> changePW(@RequestParam String password, @RequestParam String newPassword) { 
+		String userID = "";
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		
+		if (authentication != null && authentication.isAuthenticated() && !authentication.getPrincipal().equals("anonymousUser")) {
+			Object principal = authentication.getPrincipal();
+
+			if (principal instanceof UserDetails) {
+				userID = ((UserDetails) principal).getUsername();
+			} else {
+				userID = principal.toString(); 
+			}
+		}
+		
+		if (userID == "") {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+		if(!memberService.checkPW(userID, password))
+			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+		memberService.changePassword(userID, newPassword);
+		return ResponseEntity.ok().build();
 	}
 
 }
