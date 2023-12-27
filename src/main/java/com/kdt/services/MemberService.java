@@ -320,17 +320,27 @@ public class MemberService implements UserDetailsService{
 	}
 	
 	public boolean checkPW(String id, String password) {
-		password = new BCryptPasswordEncoder().encode(password);
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		Member m = mRepo.findById(id).get();
-		if(m.getPassword().equals(password)) {
+		if(encoder.matches(password, m.getPassword())) {
 			return true;
-		} else return false;
+		} else {
+			return false;
+		}
 	}
 	
 	public void changePW(String id, String newPassword) {
 		newPassword = new BCryptPasswordEncoder().encode(newPassword);
 		Member m = mRepo.findById(id).get();
 		m.setPassword(newPassword);
+		mRepo.save(m);
+	}
+	
+	public void changeUserInfo(String id, MemberDTO dto) {
+		Member m = mRepo.findById(id).get();
+		m.setName(dto.getName());
+		m.setBirth(dto.getBirth());
+		m.setContact(dto.getContact());
 		mRepo.save(m);
 	}
 }
