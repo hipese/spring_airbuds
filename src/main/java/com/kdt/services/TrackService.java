@@ -315,8 +315,6 @@ public class TrackService {
 	
 		TrackImages imageEntity=imageRepo.findByTrackImagesTrackId(track_id);
 		
-		System.out.println("가져온 음원 이미지 id값 "+imageEntity.getImageId());
-		System.out.println("가져온 음원 이미지 경로 "+imageEntity.getImagePath());
 		
 		if (entity != null) {
 			
@@ -329,7 +327,10 @@ public class TrackService {
 			File imageToDelete = new File(imagePath);
 			
 			if (imageToDelete.exists()) {
-				imageToDelete.delete();
+				
+				if(entity.getAlbumId()==null) {
+					imageToDelete.delete();
+				}
 				imageRepo.deleteById(track_id);// 데이터베이스에서 이미지 삭제
 				
 			} else {

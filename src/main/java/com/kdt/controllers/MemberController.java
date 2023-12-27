@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kdt.dto.MemberDTO;
+import com.kdt.dto.PasswordDTO;
 import com.kdt.services.MemberService;
 
 @RestController
@@ -105,6 +107,30 @@ public class MemberController {
 		return ResponseEntity.ok(memberService.getProfiles(targetID));
 	}
 	
+	@GetMapping("/getProfile")
+	public ResponseEntity<Map<String, String>> getProfile() {
+		
+		String userID = "";
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		
+		if (authentication != null && authentication.isAuthenticated() && !authentication.getPrincipal().equals("anonymousUser")) {
+			Object principal = authentication.getPrincipal();
+
+			if (principal instanceof UserDetails) {
+				userID = ((UserDetails) principal).getUsername();
+			} else {
+				userID = principal.toString(); 
+			}
+		}
+		
+		if (userID == "") {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+		
+		return ResponseEntity.ok(memberService.getProfiles(userID));
+	}
+	
 	@PostMapping("/uploadBackground")
 	public ResponseEntity<Void> uploadBackgroundImage(@RequestParam MultipartFile newBgImage, Principal principal) {
 		try {
@@ -116,5 +142,90 @@ public class MemberController {
 		}
 		
 	}
+	
+	@PostMapping("/uploadProfile")
+	public ResponseEntity<String> uploadProfileImage(@RequestParam MultipartFile newProfileImage, Principal principal) {
+		try {
+			String path = memberService.uploadProfileImage(newProfileImage, principal.getName());
+			return ResponseEntity.ok(path);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+	
+	@PutMapping("/changeID")
+	public ResponseEntity<Void> changeID(@RequestBody String newID) {
+		String userID = "";
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		
+		if (authentication != null && authentication.isAuthenticated() && !authentication.getPrincipal().equals("anonymousUser")) {
+			Object principal = authentication.getPrincipal();
 
+			if (principal instanceof UserDetails) {
+				userID = ((UserDetails) principal).getUsername();
+			} else {
+				userID = principal.toString(); 
+			}
+		}
+		
+		if (userID == "") {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+		memberService.changeID(userID, newID);
+		return ResponseEntity.ok().build();
+	}
+	
+	@PostMapping("/changePW")
+	public ResponseEntity<Void> changePW(@RequestBody PasswordDTO dto) {
+		
+		System.out.println(dto.getPassword()+ " " + dto.getNewPassword());
+		String userID = "";
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		
+		if (authentication != null && authentication.isAuthenticated() && !authentication.getPrincipal().equals("anonymousUser")) {
+			Object principal = authentication.getPrincipal();
+
+			if (principal instanceof UserDetails) {
+				userID = ((UserDetails) principal).getUsername();
+			} else {
+				userID = principal.toString(); 
+			}
+		}
+		
+		if (userID == "") {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+		if(!memberService.checkPW(userID, dto.getPassword()))
+			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+		memberService.changePassword(userID, dto.getNewPassword());
+		return ResponseEntity.ok().build();
+	}
+
+	@PostMapping("/changeUserInfo")
+	public ResponseEntity<Void> changeUserInfo(@RequestBody MemberDTO dto) {
+		
+		String userID = "";
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		
+		if (authentication != null && authentication.isAuthenticated() && !authentication.getPrincipal().equals("anonymousUser")) {
+			Object principal = authentication.getPrincipal();
+
+			if (principal instanceof UserDetails) {
+				userID = ((UserDetails) principal).getUsername();
+			} else {
+				userID = principal.toString(); 
+			}
+		}
+		
+		if (userID == "") {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+		
+		memberService.changeUserInfo(userID, dto);
+		return ResponseEntity.ok().build();
+	}
 }

@@ -1,7 +1,6 @@
 package com.kdt.controllers;
 
 import java.security.Principal;
-import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kdt.dto.PlaylistDTO;
-import com.kdt.dto.PlaylistTrackDTO;
 import com.kdt.services.PlaylistService;
 
 @RestController
@@ -45,6 +43,15 @@ public class PlaylistController {
 	public ResponseEntity<List<PlaylistDTO>> selectAll(@PathVariable("playlist_write_id") String playlistWriteId) {
 	    List<PlaylistDTO> list = plServ.selectAll(playlistWriteId);
 	    return ResponseEntity.ok(list);
+	}
+	
+	@PutMapping("/update/{playlistSeq}")
+	public ResponseEntity<Void> updatePlaylist(@PathVariable Long playlistSeq, @RequestBody PlaylistDTO pldto) {
+		System.out.println(playlistSeq);
+		String title = pldto.getPlaylistPlTitle();
+		String visibility = pldto.getPlaylistVisibility();
+	    plServ.updatePlaylist(playlistSeq, title, visibility);
+		return ResponseEntity.ok().build();
 	}
 	
 	@DeleteMapping("/{playlist_seq}")

@@ -25,7 +25,7 @@ public class AnnounceService {
 	}
 	
 	public List<AnnounceBoardDTO> selectAll(){
-		List<AnnounceBoard> abList = aRepo.findAll();
+		List<AnnounceBoard> abList = aRepo.selectAllByDesc();
 		List<AnnounceBoardDTO> dtoList = aMapper.toDtoList(abList);
 		return dtoList;
 	}
