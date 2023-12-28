@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +31,8 @@ import com.kdt.services.LikeService;
 @RestController
 @RequestMapping("/api/like")
 public class LikenFollowController {
+	
+	private static final Logger Logger = LoggerFactory.getLogger(LikenFollowController.class);
 
 	@Autowired
 	private LikeService lService;
@@ -40,8 +45,8 @@ public class LikenFollowController {
 		if (dto.getUserId().equals("")) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
-		System.out.println("userid" + dto.getUserId());
-		System.out.println("trackid" + dto.getTrackId());
+		Logger.debug("userid" + dto.getUserId());
+		Logger.debug("trackid" + dto.getTrackId());
 		Long seq = lService.insertFavorite(dto);
 
 		return ResponseEntity.ok(seq);

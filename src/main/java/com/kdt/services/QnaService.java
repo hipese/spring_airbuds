@@ -1,6 +1,7 @@
 package com.kdt.services;
 
 import java.io.File;
+import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
@@ -48,7 +49,6 @@ public class QnaService {
 	public void getPost(QnaDTO dto, MultipartFile[] files) throws Exception{
 		Qna qna = qMapper.toEntity(dto);
 		Long seq = qRepo.save(qna).getQnaSeq();
-		System.out.println(seq);		
 		
 		File uploadPath = new File(upload);
 
@@ -85,7 +85,7 @@ public class QnaService {
 		return dto;
 	}
 	
-	public void deletePost(Long seq) throws Exception{
+	public void deletePost(Long seq, Principal id) throws Exception{
 		Qna qna = qRepo.findById(seq).get();
 		
 		//File delete

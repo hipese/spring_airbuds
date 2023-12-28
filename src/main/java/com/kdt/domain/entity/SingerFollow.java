@@ -24,7 +24,7 @@ public class SingerFollow {
 	private String singerId;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "singer_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Member member;
 
 	public SingerFollow() {

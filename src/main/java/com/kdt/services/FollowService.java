@@ -70,7 +70,6 @@ public class FollowService {
 			if(dto.getMemberId().equals(memberId)) {
 				HashMap<String, Object> map = new HashMap<>();
 				Long followerCount = sfRepo.countBySingerId(dto.getSingerId());
-				String imagePath = mRepo.
 				map.put("follower", dto.getMemberId());
 				map.put("singer", dto.getSingerId());
 				map.put("profile_image", dto.getMember().getProfile_image());
