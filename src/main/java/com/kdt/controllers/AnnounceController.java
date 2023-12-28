@@ -1,5 +1,6 @@
 package com.kdt.controllers;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,8 +50,8 @@ public class AnnounceController {
 	}
 	
 	@DeleteMapping("/{seq}")
-	public ResponseEntity<String> deleteAnnounce(@PathVariable Long seq){
-		aService.deleteAnnounce(seq);
+	public ResponseEntity<String> deleteAnnounce(@PathVariable Long seq, Principal id){
+		aService.deleteAnnounce(seq,id);
 		return ResponseEntity.ok().build();
 	}
 }
