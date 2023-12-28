@@ -4,6 +4,8 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +29,8 @@ import com.kdt.services.MemberService;
 @RestController
 @RequestMapping("/api/member")
 public class MemberController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 
 	@Autowired
 	private MemberService memberService;
@@ -80,7 +84,7 @@ public class MemberController {
 		try {
 			memberService.register(dto);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());;
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 		return ResponseEntity.ok().build();
@@ -137,7 +141,7 @@ public class MemberController {
 			memberService.uploadBackgroundImage(newBgImage, principal.getName());
 			return ResponseEntity.ok().build();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 		
@@ -149,7 +153,7 @@ public class MemberController {
 			String path = memberService.uploadProfileImage(newProfileImage, principal.getName());
 			return ResponseEntity.ok(path);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());;
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}

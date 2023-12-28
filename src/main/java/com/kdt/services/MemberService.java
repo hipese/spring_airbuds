@@ -10,6 +10,8 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,6 +24,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kdt.controllers.MemberController;
 import com.kdt.domain.entity.Member;
 import com.kdt.dto.MemberDTO;
 import com.kdt.mappers.MemberMapper;
@@ -35,6 +38,8 @@ import jakarta.mail.internet.MimeMessage.RecipientType;
 
 @Service
 public class MemberService implements UserDetailsService{
+	
+	private static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 
 	@Autowired
 	private MemberRepository mRepo;
@@ -123,7 +128,7 @@ public class MemberService implements UserDetailsService{
 			javaMailSender.send(message);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 	}
 
@@ -209,7 +214,7 @@ public class MemberService implements UserDetailsService{
 			javaMailSender.send(message);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 	}
 	
