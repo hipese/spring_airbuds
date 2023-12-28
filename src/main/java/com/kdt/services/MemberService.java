@@ -10,6 +10,8 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,6 +24,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kdt.controllers.MemberController;
 import com.kdt.domain.entity.Member;
 import com.kdt.dto.MemberDTO;
 import com.kdt.mappers.MemberMapper;
@@ -35,6 +38,8 @@ import jakarta.mail.internet.MimeMessage.RecipientType;
 
 @Service
 public class MemberService implements UserDetailsService{
+	
+	private static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 
 	@Autowired
 	private MemberRepository mRepo;
@@ -50,7 +55,6 @@ public class MemberService implements UserDetailsService{
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		System.out.println("In UserDetails : " + username);
 		Member m = mRepo.findById(username).get();
 		SecurityUser su =new SecurityUser(m);
 		su.setName(m.getName());
@@ -120,13 +124,11 @@ public class MemberService implements UserDetailsService{
 			msgg+= "</div>";
 
 			message.setText(msgg,"utf-8", "html");
-			
-			System.out.println(verificationCode);
 
 			javaMailSender.send(message);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 	}
 
@@ -207,14 +209,12 @@ public class MemberService implements UserDetailsService{
 
 			// 메시지 설정
 			message.setText(msgBody, "utf-8", "html");
-			
-			System.out.println(temporaryPassword);
 
 			// 이메일 전송
 			javaMailSender.send(message);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 	}
 	
@@ -248,8 +248,6 @@ public class MemberService implements UserDetailsService{
 		dto.setPassword(new BCryptPasswordEncoder().encode(dto.getPassword()));
 		dto.setRole("ROLE_MEMBER");
 		dto.setEnabled(true);
-		
-		System.out.println(dto.getId() + dto.getName() + dto.getContact() + dto.getBirth());
 		
 		Member m = mMapper.toEntity(dto);
 		mRepo.save(m);
