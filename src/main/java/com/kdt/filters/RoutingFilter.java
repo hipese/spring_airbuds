@@ -64,7 +64,10 @@ public class RoutingFilter implements Filter {
              return;
          }
          
-         if(requestURI.endsWith("js")||requestURI.endsWith("css")||requestURI.endsWith("json")||requestURI.endsWith("jpg")||requestURI.endsWith("jpeg")||requestURI.endsWith("webp")||requestURI.endsWith("png")||requestURI.endsWith("svg")) {
+         if(requestURI.endsWith("js")||requestURI.endsWith("css")||requestURI.endsWith("json")
+        		 ||requestURI.endsWith("jpg")||requestURI.endsWith("jpeg")||requestURI.endsWith("webp")
+        		 ||requestURI.endsWith("png")||requestURI.endsWith("svg")||requestURI.endsWith("mp3")
+        		 ||requestURI.endsWith("wav")||requestURI.endsWith("wmv")||requestURI.endsWith("flac")||requestURI.endsWith("aac")) {
              chain.doFilter(request, response);
              return;
          }
