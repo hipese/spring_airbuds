@@ -2,6 +2,8 @@ package com.kdt.filters;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import jakarta.servlet.Filter;
@@ -14,6 +16,8 @@ import jakarta.servlet.http.HttpServletRequest;
 @Component
 public class RoutingFilter implements Filter {
  
+	private static final Logger Logger = LoggerFactory.getLogger(RoutingFilter.class);
+	
     @Override
     public void doFilter(ServletRequest request,
                          ServletResponse response,
@@ -21,7 +25,7 @@ public class RoutingFilter implements Filter {
 
         HttpServletRequest req = (HttpServletRequest) request;
         String requestURI = req.getRequestURI();
-        System.out.println(requestURI);
+        Logger.info(requestURI);
         
         chain.doFilter(request, response);
     }
