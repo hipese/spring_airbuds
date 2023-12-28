@@ -36,6 +36,4 @@ public class AlbumTagDTO {
 		this.albumTagList = albumTagList;
 	}
 	
-	
-	
 }
