@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
@@ -27,7 +29,9 @@ public class TrackController {
 
 	@Autowired
 	TrackService tService;
-
+	
+	private static final Logger logger=LoggerFactory.getLogger(TrackController.class);
+	
 	@PostMapping
 	public ResponseEntity<Void> uploadMusic(@RequestParam("file") MultipartFile files,
 											@RequestParam("name") String name, 
@@ -157,7 +161,7 @@ public class TrackController {
 	@GetMapping("/searchText/{searchText}")
 	public ResponseEntity<List<TrackDTO>> searchTrackByText(@PathVariable String searchText){
 		
-		System.out.println("값 온다. "+searchText);
+		logger.debug("값 온다. "+searchText);
 		List<TrackDTO> dtos = tService.searchTrackByText(searchText);
 		return ResponseEntity.ok(dtos);
 	}

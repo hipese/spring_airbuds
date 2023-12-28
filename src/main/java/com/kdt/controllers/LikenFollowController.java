@@ -72,7 +72,6 @@ public class LikenFollowController {
 
 	@PostMapping("/isfollow")
 	public ResponseEntity<Boolean> getFollowState(SingerFollowDTO dto) {
-		System.out.println(dto.getSingerId());
 		Boolean state = fService.getFollowState(dto);
 		return ResponseEntity.ok(state);
 	}
