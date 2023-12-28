@@ -58,8 +58,6 @@ public class PlaylistService {
 
         playlist.setPlaylistPlTitle(title);
         playlist.setPlaylistVisibility(visibility);
-        System.out.println(title);
-
         plRepo.save(playlist);
     }
 	
