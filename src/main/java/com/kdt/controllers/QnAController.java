@@ -1,9 +1,15 @@
 package com.kdt.controllers;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.Instant;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -106,5 +112,26 @@ public class QnAController {
 		qService.updateState(dto);
 		return ResponseEntity.ok("답변 완료");
 	}
+	
+	@GetMapping("/download/{sys_name}")
+    public ResponseEntity<Resource> download(@PathVariable String sys_name) {
+    	System.out.println(sys_name);
+        String filePath = "c:/uploads/" + sys_name;
+
+        byte[] fileContent;
+        try (InputStream inputStream = new FileInputStream(new File(filePath))) {
+            fileContent = inputStream.readAllBytes();
+        } catch (IOException e) {
+            return ResponseEntity.notFound().build();
+        }
+
+        ByteArrayResource resource = new ByteArrayResource(fileContent);
+
+        return ResponseEntity.ok()
+                .contentType(org.springframework.http.MediaType.APPLICATION_OCTET_STREAM)
+                .contentLength(fileContent.length)
+                .body(resource);
+            
+    }
 	
 }
