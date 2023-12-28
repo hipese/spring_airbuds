@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -58,6 +60,8 @@ public class TrackService {
 	
 	@Autowired
 	private LikeTrackViewRepository ltvRepo;
+	
+	private static final Logger logger=LoggerFactory.getLogger(TrackService.class); 
 
 	@Transactional
 	public void insert(MultipartFile files, 
@@ -177,7 +181,8 @@ public class TrackService {
 //		변경된 이미지가 있으면 교체
 		if(imagefile!=null) {
 			TrackImages ientity=imageRepo.findByTrackImagesTrackId(trackId);
-			System.err.println("앨범 뭐임: "+entity.getAlbumId());
+			logger.debug("앨범 뭐임: "+entity.getAlbumId());
+		
 			
 			File imagePath = new File("c:/tracks/image");
 			if (!imagePath.exists()) {
@@ -334,7 +339,7 @@ public class TrackService {
 				imageRepo.deleteById(track_id);// 데이터베이스에서 이미지 삭제
 				
 			} else {
-				System.out.println("파일이 존재하지 않습니다: " + imagePath);
+				logger.error("파일이 존재하지 않습니다: " + imagePath);
 			}
 			
 //			음원에 값을 확인하고 
@@ -347,10 +352,10 @@ public class TrackService {
 				tRepo.deleteById(track_id); // 데이터베이스에서 삭제
 				
 			} else {
-				System.out.println("파일이 존재하지 않습니다: " + filePath);
+				logger.error("파일이 존재하지 않습니다: " + filePath);
 			}
 		} else {
-			System.out.println("해당 ID의 트랙을 찾을 수 없습니다: " + track_id);
+			logger.error("파일이 존재하지 않습니다: " + track_id);
 		}
 	}
 
