@@ -26,8 +26,6 @@ public class TrackReplyLikeController {
 		if (dto.getId().equals("")) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
-		System.out.println("userid" + dto.getId());
-		System.out.println("trackid" + dto.getReplySeq());
 		Long seq = trService.insert(dto);
 
 		return ResponseEntity.ok(seq);
@@ -41,7 +39,6 @@ public class TrackReplyLikeController {
 
 	@PostMapping("/delete")
 	public ResponseEntity<String> deleteFavorite(TrackReplyLikeDTO dto) {
-		System.out.println(dto.getId());
 		trService.deleteFavorite(dto);
 		return ResponseEntity.ok(null);
 	}

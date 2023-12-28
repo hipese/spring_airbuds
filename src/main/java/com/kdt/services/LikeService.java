@@ -104,9 +104,7 @@ public class LikeService {
 	public List<Object[]> getHistoryLike(String id){
 		//List<Map<String, Object>>
 		List<Object[]> list = cplRepo.selectLikeCountByName(id);
-		for(Object obj : list) {
-			System.out.println(obj.toString());
-		}
+	
 		return list;
 	}
 	

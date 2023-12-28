@@ -110,7 +110,6 @@ public class AlbumController {
 	@GetMapping("/isEdit/{artistId}")
 	public ResponseEntity<Boolean> isEditAlbum(Principal principal, @PathVariable String artistId){
 		
-		
 		boolean isEdit=aService.isEditAlbum(principal,artistId);
 		
 		return ResponseEntity.ok(isEdit);
@@ -124,9 +123,7 @@ public class AlbumController {
 	
 	@DeleteMapping("delete/{albumId}")
 	public ResponseEntity<Void> deleteAlbum(@PathVariable Long albumId){
-		System.out.println("전달받은 값: "+albumId);
-		
-		
+	
 		aService.deleteAlbum(albumId);
 		return ResponseEntity.ok().build();
 	}

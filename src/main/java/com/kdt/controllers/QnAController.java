@@ -4,8 +4,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.Principal;
 import java.time.Instant;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -31,6 +35,8 @@ import com.kdt.services.QnaService;
 @RestController
 @RequestMapping("/api/qna")
 public class QnAController {
+	
+	private static final Logger Logger = LoggerFactory.getLogger(QnAController.class);
 
 	@Autowired
 	private QnaService qService;
@@ -89,20 +95,20 @@ public class QnAController {
 	}
 	
 	@DeleteMapping("/delete/{seq}")
-	public ResponseEntity<String> deletePost(@PathVariable Long seq) throws Exception{
-		qService.deletePost(seq);	
+	public ResponseEntity<String> deletePost(@PathVariable Long seq,Principal id) throws Exception{
+		qService.deletePost(seq,id);	
 		return ResponseEntity.ok().build();
 	}
 	
 	@DeleteMapping("/reply/delete/{seq}")
-	public ResponseEntity<String> deleteAnswer(@PathVariable Long seq){
-		qaService.deleteAnswer(seq);
+	public ResponseEntity<String> deleteAnswer(@PathVariable Long seq, Principal id){
+		qaService.deleteAnswer(seq, id);
 		return ResponseEntity.ok().build();
 	}
 	
 	@PutMapping("/{seq}")
 	public ResponseEntity<String> updateAnswer(@PathVariable Long seq, @RequestBody QnaAnswerDTO dto){
-		System.out.println(dto.getAnswerSeq()+" "+dto.getQnaSeq()+" "+dto.getAnswerWriter()+" "+dto.getAnswerContents());
+		Logger.debug(dto.getAnswerSeq()+" "+dto.getQnaSeq()+" "+dto.getAnswerWriter()+" "+dto.getAnswerContents());
 		qaService.updateAnswer(dto);
 		return ResponseEntity.ok().build();
 	}
@@ -115,7 +121,7 @@ public class QnAController {
 	
 	@GetMapping("/download/{sys_name}")
     public ResponseEntity<Resource> download(@PathVariable String sys_name) {
-    	System.out.println(sys_name);
+    	Logger.debug(sys_name);
         String filePath = "c:/uploads/" + sys_name;
 
         byte[] fileContent;
