@@ -1,5 +1,9 @@
 package com.kdt.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +17,8 @@ import com.kdt.repositories.QnaAnswerRepository;
 
 @Service
 public class QnaAnswerService {
+	
+	private static final Logger Logger = LoggerFactory.getLogger(QnaAnswerService.class);
 
 	@Autowired
 	private QnaAnswerRepository qnaRepo;
@@ -31,9 +37,14 @@ public class QnaAnswerService {
 		return dtoList;
 	}
 	
-	public void deleteAnswer(Long seq) {
+	public void deleteAnswer(Long seq, Principal id) {
 		QnaAnswer qa = qnaRepo.findById(seq).get();
-		qnaRepo.delete(qa);
+		if(qa.getAnswerWriter().equals(id)) {
+			qnaRepo.delete(qa);
+		}else {
+			Logger.warn("삭제 행위자와 삭제 대상의 작성자가 다릅니다.");
+		}
+		
 	}
 	
 	public void updateAnswer(QnaAnswerDTO dto) {
