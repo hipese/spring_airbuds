@@ -2,6 +2,8 @@ package com.kdt.services;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,8 @@ import jakarta.mail.internet.MimeMessage.RecipientType;
 
 @Service
 public class ReportService {
+	
+	private static final Logger Logger = LoggerFactory.getLogger(ReportService.class);
 
 	@Autowired
 	private ReportRepository rRepo;
@@ -89,7 +93,7 @@ public class ReportService {
 			javaMailSender.send(message);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logger.error(e.getMessage());
 		}
 	}
 	
