@@ -1,5 +1,6 @@
 package com.kdt.controllers;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +44,8 @@ public class TrackReplyController {
 	}
 	
 	@DeleteMapping("/{seq}")
-	public ResponseEntity<String> deleteReply(@PathVariable Long seq){
-		trService.deleteReply(seq);
+	public ResponseEntity<String> deleteReply(@PathVariable Long seq, Principal principal){
+		trService.deleteReply(seq,principal);
 		return ResponseEntity.ok().build();
 	}
 	

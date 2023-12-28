@@ -1,5 +1,6 @@
 package com.kdt.services;
 
+import java.security.Principal;
 import java.time.Instant;
 import java.util.List;
 
@@ -20,44 +21,49 @@ public class TrackReplyService {
 
 	@Autowired
 	private TrackReplyRepository trRepo;
-	
+
 	@Autowired
 	private ReplyLikeCountRepository lcRepo;
-	
+
 	@Autowired
 	private TrackReplyMapper trMapper;
-	
+
 	@Autowired
 	private ReplyLikeCountMapper lcMapper;
-	
+
 	public void insert(TrackReplyDTO dto) {
 		Instant time = Instant.now();
 		dto.setWriteDate(time);
 		TrackReply reply = trMapper.toEntity(dto);
 		trRepo.save(reply);
 	}
-	
-	public List<ReplyLikeCountDTO> selectByTrackId(Long seq){
+
+	public List<ReplyLikeCountDTO> selectByTrackId(Long seq) {
 		List<ReplyLikeCount> replies = lcRepo.selectAllByParentSeq(seq);
 		List<ReplyLikeCountDTO> replyDtos = lcMapper.toDtoList(replies);
 		return replyDtos;
 	}
-	
-	public List<TrackReplyDTO> selectByWriter(String writer){
+
+	public List<TrackReplyDTO> selectByWriter(String writer) {
 		List<TrackReply> replies = trRepo.selectAllById(writer);
 		List<TrackReplyDTO> replyDtos = trMapper.toDtoList(replies);
 		return replyDtos;
 	}
-	
-	public void deleteReply(Long seq) {
+
+	public void deleteReply(Long seq, Principal id) {
 		TrackReply reply = trRepo.findById(seq).get();
-		trRepo.delete(reply);
+		String userid = id.getName();
+		String writer = reply.getWriter();
+		if (writer.equals(userid)) {
+			trRepo.delete(reply);
+		}
+		return;
 	}
-	
-	public void updateReply (TrackReplyDTO dto) {
+
+	public void updateReply(TrackReplyDTO dto) {
 		TrackReply reply = trRepo.findById(dto.getSeq()).get();
 		trMapper.updateEntityFromDto(dto, reply);
 		trRepo.save(reply);
 	}
-		
+
 }
