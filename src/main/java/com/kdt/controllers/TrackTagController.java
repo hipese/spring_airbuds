@@ -2,6 +2,8 @@ package com.kdt.controllers;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +24,8 @@ public class TrackTagController {
 
 	@Autowired
 	private TrackTagService ttServ;
+	
+	private static final Logger logger=LoggerFactory.getLogger(TrackTagController.class);
 
 	@GetMapping
 	public ResponseEntity<List<TrackTagDTO>> selectTag(@RequestParam(name = "tag") Long tag) {
@@ -31,9 +35,9 @@ public class TrackTagController {
 	
 	@GetMapping("/selectTagById/{id}")
 	public ResponseEntity<List<TrackTagDTO>> selectTagById(@PathVariable Long id){
-		System.err.println("여기로 오냐?");
+		
+		logger.debug("여기로 오냐?");
 		List<TrackTagDTO> list=ttServ.selectTagById(id);
-		System.err.println(list);
 		return ResponseEntity.ok(list);
 	}
 }
