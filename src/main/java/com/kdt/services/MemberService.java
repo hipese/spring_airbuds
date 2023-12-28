@@ -50,7 +50,6 @@ public class MemberService implements UserDetailsService{
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		System.out.println("In UserDetails : " + username);
 		Member m = mRepo.findById(username).get();
 		SecurityUser su =new SecurityUser(m);
 		su.setName(m.getName());
@@ -120,8 +119,6 @@ public class MemberService implements UserDetailsService{
 			msgg+= "</div>";
 
 			message.setText(msgg,"utf-8", "html");
-			
-			System.out.println(verificationCode);
 
 			javaMailSender.send(message);
 
@@ -207,8 +204,6 @@ public class MemberService implements UserDetailsService{
 
 			// 메시지 설정
 			message.setText(msgBody, "utf-8", "html");
-			
-			System.out.println(temporaryPassword);
 
 			// 이메일 전송
 			javaMailSender.send(message);
@@ -248,8 +243,6 @@ public class MemberService implements UserDetailsService{
 		dto.setPassword(new BCryptPasswordEncoder().encode(dto.getPassword()));
 		dto.setRole("ROLE_MEMBER");
 		dto.setEnabled(true);
-		
-		System.out.println(dto.getId() + dto.getName() + dto.getContact() + dto.getBirth());
 		
 		Member m = mMapper.toEntity(dto);
 		mRepo.save(m);

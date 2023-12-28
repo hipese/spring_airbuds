@@ -179,8 +179,7 @@ public class MemberController {
 	
 	@PostMapping("/changePW")
 	public ResponseEntity<Void> changePW(@RequestBody PasswordDTO dto) {
-		
-		System.out.println(dto.getPassword()+ " " + dto.getNewPassword());
+
 		String userID = "";
 		
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
