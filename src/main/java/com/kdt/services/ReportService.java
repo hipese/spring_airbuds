@@ -75,19 +75,16 @@ public class ReportService {
 			msgg+= "<div style='margin:20px;'>";
 			msgg+= "<h1> Groovy 신고 안내 </h1>";
 			msgg+= "<br>";
-			msgg+= "<p>신고 안내에 따라 어쩌고 저쩌고 아 몰랑<p>";
+			msgg+= "<p>현재 사용자의 신고를 받아 처리중에 있습니다. 신고에 대한 답변을 안내해드립니다.<p>";
 			msgg+= "<br>";
 			msgg+= "<div align='center' style='border:1px solid black; font-family:verdana;'>";
-			msgg+= "<h3 style='color:blue;'>신고 답변임</h3>";
+			msgg+= "<h3 style='color:blue;'>신고 답변은 다음과 같습니다.</h3>";
 			msgg+= "<div style='font-size:130%'>";
-			msgg+= "답변 : ";
 			msgg+= contents+"</div><br/> ";
 			msgg+= "</div>";
 			msgg+= "</div>";
 
 			message.setText(msgg,"utf-8", "html");
-			
-			System.out.println(contents);
 
 			javaMailSender.send(message);
 
