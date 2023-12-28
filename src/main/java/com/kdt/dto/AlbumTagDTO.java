@@ -2,7 +2,7 @@ package com.kdt.dto;
 
 public class AlbumTagDTO {
 	private Long id;
-	private AlbumDTO album;
+//	private AlbumDTO album;
 	private AlbumTagListDTO albumTagList;
 	
 	public AlbumTagDTO() {
@@ -13,7 +13,7 @@ public class AlbumTagDTO {
 	public AlbumTagDTO(Long id, AlbumDTO album, AlbumTagListDTO albumTagList) {
 		super();
 		this.id = id;
-		this.album = album;
+//		this.album = album;
 		this.albumTagList = albumTagList;
 	}
 	
@@ -23,19 +23,17 @@ public class AlbumTagDTO {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public AlbumDTO getAlbum() {
-		return album;
-	}
-	public void setAlbum(AlbumDTO album) {
-		this.album = album;
-	}
+//	public AlbumDTO getAlbum() {
+//		return album;
+//	}
+//	public void setAlbum(AlbumDTO album) {
+//		this.album = album;
+//	}
 	public AlbumTagListDTO getAlbumTagList() {
 		return albumTagList;
 	}
 	public void setAlbumTagList(AlbumTagListDTO albumTagList) {
 		this.albumTagList = albumTagList;
 	}
-	
-	
 	
 }
