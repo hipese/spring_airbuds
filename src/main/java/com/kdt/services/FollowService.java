@@ -11,6 +11,7 @@ import com.kdt.domain.entity.MusicLike;
 import com.kdt.domain.entity.SingerFollow;
 import com.kdt.dto.SingerFollowDTO;
 import com.kdt.mappers.SingerFollowMapper;
+import com.kdt.repositories.MemberRepository;
 import com.kdt.repositories.SingerFollowRepository;
 
 @Service
@@ -21,6 +22,9 @@ public class FollowService {
 	
 	@Autowired
 	private SingerFollowRepository sfRepo;
+	
+	@Autowired
+	private MemberRepository mRepo;
 	
 	
 	public void insertFollow(SingerFollowDTO dto) {
