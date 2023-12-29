@@ -1,5 +1,7 @@
 package com.kdt.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import com.kdt.services.AlbumService;
 import com.kdt.services.MemberService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,6 +24,7 @@ public class SecurityConfig {
 	@Autowired
 	private MemberService mService;
 	
+	private static final Logger logger=LoggerFactory.getLogger(SecurityConfig.class);
 	
 	@Bean
 	protected SecurityFilterChain config(HttpSecurity http) throws Exception {
@@ -54,14 +58,14 @@ public class SecurityConfig {
 
 				// 성공했을 때 핸들러
 				.successHandler((request, response, authentication) -> {
-					System.out.println("로그인 성공");
+					logger.info("로그인 성공");
 					// response에 성공 했다고 정보를 담아 줌
 					response.setStatus(HttpServletResponse.SC_OK);
 				})
 
 				// 실패했을 때 핸들러
 				.failureHandler((request, response, exception) -> {
-					System.out.println("로그인 실패");
+					logger.error("로그인 실패");
 					// reponse에 실패 했다고 정보를 담아 줌
 					response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 				});
@@ -74,7 +78,7 @@ public class SecurityConfig {
 		// 로그아웃 경로 매핑 및 핸들러 작성
 		http.logout().logoutUrl("/api/member/logout").invalidateHttpSession(true)
 				.logoutSuccessHandler((request, response, authentication) -> {
-					System.out.println("로그아웃 성공");
+					logger.info("로그아웃 성공");
 					response.setStatus(HttpServletResponse.SC_OK);
 				});
 		

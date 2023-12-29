@@ -12,12 +12,15 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kdt.controllers.TrackController;
 import com.kdt.domain.entity.Album;
 import com.kdt.domain.entity.AlbumTag;
 import com.kdt.domain.entity.AlbumTagList;
@@ -70,13 +73,15 @@ public class AlbumService {
 	@Autowired
 	private TrackImageMapper imageMapper;
 
+	private static final Logger logger=LoggerFactory.getLogger(AlbumService.class); 
+	
 	@Transactional
 	public void insertAlbum(MultipartFile[] files, String[] name, String[] durations, String[] image_path,
 			String releaseDate, MultipartFile titleImage, String[] writers, Long[] albumselectTag, Long[] order,
 			String albumTitle, String loginId, MultiValueMap<String, String> trackTags) throws Exception {
 
-		File imagePath = new File("c:/tracks/image");
-		File uploadPath = new File("c:/tracks");
+		File imagePath = new File("/tracks/image");
+		File uploadPath = new File("/tracks");
 
 		String sys_imageName = UUID.randomUUID().toString() + "_" + titleImage.getOriginalFilename();
 
@@ -217,7 +222,7 @@ public class AlbumService {
 
 //		앨범 변경
 		Album entity = aRepo.findById(albumId).get();
-		File imagePath = new File("c:/tracks/image");
+		File imagePath = new File("/tracks/image");
 		entity.setTitle(albumTitle);
 		String sys_imageName = null;
 		
@@ -225,7 +230,7 @@ public class AlbumService {
 		if (titleImage != null) {
 			sys_imageName = UUID.randomUUID().toString() + "_" + titleImage.getOriginalFilename();
 
-			System.err.println("바꿔야할 이미지 사진의 이름: " + sys_imageName);
+			logger.info("바꿔야할 이미지 사진의 이름: " + sys_imageName);
 			// Save new image
 			if (!imagePath.exists()) {
 				imagePath.mkdir();
@@ -250,8 +255,8 @@ public class AlbumService {
 
 //		만약 기존앨범의 트랙을 삭제했으면 삭제된 트랙의 albumId를 초기화
 		if (deleteTrack != null) {
-			System.err.println("deleteTrack몇개냐?: " + deleteTrack.length);
-			System.err.println("deleteTrack뭔갑?: " + deleteTrack[0]);
+			logger.debug("deleteTrack몇개냐?: " + deleteTrack.length);
+			logger.debug("deleteTrack뭔갑?: " + deleteTrack[0]);
 			for (int i = 0; i < deleteTrack.length; i++) {
 				Track notalbumTrack = tRepo.findById(deleteTrack[i])
 						.orElseThrow(() -> new RuntimeException("Track not found"));
@@ -267,7 +272,7 @@ public class AlbumService {
 		Album updatedAlbum = aRepo.findById(albumId).orElseThrow(() -> new RuntimeException("Album not found"));
 
 		Set<Track> updatedTracks = updatedAlbum.getTracks();
-		System.err.println("예전 트랙 지워졌냐? : " + updatedTracks.size());
+		logger.debug("예전 트랙 지워졌냐? : " + updatedTracks.size());
 
 		// Iterate over the tracks and update writer and title 삭제된 트랙수에 따라 다르게 설정하게 한다.
 		if (deleteTrack == null) {
@@ -306,7 +311,7 @@ public class AlbumService {
 			TrackImages image =imageRepo.findByTrackImagesTrackId(track.getTrackId());
 			if (image != null) {
 		        // 기존의 트랙에 imagePath 업데이트
-				System.err.println("기존에 이미지경로 셋팅~: "+sys_imageName);
+				logger.info("기존에 이미지경로 셋팅~: "+sys_imageName);
 		        image.setImagePath(sys_imageName);
 		        imageRepo.save(image); // 변경 사항을 데이터베이스에 저장
 		    }
@@ -318,7 +323,7 @@ public class AlbumService {
 			// 각 파일별 태그 ID 배열 생성
 			List<Long[]> tagIdsForFiles = extractTagIdsForFiles(trackTags, files.length);
 
-			File uploadPath = new File("c:/tracks");
+			File uploadPath = new File("/tracks");
 			
 			Set<Track> track = new HashSet<>();
 			for (int i = 0; i < files.length; i++) {
@@ -379,7 +384,7 @@ public class AlbumService {
 						TrackImageDTO imagedto = new TrackImageDTO();
 						imagedto.setTrackId(savedTrack.getTrackId());
 						imagedto.setImagePath(sys_imageName);
-						System.err.println("이미지 뭐로 설정함? "+sys_imageName);
+						logger.info("이미지 뭐로 설정함? "+sys_imageName);
 						imageRepo.save(imageMapper.toEntity(imagedto));
 					}else {
 						image_path[i] = prevImage;
@@ -476,7 +481,7 @@ public class AlbumService {
 
 //				트랙에 존재라는 이미지 삭제
 				TrackImages imageEntity = imageRepo.findByTrackImagesTrackId(track.getTrackId());
-				String imagePath = "c:/tracks/image" + File.separator + imageEntity.getImagePath();
+				String imagePath = "/tracks/image" + File.separator + imageEntity.getImagePath();
 				File imageToDelete = new File(imagePath);
 
 				if (imageToDelete.exists()) {
@@ -484,21 +489,21 @@ public class AlbumService {
 					imageRepo.deleteById(imageEntity.getTrackId());// 데이터베이스에서 이미지 삭제
 
 				} else {
-					System.out.println("파일이 존재하지 않습니다: " + imagePath);
+					logger.error("파일이 존재하지 않습니다: " + imagePath);
 				}
 
 				// 각각의 트랙에서 track_id과 일치하는 테그를 전부 삭제한다.
 				tagRepo.deleteAllByTrackTagTrackId(track.getTrackId());
 
 //				트랙에서 음원이 존재하면 전부 삭제한다.
-				String filePath = "c:/tracks" + File.separator + track.getFilePath();
+				String filePath = "/tracks" + File.separator + track.getFilePath();
 				File fileToDelete = new File(filePath);
 
 				if (fileToDelete.exists()) {
 					fileToDelete.delete(); // 실제 경로 삭제
 					tRepo.deleteById(track.getTrackId()); // 데이터베이스에서 삭제
 				} else {
-					System.out.println("파일이 존재하지 않습니다: " + filePath);
+					logger.error("파일이 존재하지 않습니다: " + filePath);
 				}
 //				각 트랙을 삭제하는 함수
 				tRepo.deleteById(track.getTrackId());
@@ -523,7 +528,7 @@ public class AlbumService {
 //	오래된 이미지 삭제
 	public void deleteOldImage(String imagePath) {
 		if (imagePath != null && !imagePath.isEmpty()) {
-			File oldImageFile = new File("c:/tracks/image", imagePath);
+			File oldImageFile = new File("/tracks/image", imagePath);
 			if (oldImageFile.exists()) {
 				oldImageFile.delete();
 			}

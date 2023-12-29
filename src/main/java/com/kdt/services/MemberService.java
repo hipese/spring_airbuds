@@ -269,7 +269,7 @@ public class MemberService implements UserDetailsService{
 			throw new Exception("userID is undefined");
 		}
 		
-		File imagePath = new File("c:/backgroundImages");
+		File imagePath = new File("/backgroundImages");
 		if (!imagePath.exists()) {
 			imagePath.mkdir();
 		}
@@ -295,7 +295,7 @@ public class MemberService implements UserDetailsService{
 			throw new Exception("userID is undefined");
 		}
 		
-		File imagePath = new File("c:/profileImages");
+		File imagePath = new File("/profileImages");
 		if (!imagePath.exists()) {
 			imagePath.mkdir();
 		}
