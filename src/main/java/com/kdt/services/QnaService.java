@@ -44,7 +44,7 @@ public class QnaService {
 	@Autowired
 	private QnaAnswerMapper qaMapper;
 	
-	public static String upload = "c:/uploads";
+	public static String upload = "/uploads";
 	
 	public void getPost(QnaDTO dto, MultipartFile[] files) throws Exception{
 		Qna qna = qMapper.toEntity(dto);
