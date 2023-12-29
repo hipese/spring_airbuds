@@ -55,9 +55,10 @@ public class TrackController {
 											@RequestParam("releaseDate") String releaseDate,
 											@RequestParam(value = "titleImage", required = false) MultipartFile titleImage,
 											@RequestParam(value = "imagefile", required = false) MultipartFile[] imagefile,
-											@RequestParam("writer") String writer,
+											@RequestParam("writer") String[] writer,
 											@RequestParam MultiValueMap<String, String> trackTags,
 											@RequestParam("login") String loginId)throws Exception {
+		
 		 for (int i = 0; i < files.length; i++) {
 		        // 각 파일에 대한 태그 처리
 		        List<Long> tagIds = new ArrayList<>();
@@ -77,7 +78,7 @@ public class TrackController {
 		        
 		        // 각 파일에 대한 데이터 저장
 		        tService.insert(files[i], name[i], durations[i], image_path[0], 
-		        		currentImageFile, writer, tagIds.toArray(new Long[0]), 
+		        		currentImageFile, writer[i], tagIds.toArray(new Long[0]), 
 		                        releaseDate, loginId);
 		    }
 		return ResponseEntity.ok().build();
