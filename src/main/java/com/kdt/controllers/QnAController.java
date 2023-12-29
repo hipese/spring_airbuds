@@ -122,7 +122,7 @@ public class QnAController {
 	@GetMapping("/download/{sys_name}")
     public ResponseEntity<Resource> download(@PathVariable String sys_name) {
     	Logger.debug(sys_name);
-        String filePath = "c:/uploads/" + sys_name;
+        String filePath = "/uploads/" + sys_name;
 
         byte[] fileContent;
         try (InputStream inputStream = new FileInputStream(new File(filePath))) {

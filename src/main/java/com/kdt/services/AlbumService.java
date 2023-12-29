@@ -80,8 +80,8 @@ public class AlbumService {
 			String releaseDate, MultipartFile titleImage, String[] writers, Long[] albumselectTag, Long[] order,
 			String albumTitle, String loginId, MultiValueMap<String, String> trackTags) throws Exception {
 
-		File imagePath = new File("c:/tracks/image");
-		File uploadPath = new File("c:/tracks");
+		File imagePath = new File("/tracks/image");
+		File uploadPath = new File("/tracks");
 
 		String sys_imageName = UUID.randomUUID().toString() + "_" + titleImage.getOriginalFilename();
 
@@ -222,7 +222,7 @@ public class AlbumService {
 
 //		앨범 변경
 		Album entity = aRepo.findById(albumId).get();
-		File imagePath = new File("c:/tracks/image");
+		File imagePath = new File("/tracks/image");
 		entity.setTitle(albumTitle);
 		String sys_imageName = null;
 		
@@ -323,7 +323,7 @@ public class AlbumService {
 			// 각 파일별 태그 ID 배열 생성
 			List<Long[]> tagIdsForFiles = extractTagIdsForFiles(trackTags, files.length);
 
-			File uploadPath = new File("c:/tracks");
+			File uploadPath = new File("/tracks");
 			
 			Set<Track> track = new HashSet<>();
 			for (int i = 0; i < files.length; i++) {
@@ -481,7 +481,7 @@ public class AlbumService {
 
 //				트랙에 존재라는 이미지 삭제
 				TrackImages imageEntity = imageRepo.findByTrackImagesTrackId(track.getTrackId());
-				String imagePath = "c:/tracks/image" + File.separator + imageEntity.getImagePath();
+				String imagePath = "/tracks/image" + File.separator + imageEntity.getImagePath();
 				File imageToDelete = new File(imagePath);
 
 				if (imageToDelete.exists()) {
@@ -496,7 +496,7 @@ public class AlbumService {
 				tagRepo.deleteAllByTrackTagTrackId(track.getTrackId());
 
 //				트랙에서 음원이 존재하면 전부 삭제한다.
-				String filePath = "c:/tracks" + File.separator + track.getFilePath();
+				String filePath = "/tracks" + File.separator + track.getFilePath();
 				File fileToDelete = new File(filePath);
 
 				if (fileToDelete.exists()) {
@@ -528,7 +528,7 @@ public class AlbumService {
 //	오래된 이미지 삭제
 	public void deleteOldImage(String imagePath) {
 		if (imagePath != null && !imagePath.isEmpty()) {
-			File oldImageFile = new File("c:/tracks/image", imagePath);
+			File oldImageFile = new File("/tracks/image", imagePath);
 			if (oldImageFile.exists()) {
 				oldImageFile.delete();
 			}

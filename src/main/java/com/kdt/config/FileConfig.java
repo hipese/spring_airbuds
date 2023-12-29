@@ -8,10 +8,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class FileConfig implements WebMvcConfigurer{
 	
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/uploads/**").addResourceLocations("file:c:/uploads/");
-		registry.addResourceHandler("/tracks/image/**").addResourceLocations("file:c:/tracks/image/");
-		registry.addResourceHandler("/tracks/**").addResourceLocations("file:c:/tracks/");
-		registry.addResourceHandler("/backgroundImages/**").addResourceLocations("file:c:/backgroundImages/");
-		registry.addResourceHandler("/profileImages/**").addResourceLocations("file:c:/profileImages/");
+		registry.addResourceHandler("/uploads/**").addResourceLocations("file:/uploads/");
+		registry.addResourceHandler("/tracks/image/**").addResourceLocations("file:/tracks/image/");
+		registry.addResourceHandler("/tracks/**").addResourceLocations("file:/tracks/");
+		registry.addResourceHandler("/backgroundImages/**").addResourceLocations("file:/backgroundImages/");
+		registry.addResourceHandler("/profileImages/**").addResourceLocations("file:/profileImages/");
 	}
 }
