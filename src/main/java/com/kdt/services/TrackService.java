@@ -163,13 +163,13 @@ public class TrackService {
 	        String imageName = imgFile.getOriginalFilename();
 	        String sys_imageName = UUID.randomUUID().toString() + "_" + imageName;
 	        
-	        BlobId blobId2 = BlobId.of(bucketName, "/tracks/image"+sys_imageName);//경로이름 지정한 장소 
-	        BlobInfo blobInfo2 = BlobInfo.newBuilder(blobId2).build();
+	        BlobId imageblobId = BlobId.of(bucketName, "/tracks/image/"+sys_imageName);//경로이름 지정한 장소 
+	        BlobInfo imageblobInfo = BlobInfo.newBuilder(imageblobId).build();
 
-	        Blob blob2 = storage.create(blobInfo2, imgFile.getBytes());
+	        Blob iamgeblob = storage.create(imageblobInfo, imgFile.getBytes());
 	        
 	        
-	        System.out.println(blob2.getMediaLink());
+	        System.out.println(iamgeblob.getMediaLink());
 	        
 	        File destImageFile = new File(imagePath, sys_imageName);
 	        imgFile.transferTo(destImageFile);
@@ -179,7 +179,7 @@ public class TrackService {
 	        
 	        TrackImageDTO imagedto=new TrackImageDTO();
 	        imagedto.setTrackId(savedTrack.getTrackId());
-	        imagedto.setImagePath(blob2.getMediaLink());
+	        imagedto.setImagePath(iamgeblob.getMediaLink());
 	        imageRepo.save(imageMapper.toEntity(imagedto));
 	    }
 	    
