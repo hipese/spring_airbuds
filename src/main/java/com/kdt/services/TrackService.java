@@ -83,9 +83,9 @@ public class TrackService {
 			String filename = file.getOriginalFilename();
 			String sys_filename = UUID.randomUUID() + "_" + filename;
 
-			BlobId trackblobId = BlobId.of(bucketName, "/track/" + sys_filename);// 경로이름 지정한 장소
+			BlobId trackblobId = BlobId.of(bucketName, "/tracks/" + sys_filename);// 경로이름 지정한 장소
 			BlobInfo trackblobInfo = BlobInfo.newBuilder(trackblobId).build();
-
+			
 			// 파일을 GCS에 업로드하고 Blob 객체를 받습니다.
 			Blob trackblob = storage.create(trackblobInfo, file.getBytes());
 

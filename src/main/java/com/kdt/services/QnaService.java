@@ -9,6 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.BlobInfo;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import com.kdt.domain.entity.Qna;
 import com.kdt.domain.entity.QnaAnswer;
 import com.kdt.domain.entity.QnaFile;
@@ -44,31 +49,32 @@ public class QnaService {
 	@Autowired
 	private QnaAnswerMapper qaMapper;
 	
-	public static String upload = "c:/uploads";
+	private final Storage storage = StorageOptions.getDefaultInstance().getService();
+	private final String bucketName = "an_airbuds";
+	
 	
 	public void getPost(QnaDTO dto, MultipartFile[] files) throws Exception{
 		Qna qna = qMapper.toEntity(dto);
 		Long seq = qRepo.save(qna).getQnaSeq();
 		
-		File uploadPath = new File(upload);
-
-		if (!uploadPath.exists()) {
-			uploadPath.mkdirs();
-		}
-
 		if (files != null && files.length > 0) {
 			for (MultipartFile file : files) {
 				String oriName = file.getOriginalFilename();
 				String sysName = UUID.randomUUID() + "_" + oriName;
-
+				
+				BlobId uploadblobId = BlobId.of(bucketName, "/uploads/" + sysName);// 경로이름 지정한 장소
+				BlobInfo uploadblobInfo = BlobInfo.newBuilder(uploadblobId).build();
+				
+				// 파일을 GCS에 업로드하고 Blob 객체를 받습니다.
+				Blob trackblob = storage.create(uploadblobInfo, file.getBytes());
+				
 				QnaFileDTO fileDto = new QnaFileDTO();
 				fileDto.setParentSeq(seq);
 				fileDto.setOriName(oriName);
-				fileDto.setSysName(sysName);
+				fileDto.setSysName(trackblob.getMediaLink());
 				QnaFile qnaFile = qfMapper.toEntity(fileDto);
 				qfRepo.save(qnaFile);
 				
-				file.transferTo(new File(uploadPath, sysName));
 			}
 		}
 	}
@@ -92,10 +98,7 @@ public class QnaService {
 		List<QnaFile> qnaFile = qfRepo.selectAllByParentSeq(seq);
 		if(qnaFile.size() > 0) {
 			for(QnaFile qf : qnaFile) {
-				String oriName = qf.getOriName();
-				String sysName = qf.getSysName();
-				File f = new File(upload+"/"+sysName);
-				f.delete();		
+			
 				qfRepo.delete(qf);
 			}
 		}

@@ -119,7 +119,7 @@ public class AlbumService {
 				String sys_filename = UUID.randomUUID() + filename;
 				
 //				google Strage에 음원 데이터를 저장
-				BlobId trackblobId = BlobId.of(bucketName, "/track/" + sys_filename);// 경로이름 지정한 장소
+				BlobId trackblobId = BlobId.of(bucketName, "/tracks/" + sys_filename);// 경로이름 지정한 장소
 				BlobInfo trackblobInfo = BlobInfo.newBuilder(trackblobId).build();
 
 				// 파일을 GCS에 업로드하고 Blob 객체를 받습니다.
@@ -339,7 +339,7 @@ public class AlbumService {
 					String sys_filename = UUID.randomUUID() + filename;
 					
 					
-					BlobId trackblobId = BlobId.of(bucketName, "/track/" + sys_filename);// 경로이름 지정한 장소
+					BlobId trackblobId = BlobId.of(bucketName, "/tracks/" + sys_filename);// 경로이름 지정한 장소
 					BlobInfo trackblobInfo = BlobInfo.newBuilder(trackblobId).build();
 
 					// 파일을 GCS에 업로드하고 Blob 객체를 받습니다.
