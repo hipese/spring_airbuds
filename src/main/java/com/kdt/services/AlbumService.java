@@ -228,16 +228,18 @@ public class AlbumService {
 		Album entity = aRepo.findById(albumId).get();
 		
 		entity.setTitle(albumTitle);
-		String sys_imageName = UUID.randomUUID().toString() + "_" + titleImage.getOriginalFilename();
 		
-		BlobId imageblobId = BlobId.of(bucketName, "/tracks/image/"+sys_imageName);//경로이름 지정한 장소 
-        BlobInfo imageblobInfo = BlobInfo.newBuilder(imageblobId).build();
 
         Blob iamgeblob = null;
         String imageMediaLink="";
 
 //		이미지가 변경되었을 시 동작이미지가 있으면 경로 변경
 		if (titleImage != null) {
+			
+			String sys_imageName = UUID.randomUUID().toString() + "_" + titleImage.getOriginalFilename();
+			
+			BlobId imageblobId = BlobId.of(bucketName, "/tracks/image/"+sys_imageName);//경로이름 지정한 장소 
+	        BlobInfo imageblobInfo = BlobInfo.newBuilder(imageblobId).build();
 			
 			logger.info("바꿔야할 이미지 사진의 이름: " + sys_imageName);
 			iamgeblob=storage.create(imageblobInfo, titleImage.getBytes());
@@ -315,8 +317,8 @@ public class AlbumService {
 			TrackImages image = imageRepo.findByTrackImagesTrackId(track.getTrackId());
 			if (image != null) {
 				// 기존의 트랙에 imagePath 업데이트
-				logger.info("기존에 이미지경로 셋팅~: " + sys_imageName);
-				image.setImagePath(sys_imageName);
+				logger.info("기존에 이미지경로 셋팅~: " + imageMediaLink);
+				image.setImagePath(imageMediaLink);
 				imageRepo.save(image); // 변경 사항을 데이터베이스에 저장
 			}
 		}
@@ -393,7 +395,7 @@ public class AlbumService {
 						TrackImageDTO imagedto = new TrackImageDTO();
 						imagedto.setTrackId(savedTrack.getTrackId());
 						imagedto.setImagePath(imageMediaLink);
-						logger.info("이미지 뭐로 설정함? " + sys_imageName);
+						logger.info("이미지 뭐로 설정함? " + imageMediaLink);
 						imageRepo.save(imageMapper.toEntity(imagedto));
 					} else {
 						image_path[i] = prevImage;
@@ -455,7 +457,7 @@ public class AlbumService {
 	}
 
 	public AlbumDTO findByAlbumId(Long albumId) {
-		Album entity = aRepo.findById(albumId).get();
+		Album entity = aRepo.findAlbumWithDetailsById(albumId);
 		AlbumDTO dto = aMapper.toDto(entity);
 		return dto;
 	}
@@ -469,7 +471,7 @@ public class AlbumService {
 	@Transactional
 	public void deleteAlbum(long albumId) {
 
-		Album entity = aRepo.findById(albumId).get();
+		Album entity = aRepo.findAlbumWithDetailsById(albumId);
 
 //		오래된 이미지 삭제
 
