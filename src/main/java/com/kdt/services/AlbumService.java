@@ -471,10 +471,8 @@ public class AlbumService {
 	@Transactional
 	public void deleteAlbum(long albumId) {
 
-		Album entity = aRepo.findAlbumWithDetailsById(albumId);
-
-
-	
+		Album entity = aRepo.findById(albumId).get();
+		
 //		여기서 트랙 삭제할때 내부에 tag, 이미지 전부 삭제해야 하는지 찾아보자
 		if (entity != null) {
 			// albumId과 일치하는 테그를 전부 삭제한다.
@@ -486,19 +484,15 @@ public class AlbumService {
 //			각각의 트랙들과 관련된 정보들을 삭제한다
 			Set<Track> albumtracks = entity.getTracks();
 			for (Track track : albumtracks) {
-
+			
 //				트랙에 존재라는 이미지 삭제
 				TrackImages imageEntity = imageRepo.findByTrackImagesTrackId(track.getTrackId());
 				
 				imageRepo.deleteById(imageEntity.getTrackId());// 데이터베이스에서 이미지 삭제
-
-			
+				
 				// 각각의 트랙에서 track_id과 일치하는 테그를 전부 삭제한다.
 				tagRepo.deleteAllByTrackTagTrackId(track.getTrackId());
 
-//				트랙에서 음원이 존재하면 전부 삭제한다.
-				tRepo.deleteById(track.getTrackId()); // 데이터베이스에서 삭제
-				
 //				각 트랙을 삭제하는 함수
 				tRepo.deleteById(track.getTrackId());
 			}
