@@ -473,15 +473,15 @@ public class AlbumService {
 
 		Album entity = aRepo.findAlbumWithDetailsById(albumId);
 
-//		오래된 이미지 삭제
 
+	
 //		여기서 트랙 삭제할때 내부에 tag, 이미지 전부 삭제해야 하는지 찾아보자
 		if (entity != null) {
 			// albumId과 일치하는 테그를 전부 삭제한다.
-			atRepo.deleteAllByAlbumTagAlbumId(albumId);
-
+			atRepo.deleteAllByAlbumTagAlbumId(entity.getAlbumId());
+			
 //			예전 이미지를 삭제
-			deleteOldImage(entity.getCoverImagePath());
+//			deleteOldImage(entity.getCoverImagePath());
 
 //			각각의 트랙들과 관련된 정보들을 삭제한다
 			Set<Track> albumtracks = entity.getTracks();
