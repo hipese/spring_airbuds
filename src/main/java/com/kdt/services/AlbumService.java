@@ -251,6 +251,7 @@ public class AlbumService {
 		
 		if(titleImage==null){
 			imageMediaLink = prevImage;
+			System.err.println(imageMediaLink);
 		}
 
 		entity.setCoverImagePath(imageMediaLink);
