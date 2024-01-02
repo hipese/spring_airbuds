@@ -51,8 +51,9 @@ public class AnnounceService {
 	}
 	
 	public void deleteAnnounce(Long seq, Principal id) {
+		
 		AnnounceBoard ab = aRepo.findById(seq).get();
-		if(ab.getAnnounceWriter().equals(id)) {
+		if(ab.getAnnounceWriter().equals(id) || ab.getAnnounceWriter().equals("admin")) {
 			aRepo.delete(ab);
 		}
 		else {
