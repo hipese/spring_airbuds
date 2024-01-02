@@ -6,7 +6,6 @@ import java.sql.Time;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -17,10 +16,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.kdt.controllers.TrackController;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.BlobInfo;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import com.kdt.domain.entity.Album;
 import com.kdt.domain.entity.AlbumTag;
 import com.kdt.domain.entity.AlbumTagList;
@@ -73,24 +75,30 @@ public class AlbumService {
 	@Autowired
 	private TrackImageMapper imageMapper;
 
-	private static final Logger logger=LoggerFactory.getLogger(AlbumService.class); 
+	private static final Logger logger = LoggerFactory.getLogger(AlbumService.class);
+
+	private final Storage storage = StorageOptions.getDefaultInstance().getService();
+	private final String bucketName = "an_airbuds";
 	
 	@Transactional
 	public void insertAlbum(MultipartFile[] files, String[] name, String[] durations, String[] image_path,
 			String releaseDate, MultipartFile titleImage, String[] writers, Long[] albumselectTag, Long[] order,
 			String albumTitle, String loginId, MultiValueMap<String, String> trackTags) throws Exception {
 
-		File imagePath = new File("c:/tracks/image");
-		File uploadPath = new File("c:/tracks");
-
+		
 		String sys_imageName = UUID.randomUUID().toString() + "_" + titleImage.getOriginalFilename();
+
+		BlobId imageblobId = BlobId.of(bucketName, "/tracks/image/" + sys_imageName);// 경로이름 지정한 장소
+		BlobInfo imageblobInfo = BlobInfo.newBuilder(imageblobId).build();
+
+		Blob iamgeblob = storage.create(imageblobInfo, titleImage.getBytes());
 
 //		엘범 저장
 		AlbumDTO adto = new AlbumDTO();
 		adto.setTitle(albumTitle);
 		adto.setArtistId(loginId);
 		adto.setReleaseDate(Instant.parse(releaseDate));
-		adto.setCoverImagePath(sys_imageName);
+		adto.setCoverImagePath(iamgeblob.getMediaLink());
 
 		Album entity = aRepo.save(aMapper.toEntity(adto));
 		Album savaAlum = aRepo.save(entity);
@@ -109,6 +117,14 @@ public class AlbumService {
 
 				String filename = Muiscfile.getOriginalFilename();
 				String sys_filename = UUID.randomUUID() + filename;
+				
+//				google Strage에 음원 데이터를 저장
+				BlobId trackblobId = BlobId.of(bucketName, "/tracks/" + sys_filename);// 경로이름 지정한 장소
+				BlobInfo trackblobInfo = BlobInfo.newBuilder(trackblobId).build();
+
+				// 파일을 GCS에 업로드하고 Blob 객체를 받습니다.
+				Blob trackblob = storage.create(trackblobInfo, Muiscfile.getBytes());
+				
 
 				// 문자열을 double로 변환하고 long으로 반올림
 				double durationDouble = Double.parseDouble(durations[i]);
@@ -121,7 +137,7 @@ public class AlbumService {
 				dto.setAlbumId(entity.getAlbumId());
 				dto.setTrackNumber(order[i]);
 				dto.setDuration(durationTime);
-				dto.setFilePath(sys_filename);
+				dto.setFilePath(trackblob.getMediaLink());
 				dto.setViewCount(0L);
 				dto.setWriter(writers[i]);
 				dto.setReleaseDate(Instant.parse(releaseDate));
@@ -155,7 +171,7 @@ public class AlbumService {
 
 					TrackImageDTO imagedto = new TrackImageDTO();
 					imagedto.setTrackId(savedTrack.getTrackId());
-					imagedto.setImagePath(sys_imageName);
+					imagedto.setImagePath(iamgeblob.getMediaLink());
 					imageRepo.save(imageMapper.toEntity(imagedto));
 				}
 
@@ -167,21 +183,9 @@ public class AlbumService {
 					imageRepo.save(imageMapper.toEntity(imagedto));
 				}
 
-				File destFile = new File(uploadPath + File.separator + sys_filename);
-				Muiscfile.transferTo(destFile);
 			}
 		}
 
-//		앨범 이미지 생성
-		if (!imagePath.exists()) {
-			imagePath.mkdir();
-		}
-
-		if (titleImage != null && !titleImage.isEmpty()) {
-			File destImageFile = new File(imagePath, sys_imageName);
-			titleImage.transferTo(destImageFile);
-
-		}
 
 //		엘범 태그값 저장
 		Set<AlbumTag> albumTags = createAlbumTags(albumselectTag, entity);
@@ -222,32 +226,35 @@ public class AlbumService {
 
 //		앨범 변경
 		Album entity = aRepo.findById(albumId).get();
-		File imagePath = new File("c:/tracks/image");
-		entity.setTitle(albumTitle);
-		String sys_imageName = null;
 		
+		entity.setTitle(albumTitle);
+		
+
+        Blob iamgeblob = null;
+        String imageMediaLink="";
+
 //		이미지가 변경되었을 시 동작이미지가 있으면 경로 변경
 		if (titleImage != null) {
-			sys_imageName = UUID.randomUUID().toString() + "_" + titleImage.getOriginalFilename();
-
-			logger.info("바꿔야할 이미지 사진의 이름: " + sys_imageName);
-			// Save new image
-			if (!imagePath.exists()) {
-				imagePath.mkdir();
-			}
-			File newImageFile = new File(imagePath, sys_imageName);
-			titleImage.transferTo(newImageFile);
-			// Delete old image file
-			deleteOldImage(prevImage);
-
-		}else {
-			sys_imageName=prevImage;
 			
-		}
+			String sys_imageName = UUID.randomUUID().toString() + "_" + titleImage.getOriginalFilename();
+			
+			BlobId imageblobId = BlobId.of(bucketName, "/tracks/image/"+sys_imageName);//경로이름 지정한 장소 
+	        BlobInfo imageblobInfo = BlobInfo.newBuilder(imageblobId).build();
+			
+			logger.info("바꿔야할 이미지 사진의 이름: " + sys_imageName);
+			iamgeblob=storage.create(imageblobInfo, titleImage.getBytes());
+			imageMediaLink=iamgeblob.getMediaLink();
+//			Delete old image file
+//			deleteOldImage(prevImage);
+	        
+		} 
 		
-		entity.setCoverImagePath(sys_imageName);
+		if(titleImage==null){
+			imageMediaLink = prevImage;
+			System.err.println(imageMediaLink);
+		}
 
-	
+		entity.setCoverImagePath(imageMediaLink);
 
 //		엘범 테그 설정하는 기능
 		Set<AlbumTag> albumTags = createAlbumTags(albumselectTag, entity);
@@ -305,26 +312,24 @@ public class AlbumService {
 
 //		기존 트랙의 값을 가지는 set
 		Set<Track> existingTracks = new HashSet<>(entity.getTracks());
-		
+
 //		기존에 존재하던 트랙에 이미지 경로를 재설정
 		for (Track track : existingTracks) {
-			TrackImages image =imageRepo.findByTrackImagesTrackId(track.getTrackId());
+			TrackImages image = imageRepo.findByTrackImagesTrackId(track.getTrackId());
 			if (image != null) {
-		        // 기존의 트랙에 imagePath 업데이트
-				logger.info("기존에 이미지경로 셋팅~: "+sys_imageName);
-		        image.setImagePath(sys_imageName);
-		        imageRepo.save(image); // 변경 사항을 데이터베이스에 저장
-		    }
+				// 기존의 트랙에 imagePath 업데이트
+				logger.info("기존에 이미지경로 셋팅~: " + imageMediaLink);
+				image.setImagePath(imageMediaLink);
+				imageRepo.save(image); // 변경 사항을 데이터베이스에 저장
+			}
 		}
-		
+
 //		트랙을 삽입하는 로직 작성
 		if (files != null) {
 
 			// 각 파일별 태그 ID 배열 생성
 			List<Long[]> tagIdsForFiles = extractTagIdsForFiles(trackTags, files.length);
 
-			File uploadPath = new File("c:/tracks");
-			
 			Set<Track> track = new HashSet<>();
 			for (int i = 0; i < files.length; i++) {
 //				음원 저장
@@ -335,6 +340,13 @@ public class AlbumService {
 
 					String filename = Muiscfile.getOriginalFilename();
 					String sys_filename = UUID.randomUUID() + filename;
+					
+					
+					BlobId trackblobId = BlobId.of(bucketName, "/tracks/" + sys_filename);// 경로이름 지정한 장소
+					BlobInfo trackblobInfo = BlobInfo.newBuilder(trackblobId).build();
+
+					// 파일을 GCS에 업로드하고 Blob 객체를 받습니다.
+					Blob trackblob = storage.create(trackblobInfo, Muiscfile.getBytes());
 
 					// 문자열을 double로 변환하고 long으로 반올림
 					double durationDouble = Double.parseDouble(durations[i]);
@@ -349,7 +361,7 @@ public class AlbumService {
 					dto.setAlbumId(entity.getAlbumId());
 					dto.setTrackNumber(Long.valueOf(i + entityTracksSize));
 					dto.setDuration(durationTime);
-					dto.setFilePath(sys_filename);
+					dto.setFilePath(trackblob.getMediaLink());
 					dto.setViewCount(0L);
 					dto.setWriter(writers[i]);
 					dto.setReleaseDate(Instant.now());
@@ -377,26 +389,24 @@ public class AlbumService {
 
 //					set에 track값을 저장
 					track.add(trackEntity);
-					
+
 //					새로 삽입하는 파일의 이미지 경로 랜더링을 다시한다.
 					// 트랙 이미지 파일 처리
 					if (titleImage != null) {
 						TrackImageDTO imagedto = new TrackImageDTO();
 						imagedto.setTrackId(savedTrack.getTrackId());
-						imagedto.setImagePath(sys_imageName);
-						logger.info("이미지 뭐로 설정함? "+sys_imageName);
+						imagedto.setImagePath(imageMediaLink);
+						logger.info("이미지 뭐로 설정함? " + imageMediaLink);
 						imageRepo.save(imageMapper.toEntity(imagedto));
-					}else {
+					} else {
 						image_path[i] = prevImage;
 						TrackImageDTO imagedto = new TrackImageDTO();
 						imagedto.setTrackId(savedTrack.getTrackId());
 						imagedto.setImagePath(image_path[i]);
 						imageRepo.save(imageMapper.toEntity(imagedto));
-						
+
 					}
 
-					File destFile = new File(uploadPath + File.separator + sys_filename);
-					Muiscfile.transferTo(destFile);
 				}
 			}
 			existingTracks.addAll(track);
@@ -409,102 +419,81 @@ public class AlbumService {
 
 		return dto;
 	}
-	
+
 //	기능 만들려다가 포기한 상태임
 	@Transactional
 	public AlbumDTO emptyAlbum(Principal principal) {
-		AlbumDTO dto=new AlbumDTO();
+		AlbumDTO dto = new AlbumDTO();
 		dto.setArtistId(principal.getName());
 		dto.setCoverImagePath(null);
 		dto.setTitle("익명의 앨범");
 		dto.setReleaseDate(Instant.now());
-		
+
 		Album entity = aMapper.toEntity(dto);
-	    Album savedEntity = aRepo.save(entity);
-	    
-	    AlbumDTO realdto=aMapper.toDto(savedEntity);
-	    
+		Album savedEntity = aRepo.save(entity);
+
+		AlbumDTO realdto = aMapper.toDto(savedEntity);
+
 		return realdto;
 	}
-	
+
 //	내 앨범에 편집 기능을 사용할 수 있는지 아닌지 확인하는 부분
-	public boolean isEditAlbum(Principal principal,String artistId) {
-		
-		if(principal==null) {
+	public boolean isEditAlbum(Principal principal, String artistId) {
+
+		if (principal == null) {
 			return false;
 		}
-		
-		if(principal.getName().equals(artistId)) {
+
+		if (principal.getName().equals(artistId)) {
 			return true;
 		}
-		
+
 		return false;
 	}
-	
-	public List<AlbumDTO> profileAlbum(String artistId){
-		List<Album> entity=aRepo.findAllByArtistIdStartingWith(artistId);
-		List<AlbumDTO> dtos=aMapper.toDtoList(entity);
+
+	public List<AlbumDTO> profileAlbum(String artistId) {
+		List<Album> entity = aRepo.findAllByArtistIdStartingWith(artistId);
+		List<AlbumDTO> dtos = aMapper.toDtoList(entity);
 		return dtos;
 	}
-	
+
 	public AlbumDTO findByAlbumId(Long albumId) {
-		Album entity=aRepo.findById(albumId).get();
-		AlbumDTO dto=aMapper.toDto(entity);
+		Album entity = aRepo.findAlbumWithDetailsById(albumId);
+		AlbumDTO dto = aMapper.toDto(entity);
 		return dto;
 	}
-	
-	public List<AlbumDTO> searchAlbumByText(String searchText){
-		List<Album> entity=aRepo.findAllByTitleStartingWith(searchText);
-		List<AlbumDTO> dto=aMapper.toDtoList(entity);
+
+	public List<AlbumDTO> searchAlbumByText(String searchText) {
+		List<Album> entity = aRepo.findAllByTitleStartingWith(searchText);
+		List<AlbumDTO> dto = aMapper.toDtoList(entity);
 		return dto;
 	}
-	
-	
+
 	@Transactional
 	public void deleteAlbum(long albumId) {
 
 		Album entity = aRepo.findById(albumId).get();
-
-//		오래된 이미지 삭제
-
+		
 //		여기서 트랙 삭제할때 내부에 tag, 이미지 전부 삭제해야 하는지 찾아보자
 		if (entity != null) {
 			// albumId과 일치하는 테그를 전부 삭제한다.
-			atRepo.deleteAllByAlbumTagAlbumId(albumId);
-
+			atRepo.deleteAllByAlbumTagAlbumId(entity.getAlbumId());
+			
 //			예전 이미지를 삭제
-			deleteOldImage(entity.getCoverImagePath());
+//			deleteOldImage(entity.getCoverImagePath());
 
 //			각각의 트랙들과 관련된 정보들을 삭제한다
 			Set<Track> albumtracks = entity.getTracks();
 			for (Track track : albumtracks) {
-
+			
 //				트랙에 존재라는 이미지 삭제
 				TrackImages imageEntity = imageRepo.findByTrackImagesTrackId(track.getTrackId());
-				String imagePath = "c:/tracks/image" + File.separator + imageEntity.getImagePath();
-				File imageToDelete = new File(imagePath);
-
-				if (imageToDelete.exists()) {
-					imageToDelete.delete();
-					imageRepo.deleteById(imageEntity.getTrackId());// 데이터베이스에서 이미지 삭제
-
-				} else {
-					logger.error("파일이 존재하지 않습니다: " + imagePath);
-				}
-
+				
+				imageRepo.deleteById(imageEntity.getTrackId());// 데이터베이스에서 이미지 삭제
+				
 				// 각각의 트랙에서 track_id과 일치하는 테그를 전부 삭제한다.
 				tagRepo.deleteAllByTrackTagTrackId(track.getTrackId());
 
-//				트랙에서 음원이 존재하면 전부 삭제한다.
-				String filePath = "c:/tracks" + File.separator + track.getFilePath();
-				File fileToDelete = new File(filePath);
-
-				if (fileToDelete.exists()) {
-					fileToDelete.delete(); // 실제 경로 삭제
-					tRepo.deleteById(track.getTrackId()); // 데이터베이스에서 삭제
-				} else {
-					logger.error("파일이 존재하지 않습니다: " + filePath);
-				}
 //				각 트랙을 삭제하는 함수
 				tRepo.deleteById(track.getTrackId());
 			}

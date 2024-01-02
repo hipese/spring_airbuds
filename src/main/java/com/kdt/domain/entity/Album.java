@@ -33,7 +33,7 @@ public class Album {
 	@Column(name="cover_image_path")
 	private String coverImagePath;
 	
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL )
 	@JoinColumn(name="album_id")
 	private Set<Track> tracks;
 	

@@ -100,7 +100,6 @@ public class AlbumController {
 	
 	@GetMapping("/profileAlbum/{artistId}")
 	public ResponseEntity<List<AlbumDTO>> profileAlbum(@PathVariable String artistId){
-		
 		List<AlbumDTO> dtos=aService.profileAlbum(artistId);
 		return ResponseEntity.ok(dtos);
 	}

@@ -11,8 +11,9 @@ import jakarta.transaction.Transactional;
 
 public interface AlbumTagRepository extends JpaRepository<AlbumTag, Long>{
 
+	
 	@Modifying
-	@Transactional
-	@Query("DELETE FROM AlbumTag t WHERE t.album.id = :albumId")
-	void deleteAllByAlbumTagAlbumId(@Param("albumId") Long albumId);
+    @Transactional
+    @Query("DELETE FROM AlbumTag t WHERE t.album.id = :albumId")
+    void deleteAllByAlbumTagAlbumId(@Param("albumId") Long albumId);
 }

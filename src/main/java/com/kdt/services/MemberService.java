@@ -24,6 +24,11 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.BlobInfo;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import com.kdt.controllers.MemberController;
 import com.kdt.domain.entity.Member;
 import com.kdt.dto.MemberDTO;
@@ -37,30 +42,34 @@ import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMessage.RecipientType;
 
 @Service
-public class MemberService implements UserDetailsService{
-	
+public class MemberService implements UserDetailsService {
+
 	private static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 
 	@Autowired
 	private MemberRepository mRepo;
-	
+
 	@Autowired
 	private MemberMapper mMapper;
-	
+
 	@Autowired
 	private JavaMailSender javaMailSender;
-	
+
 	@Autowired
 	private MemberDAO memberdao;
+
+	
+	private final Storage storage = StorageOptions.getDefaultInstance().getService();
+	private final String bucketName = "an_airbuds";
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		Member m = mRepo.findById(username).get();
-		SecurityUser su =new SecurityUser(m);
+		SecurityUser su = new SecurityUser(m);
 		su.setName(m.getName());
 		return su;
 	}
-	
+
 	@Transactional
 	public void sendVerificationEmail(String email) {
 		// 인증 코드 생성
@@ -91,13 +100,15 @@ public class MemberService implements UserDetailsService{
 
 	// 세션에 인증 코드 저장
 	private void saveVerificationCodeInSession(String verificationCode) {
-		ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+		ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder
+				.currentRequestAttributes();
 		attributes.getRequest().getSession(true).setAttribute("verificationCode", verificationCode);
 	}
 
 	// 세션에서 인증 코드 가져오기
 	private String getVerificationCodeFromSession() {
-		ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+		ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder
+				.currentRequestAttributes();
 		return (String) attributes.getRequest().getSession(true).getAttribute("verificationCode");
 	}
 
@@ -107,23 +118,23 @@ public class MemberService implements UserDetailsService{
 			MimeMessage message = javaMailSender.createMimeMessage();
 
 			message.addRecipients(RecipientType.TO, email);
-			message.setFrom(new InternetAddress("kdtgroovy@gmail.com","Groovy"));
+			message.setFrom(new InternetAddress("kdtgroovy@gmail.com", "Groovy"));
 			message.setSubject("Groovy 인증코드");
-			String msgg="";
-			msgg+= "<div style='margin:20px;'>";
-			msgg+= "<h1> Groovy에 오신것을 환영합니다. </h1>";
-			msgg+= "<br>";
-			msgg+= "<p>아래 코드를 복사해 입력해주세요<p>";
-			msgg+= "<br>";
-			msgg+= "<div align='center' style='border:1px solid black; font-family:verdana;'>";
-			msgg+= "<h3 style='color:blue;'>인증 코드입니다.</h3>";
-			msgg+= "<div style='font-size:130%'>";
-			msgg+= "CODE : <strong>";
-			msgg+= verificationCode+"</strong></div><br/> ";
-			msgg+= "</div>";
-			msgg+= "</div>";
+			String msgg = "";
+			msgg += "<div style='margin:20px;'>";
+			msgg += "<h1> Groovy에 오신것을 환영합니다. </h1>";
+			msgg += "<br>";
+			msgg += "<p>아래 코드를 복사해 입력해주세요<p>";
+			msgg += "<br>";
+			msgg += "<div align='center' style='border:1px solid black; font-family:verdana;'>";
+			msgg += "<h3 style='color:blue;'>인증 코드입니다.</h3>";
+			msgg += "<div style='font-size:130%'>";
+			msgg += "CODE : <strong>";
+			msgg += verificationCode + "</strong></div><br/> ";
+			msgg += "</div>";
+			msgg += "</div>";
 
-			message.setText(msgg,"utf-8", "html");
+			message.setText(msgg, "utf-8", "html");
 
 			javaMailSender.send(message);
 
@@ -172,16 +183,16 @@ public class MemberService implements UserDetailsService{
 		// 이메일 전송
 		sendPasswordEmail(email, temporaryPassword);
 	}
-	
+
 	// 임시 비밀번호로 비밀번호 변경 메서드
 	@Transactional
 	public void changePassword(String id, String temporaryPassword) {
-	    Member member = mRepo.findById(id).orElseThrow(() -> new RuntimeException("Member not found with id: " + id));
+		Member member = mRepo.findById(id).orElseThrow(() -> new RuntimeException("Member not found with id: " + id));
 
-	    // 비밀번호를 발급 받은 임시비밀번호로 변경
-	    String encodedPassword = new BCryptPasswordEncoder().encode(temporaryPassword);
-	    member.setPassword(encodedPassword);
-	    mRepo.save(member);
+		// 비밀번호를 발급 받은 임시비밀번호로 변경
+		String encodedPassword = new BCryptPasswordEncoder().encode(temporaryPassword);
+		member.setPassword(encodedPassword);
+		mRepo.save(member);
 	}
 
 	// 임시 비밀번호 전송 메서드
@@ -217,42 +228,42 @@ public class MemberService implements UserDetailsService{
 			logger.error(e.getMessage());
 		}
 	}
-	
-	public MemberDTO findMemberById(String id){
+
+	public MemberDTO findMemberById(String id) {
 		Member m = mRepo.findAllById(id);
 		MemberDTO dto = mMapper.toDto(m);
 		return dto;
 	}
-	
-	public List<MemberDTO> findId(String name, String email){
-		List<Member> list = mRepo.findByNameAndEmail(name,email);
+
+	public List<MemberDTO> findId(String name, String email) {
+		List<Member> list = mRepo.findByNameAndEmail(name, email);
 		List<MemberDTO> dtos = mMapper.toDtoList(list);
 		return dtos;
 	}
-	
-	public MemberDTO findEmail(String id){
+
+	public MemberDTO findEmail(String id) {
 		Member m = mRepo.findAllById(id);
 		MemberDTO dto = mMapper.toDto(m);
 		return dto;
 	}
-	
+
 	public boolean isDupleID(String id) {
 		Optional<Member> m = mRepo.findById(id);
-		if(m.isEmpty())
+		if (m.isEmpty())
 			return false;
-		else 
+		else
 			return true;
 	}
-	
+
 	public void register(MemberDTO dto) throws Exception {
 		dto.setPassword(new BCryptPasswordEncoder().encode(dto.getPassword()));
 		dto.setRole("ROLE_MEMBER");
 		dto.setEnabled(true);
-		
+
 		Member m = mMapper.toEntity(dto);
 		mRepo.save(m);
 	}
-	
+
 	public Map<String, String> getProfiles(String targetID) {
 		Map<String, String> images = new HashMap<>();
 		Member m = mRepo.findById(targetID).get();
@@ -260,80 +271,78 @@ public class MemberService implements UserDetailsService{
 		images.put("background_image", m.getBackground_image());
 		return images;
 	}
-	
+
 	public void uploadBackgroundImage(MultipartFile file, String userID) throws Exception {
-		if(file == null) {
+		if (file == null) {
 			throw new Exception("file is empty");
 		}
-		if(userID == null) {
+		if (userID == null) {
 			throw new Exception("userID is undefined");
 		}
-		
-		File imagePath = new File("c:/backgroundImages");
-		if (!imagePath.exists()) {
-			imagePath.mkdir();
-		}
-		
+
+	
 		String filename = file.getOriginalFilename();
 		String sys_filename = UUID.randomUUID() + "_" + filename;
-		File destImageFile = new File(imagePath, sys_filename);
-        file.transferTo(destImageFile);
-        
-        Member m = mRepo.findById(userID).get();
-        m.setBackground_image("/backgroundImages/" + sys_filename);
-        mRepo.save(m);
-        
 		
-	}
+		BlobId imageblobId = BlobId.of(bucketName, "/backgroundImages/" + sys_filename);// 경로이름 지정한 장소
+		BlobInfo imageblobInfo = BlobInfo.newBuilder(imageblobId).build();
+
+		Blob iamgeblob = storage.create(imageblobInfo, file.getBytes());
 	
+		Member m = mRepo.findById(userID).get();
+		m.setBackground_image(iamgeblob.getMediaLink());
+		mRepo.save(m);
+
+	}
+
 	public String uploadProfileImage(MultipartFile file, String userID) throws Exception {
-		
-		if(file == null) {
+
+		if (file == null) {
 			throw new Exception("file is empty");
 		}
-		if(userID == null) {
+		if (userID == null) {
 			throw new Exception("userID is undefined");
 		}
-		
-		File imagePath = new File("c:/profileImages");
-		if (!imagePath.exists()) {
-			imagePath.mkdir();
-		}
-		
+
+	
 		String filename = file.getOriginalFilename();
 		String sys_filename = UUID.randomUUID() + "_" + filename;
-		File destImageFile = new File(imagePath, sys_filename);
-        file.transferTo(destImageFile);
-        
-        String pathName = "/profileImages/" + sys_filename;
-        
-        Member m = mRepo.findById(userID).get();
-        m.setProfile_image(pathName);
-        mRepo.save(m);
-        return pathName;
+		
+		BlobId imageblobId = BlobId.of(bucketName, "/profileImages/" + sys_filename);// 경로이름 지정한 장소
+		BlobInfo imageblobInfo = BlobInfo.newBuilder(imageblobId).build();
+
+		Blob iamgeblob = storage.create(imageblobInfo, file.getBytes());
+		
+		
+		String pathName = iamgeblob.getMediaLink();
+
+		Member m = mRepo.findById(userID).get();
+		m.setProfile_image(iamgeblob.getMediaLink());
+		mRepo.save(m);
+		return pathName;
 	}
-	
+
 	public void changeID(String id, String newID) {
 		memberdao.updateId(id, newID);
 	}
-	
+
 	public boolean checkPW(String id, String password) {
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		Member m = mRepo.findById(id).get();
-		if(encoder.matches(password, m.getPassword())) {
+		if (encoder.matches(password, m.getPassword())) {
 			return true;
 		} else {
 			return false;
 		}
 	}
-	
+
 	public void changePW(String id, String newPassword) {
 		newPassword = new BCryptPasswordEncoder().encode(newPassword);
 		Member m = mRepo.findById(id).get();
 		m.setPassword(newPassword);
 		mRepo.save(m);
 	}
-	
+
 	public void changeUserInfo(String id, MemberDTO dto) {
 		Member m = mRepo.findById(id).get();
 		m.setName(dto.getName());
